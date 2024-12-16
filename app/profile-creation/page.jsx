@@ -1,32 +1,13 @@
 "use client"
-import React from 'react';
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-const ColorAlert = () => {
-  return (
-    <React.Fragment>
-      <Alert>
-          <AlertDescription>I'm an alert with primary background color.!</AlertDescription>
-      </Alert>
-      <Alert color="secondary">
-          <AlertDescription>I'm an alert with primary background color.!</AlertDescription>
-      </Alert>
+import Image from 'next/image'
+import Header from '@/components/profile-creation/header'
+import ProfileStep from '@/components/profile-creation/steps'
 
-      <Alert color="warning">
-          <AlertDescription>I'm an alert with primary background color.!</AlertDescription>
-      </Alert>
-      <Alert color="success">
-          <AlertDescription>I'm an alert with primary background color.!</AlertDescription>
-      </Alert>
-      <Alert color="destructive">
-          <AlertDescription>I'm an alert with primary background color.!</AlertDescription>
-      </Alert>
-      <Alert color="info">
-          <AlertDescription>I'm an alert with primary background color.!</AlertDescription>
-      </Alert>
-      <Alert color="dark">
-          <AlertDescription>I'm an alert with primary background color.!</AlertDescription>
-      </Alert>  
-    </React.Fragment>
-  )
+export default function profile() {
+    return (
+        <>
+            <Header/>
+            <ProfileStep/>
+        </>
+    )
 }
-export default ColorAlert;
