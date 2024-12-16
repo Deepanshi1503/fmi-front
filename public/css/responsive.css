@@ -1,0 +1,271 @@
+@media only screen and (max-width:1660px) {
+
+    .counter-block-main {
+        margin-top: 40px !important;
+        gap: 35px !important;
+        flex-wrap: wrap;
+    }
+
+    .herobanner-wrap h1 br {
+        display: none;
+    }
+
+    .counter-box p {
+        max-width: 90% !important;
+    }
+
+    .investment-light-blue-box {
+        padding: 15px !important;
+    }
+
+    .company-revenue-block {
+        padding: 0 15px 14px 15px !important;
+    }
+
+}
+
+
+@media only screen and (max-width:1440px) {
+    .counter-block-main {
+        gap: 25px !important;
+    }
+
+    .counter-box span {
+        font-size: 40px;
+    }
+
+
+}
+
+
+@media only screen and (max-width:1366px) {
+
+    .investment-card-wrap {
+        overflow: auto;
+    }
+
+    .investment-card-box {
+        width: 33% !important;
+        flex-shrink: 0;
+    }
+}
+
+
+@media only screen and (max-width:1280px) {
+
+    .blog-info h4 {
+        font-size: 22px;
+        line-height: 28px;
+    }
+
+    .blog-info {
+        padding: 20px 20px 0 20px !important;
+    }
+
+    .serviceCasestudy-right {
+        width: calc(100% - 400px) !important;
+        margin-left: 115px !important;
+    }
+
+    .herobanner-wrap p {
+        z-index: 2 !important;
+    }
+
+    .cta-right-contentbox span {
+        line-height: 33px !important;
+    }
+
+    .bluebox-wrap {
+        flex-wrap: wrap;
+    }
+
+    .counter-block-main {
+        z-index: 2;
+    }
+
+}
+
+@media only screen and (max-width:1199px) {
+
+    .container {
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+    }
+
+
+    .herobanner-wrap figure {
+        display: none;
+    }
+
+    .herobanner-wrap {
+        padding-top: 40px !important;
+    }
+
+    .herobanner-wrap p {
+        max-width: 100% !important;
+    }
+
+}
+
+
+@media only screen and (max-width:1024px) {
+    .home-card-expan-wrap {
+        flex-direction: column;
+    }
+
+    .home-expand-card-main {
+        width: calc(100% / 1) !important;
+    }
+
+}
+
+@media only screen and (max-width:990px) {
+
+
+
+    .footer-links h4 {
+        font-size: 22px !important;
+    }
+
+
+
+    .single-post {
+        margin-bottom: 30px;
+    }
+
+    .casestudy-quotes:after {
+        left: 0px !important;
+        background-size: 60% !important;
+        position: absolute !important;
+        top: 0;
+        display: flex;
+    }
+
+
+    .logo-bg {
+        justify-content: center;
+        display: flex;
+    }
+
+    .casestudy-quotes {
+        font-size: 28px !important;
+        line-height: 40px !important;
+        padding-top: 35px !important;
+    }
+
+    .serviceCasestudy-right {
+        width: calc(100% - 0px) !important;
+        margin-left: 0px !important;
+        margin-top: 30px;
+    }
+
+    .serviceCasestudy-slider .serviceCasestudySlider-main {
+        flex-direction: column !important;
+        padding: 30px !important;
+    }
+
+    .looking-investment-heading-block {
+        align-items: flex-start !important;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .looking-investment-heading-block h2 br {
+        display: none;
+    }
+
+    .investment-card-box {
+        width: 46% !important;
+    }
+
+    .signin-btn {
+        justify-content: center !important;
+    }
+
+    .herobanner-wrap {
+        padding-top: 0px !important;
+    }
+
+    .main-navigation-block .navbar-nav {
+        margin-left: 0 !important;
+        gap: 0 !important;
+    }
+
+    .home-expand-card-main-section h2 br {
+        display: none;
+    }
+
+
+}
+
+@media only screen and (max-width:767px) {
+
+    .footer-copyright .row {
+        gap: 0;
+    }
+
+    .footer-copyright .col-12+.col-12 p {
+        text-align: left !important;
+    }
+
+    .footer-wrap-bg .row {
+        gap: 35px;
+    }
+
+    .footer-logo-block p {
+        max-width: 100% !important;
+    }
+
+
+    .investment-card-box {
+        width: 90% !important;
+    }
+
+    h2 {
+        font-size: 32px !important;
+        line-height: 40px !important;
+    }
+
+    h3 {
+        font-size: 24px !important;
+    }
+
+    .padding2 {
+        padding: 30px 0;
+    }
+
+    .home-expan-inner-content-box h3 {
+        font-size: 26px !important;
+        line-height: 34px;
+    }
+
+    .home-expan-inner-content-box {
+        padding: 30px !important;
+    }
+
+    .padding-140 {
+        padding: 50px 0 !important;
+    }
+
+    .cta-right-contentbox span {
+        font-size: 24px !important;
+    }
+
+    .bluebox-cta {
+        flex-direction: column;
+        gap: 8px !important;
+        align-items: flex-start;
+    }
+
+    .herobanner-wrap h1 {
+        position: relative;
+        top: 0;
+        font-size: 40px;
+        line-height: 45px;
+    }
+
+    .padding1 {
+        padding: 50px 0px;
+    }
+
+}
