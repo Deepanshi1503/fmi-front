@@ -2,6 +2,11 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
+import FounderTeam from "@/components/profile-creation/founder-team";
+
+const stepComponents = [
+  <FounderTeam />
+];
 
 const ProfileStep = () => {
   const [activeStep, setActiveStep] = React.useState(0);
@@ -30,17 +35,17 @@ const ProfileStep = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full relative">
       {/* Stepper Container */}
-      <div className="flex items-center justify-between relative px-24 py-4 flex-wrap">
+      <div className="flex items-center justify-between relative px-24 py-2 flex-wrap">
         {steps.map((label, index) => (
           <div
             key={index}
-            className={`flex items-center text-center relative flex-wrap mt-2 cursor-pointer ${index <= activeStep ? "opacity-100" : "opacity-70"}`}
+            className={`relative flex items-center relative flex-wrap mt-2 cursor-pointer ${index <= activeStep ? "opacity-100" : "opacity-70"}`}
             onClick={() => setActiveStep(index)}
           >
             {/* Vertical Line */}
-            <div className="absolute left-[-12px] top-0 bottom-0 w-[2px] h-[60px] bg-[#18181833]"></div>
+            <div className="absolute left-[-12px] top-0 bottom-0 w-[2px] bg-[#18181833]"></div>
 
             {/* Step Number Circle */}
             <div
@@ -57,27 +62,25 @@ const ProfileStep = () => {
 
             {/* Step Label */}
             <div
-              className={`ml-3 text-[16px] font-medium break-words max-w-[140px] text-center 
-                ${index === activeStep ? "text-[#0A66C2]" : "text-gray-500"}`}
+              className={`ml-3 text-[16px] font-medium break-words max-w-[140px] ${index === activeStep ? "text-[#0A66C2]" : "text-gray-500"}`}
             >
               {label}
             </div>
 
             {/* Vertical line at the end of the last step */}
             {index === steps.length - 1 && (
-              <div className="absolute right-[-12px] top-0 bottom-0 w-[2px] h-[60px] bg-[#18181833]"></div>
+              <div className="absolute right-[-12px] top-0 bottom-0 w-[2px] bg-[#18181833]"></div>
             )}
           </div>
         ))}
       </div>
 
       {/* Horizontal Line at the End */}
-      <div className="border-t-2 border-[#18181833] mt-4"></div>
+      <div className="border-t-2 border-[#18181833]"></div>
 
       {/* Step Content */}
       <div className="mt-4 mb-4 text-center">
-        <h3 className="text-lg font-semibold">{steps[activeStep]}</h3>
-        <p className="text-gray-500 mt-2">Content for {steps[activeStep]} goes here.</p>
+        {stepComponents[activeStep]}
       </div>
 
       {/* Navigation Buttons */}
