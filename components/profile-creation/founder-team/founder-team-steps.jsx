@@ -1,30 +1,34 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp, Check } from "lucide-react";
 import FounderForm from "@/components/profile-creation/founder-team/founder-info-form";
 
 const stepsComponents = [
   {
-    name: "Founder",
+    image: "/images/founder-details.png",
+    name: "Founder Details",
     description:
       "Introduce yourself and your team with a concise description of your expertise.",
     formComponent: FounderForm,
     isComplete: false,
   },
   {
+    image: "/images/team-details.png",
     name: "Team",
     description: "Provide details about your team members, their roles, and key contributions to the company.",
     formComponent: () => <p>Team Form Component Placeholder</p>,
     isComplete: false,
   },
   {
+    image: "/images/advisor-details.png",
     name: "Key Advisors and Board Members",
     description: "List your key advisors and board members with their roles and expertise.",
     formComponent: () => <p>Advisors Form Component Placeholder</p>,
     isComplete: false,
   },
   {
+    image: "/images/contact-details.png",
     name: "Contact Information",
     description: "Share your preferred contact information for inquiries and collaboration.",
     formComponent: () => <p>Contact Information Form Component Placeholder</p>,
@@ -35,6 +39,13 @@ const stepsComponents = [
 const ProfileStepPanel = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(stepsComponents.length).fill(false));
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto"; // Reset on component unmount
+    };
+  }, []);
 
   const handleToggleForm = (index) => {
     setIsFormOpen((prevState) =>
@@ -49,7 +60,7 @@ const ProfileStepPanel = () => {
   };
 
   return (
-    <div className="flex mx-44 pl-12 pr-2">
+    <div className="flex mx-44 pl-12">
       {/* Left Panel - Step Progress Bar */}
       <div className="w-1/2 p-6">
         <h2 className="text-[48px] text-left font-bold text-[#0A66C2] mb-4">Founder & Team</h2>
@@ -60,10 +71,10 @@ const ProfileStepPanel = () => {
               {/* Step Circle */}
               <div
                 className={`w-8 h-8 flex items-center justify-center rounded-full font-bold z-10 ${step.isComplete
-                    ? "bg-[#0A66C2]" // Completed step - filled blue background
-                    : activeStep === index
-                      ? "bg-transparent border-2 border-[#0A66C2]" // Active step - blue border
-                      : "border-2 border-[#D4D4D4]" // Inactive step - grey border
+                  ? "bg-[#0A66C2]" // Completed step - filled blue background
+                  : activeStep === index
+                    ? "bg-transparent border-2 border-[#0A66C2]" // Active step - blue border
+                    : "border-2 border-[#D4D4D4]" // Inactive step - grey border
                   }`}
               >
                 {step.isComplete ? (
@@ -83,7 +94,7 @@ const ProfileStepPanel = () => {
                     ? "bg-blue-500"
                     : "bg-gray-300"
                     }`}
-                    style={{ height: activeStep === index ? "90%" : "1.5rem",  }}
+                  style={{ height: activeStep === index ? "90%" : "1.5rem", }}
                 ></div>
               )}
 
@@ -105,28 +116,43 @@ const ProfileStepPanel = () => {
       </div>
 
       {/* Right Panel - Collapsible Forms */}
-      <div className="w-1/2 p-6 bg-white rounded-lg shadow-md">
+      <div className="w-1/2 p-6 mt-2" style={{
+        maxHeight: "60vh", // Adjust based on your layout height
+        overflowY: "auto",
+        scrollbarWidth: "none", // Firefox
+        msOverflowStyle: "none", // Internet Explorer 11
+      }}>
         {stepsComponents.map((step, index) => (
-          <div key={index} className="mb-4">
+          <div key={index} className={`mb-4 bg-[#f9f9f9] rounded-[16px] 
+            ${isFormOpen[index] ? "bg-[#18181833] p-2" : ""}`}>
             {/* Collapsible Header */}
             <div
-              className={`flex justify-between items-center p-4 border rounded cursor-pointer ${isFormOpen[index] ? "bg-gray-100" : "bg-gray-50 hover:bg-gray-100"
+              className={`flex items-center p-4 border cursor-pointer ${isFormOpen[index] ? "bg-white border-2 border-[#18181833] rounded-t-[16px] rounded-b-none" : "bg-white rounded-[16px] shadow-md"
                 }`}
               onClick={() => handleToggleForm(index)}
             >
-              <h3 className="font-semibold text-gray-800">{step.name}</h3>
-              <div>
-                {isFormOpen[index] ? (
-                  <ChevronUp className="w-5 h-5 text-blue-500" />
-                ) : (
-                  <ChevronDown className="w-5 h-5 text-gray-500" />
-                )}
+              {step.image && (
+                <img
+                  src={step.image}
+                  alt={`${step.name} illustration`}
+                  className="w-[38px] h-[38px] rounded"
+                />
+              )}
+              <div className="justify-between w-full items-center flex">
+                <h2 className="font-medium text-[28px] ml-4 text-[#181818]">{step.name}</h2>
+                <div className="">
+                  {isFormOpen[index] ? (
+                    <ChevronUp className="w-8 h-8 text-blue-500" />
+                  ) : (
+                    <ChevronDown className="w-8 h-8 text-gray-500" />
+                  )}
+                </div>
               </div>
             </div>
 
             {/* Collapsible Form */}
             {isFormOpen[index] && (
-              <div className="p-4 border rounded mt-2 bg-gray-50">
+              <div className="p-4 border rounded-b-[16px] bg-white mt-1">
                 <step.formComponent />
                 <button
                   className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
