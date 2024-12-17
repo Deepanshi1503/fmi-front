@@ -2,30 +2,46 @@
 
 const FounderForm = () => {
   return (
-    <div>
-      <h3 className="text-lg font-semibold mb-2">Founder Details</h3>
-      <form>
-        <input
-          type="text"
-          placeholder="Founder's Name"
-          className="w-full p-2 mb-2 border rounded"
-        />
-        <input
-          type="email"
-          placeholder="Email Address"
-          className="w-full p-2 mb-2 border rounded"
-        />
-        <input
-          type="tel"
-          placeholder="Phone Number"
-          className="w-full p-2 mb-2 border rounded"
-        />
-        <button
-          type="submit"
-          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Save
-        </button>
+    <div className="mx-12">
+      <form className="space-y-6">
+        {/* Full Name */}
+        <div>
+          <label htmlFor="founder-name" className="block text-left text-[#404D61] font-medium text-[18px]">
+            Name
+          </label>
+          <input
+            id="founder-name"
+            type="text"
+            placeholder="Founder's Name"
+            className="w-full p-2 rounded-lg border border-[#E1E3E6] focus:ring-1 focus:ring-[#0A66C2] focus:border-[#0A66C2]"
+          />
+        </div>
+
+        {/* Email Address */}
+        <div>
+          <label htmlFor="founder-email" className="block text-left text-[#404D61] font-medium text-[18px]">
+            Email ID
+          </label>
+          <input
+            id="founder-email"
+            type="email"
+            placeholder="founder@example.com"
+            className="w-full p-2 rounded-lg border border-[#E1E3E6] focus:ring-1 focus:ring-[#0A66C2] focus:border-[#0A66C2]"
+          />
+        </div>
+
+        {/* Phone Number */}
+        <div>
+          <label htmlFor="founder-phone" className="block text-[#404D61] font-medium text-left text-[18px]">
+            Phone Number
+          </label>
+          <input
+            id="founder-phone"
+            type="tel"
+            placeholder="0123456789"
+            className="w-full p-2 rounded-lg border border-[#E1E3E6] focus:ring-1 focus:ring-[#0A66C2] focus:border-[#0A66C2]"
+          />
+        </div>
       </form>
     </div>
   );

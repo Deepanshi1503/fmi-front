@@ -63,7 +63,7 @@ const ProfileStepPanel = () => {
     <div className="flex mx-44 pl-12">
       {/* Left Panel - Step Progress Bar */}
       <div className="w-1/2 p-6">
-        <h2 className="text-[48px] text-left font-bold text-[#0A66C2] mb-4">Founder & Team</h2>
+        <h2 className="text-[48px] text-left font-semibold text-[#0A66C2] mb-4">Founder & Team</h2>
         <h4 className="text-[15px] font-normal text-left text-[#181818CC] mb-12">make it easy for people </h4>
         <div className="relative">
           {stepsComponents.map((step, index) => (
@@ -116,18 +116,18 @@ const ProfileStepPanel = () => {
       </div>
 
       {/* Right Panel - Collapsible Forms */}
-      <div className="w-1/2 p-6 mt-2" style={{
+      <div className="w-1/2 p-6 " style={{
         maxHeight: "60vh", // Adjust based on your layout height
         overflowY: "auto",
         scrollbarWidth: "none", // Firefox
         msOverflowStyle: "none", // Internet Explorer 11
       }}>
         {stepsComponents.map((step, index) => (
-          <div key={index} className={`mb-4 bg-[#f9f9f9] rounded-[16px] 
+          <div key={index} className={`mb-10 bg-[#f9f9f9] rounded-[16px] 
             ${isFormOpen[index] ? "bg-[#18181833] p-2" : ""}`}>
             {/* Collapsible Header */}
             <div
-              className={`flex items-center p-4 border cursor-pointer ${isFormOpen[index] ? "bg-white border-2 border-[#18181833] rounded-t-[16px] rounded-b-none" : "bg-white rounded-[16px] shadow-md"
+              className={`flex items-center p-3 border cursor-pointer ${isFormOpen[index] ? "bg-white border-2 border-[#18181833] rounded-t-[16px] rounded-b-none" : "bg-white rounded-[16px] shadow-md"
                 }`}
               onClick={() => handleToggleForm(index)}
             >
@@ -139,7 +139,7 @@ const ProfileStepPanel = () => {
                 />
               )}
               <div className="justify-between w-full items-center flex">
-                <h2 className="font-medium text-[28px] ml-4 text-[#181818]">{step.name}</h2>
+                <h2 className="font-normal text-[28px] ml-3 text-[#181818]">{step.name}</h2>
                 <div className="">
                   {isFormOpen[index] ? (
                     <ChevronUp className="w-8 h-8 text-blue-500" />
