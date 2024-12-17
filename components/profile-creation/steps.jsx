@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, MoveLeft, MoveRight } from "lucide-react";
 import FounderTeam from "@/components/profile-creation/founder-team";
 
 const stepComponents = [
@@ -93,28 +93,28 @@ const ProfileStep = () => {
       </div>
 
       {/* Navigation Buttons */}
-      <div className="flex justify-between mt-4">
+      <div className="flex gap-x-10 mt-6 justify-end mr-[11.5rem]">
         <Button
           onClick={handleBack}
           disabled={activeStep === 0}
-          className="bg-gray-300 hover:bg-gray-400 text-black"
+          className="border-2 border-[#18181899] rounded-xl bg-white text-[18px] w-[129px] h-[45px]"
         >
-          Back
+          <MoveLeft size={19} className="mr-2"/> Back
         </Button>
 
         {activeStep === steps.length - 1 ? (
           <Button
             onClick={handleReset}
-            className="bg-red-500 hover:bg-red-600 text-white"
+            className="bg-red-500 hover:bg-red-600 text-white rounded-xl text-[18px] w-[129px] h-[45px]"
           >
             Submit
           </Button>
         ) : (
           <Button
             onClick={handleNext}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            className="bg-[#0A66C2] hover:bg-blue-700 text-white rounded-xl text-[18px] w-[129px] h-[45px]"
           >
-            Next
+            Next <MoveRight size={19} className="ml-2"/>
           </Button>
         )}
       </div>

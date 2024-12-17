@@ -49,7 +49,7 @@ const ProfileStepPanel = () => {
   };
 
   return (
-    <div className="flex mx-44 pl-12">
+    <div className="flex mx-44 pl-12 pr-2">
       {/* Left Panel - Step Progress Bar */}
       <div className="w-1/2 p-6">
         <h2 className="text-[48px] text-left font-bold text-[#0A66C2] mb-4">Founder & Team</h2>
