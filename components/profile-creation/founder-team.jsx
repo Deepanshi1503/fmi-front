@@ -1,5 +1,6 @@
-const FounderTeam = () => {
-    return <div><p>Founder & Team details go here.</p></div>;
-};
+import React from "react";
+import ProfileStepPanel from "@/components/profile-creation/founder-team/founder-info-step";
 
-export default FounderTeam;
+export default function Page() {
+  return <ProfileStepPanel />;
+}

@@ -12,14 +12,14 @@ const ProfileStep = () => {
   const [activeStep, setActiveStep] = React.useState(0);
 
   const steps = [
-    "Founder & Team",
-    "Company Overview",
-    "Products and Services",
-    "Progress & Traction",
-    "Market and Competition",
-    "Business Model & Strategy",
+    "Founder/n& Team",
+    "Company/nOverview",
+    "Products and/nServices",
+    "Progress &/nTraction",
+    "Market and/nCompetition",
+    "Business Model/n& Strategy",
     "Financial",
-    "Equity & Fundraising",
+    "Equity &/nFundraising",
   ];
 
   const handleNext = () => {
@@ -34,14 +34,23 @@ const ProfileStep = () => {
     setActiveStep(0);
   };
 
+  const renderLabelWithLineBreaks = (label) => {
+    return label.split("/n").map((line, index) => (
+      <React.Fragment key={index}>
+        {line}
+        <br />
+      </React.Fragment>
+    ));
+  };
+
   return (
     <div className="w-full relative">
       {/* Stepper Container */}
-      <div className="flex items-center justify-between relative px-24 py-2 flex-wrap">
+      <div className="flex items-center justify-evenly relative ml-20 mr-2 px-32 py-2 flex-wrap">
         {steps.map((label, index) => (
           <div
             key={index}
-            className={`relative flex items-center relative flex-wrap mt-2 cursor-pointer ${index <= activeStep ? "opacity-100" : "opacity-70"}`}
+            className={`relative flex items-center relative flex-wrap cursor-pointer ${index <= activeStep ? "opacity-100" : "opacity-70"}`}
             onClick={() => setActiveStep(index)}
           >
             {/* Vertical Line */}
@@ -62,9 +71,9 @@ const ProfileStep = () => {
 
             {/* Step Label */}
             <div
-              className={`ml-3 text-[16px] font-medium break-words max-w-[140px] ${index === activeStep ? "text-[#0A66C2]" : "text-gray-500"}`}
+              className={`ml-3 text-[13px] font-medium break-words max-w-[140px] ${index === activeStep ? "text-[#0A66C2]" : "text-gray-500"}`}
             >
-              {label}
+              {renderLabelWithLineBreaks(label)}
             </div>
 
             {/* Vertical line at the end of the last step */}
