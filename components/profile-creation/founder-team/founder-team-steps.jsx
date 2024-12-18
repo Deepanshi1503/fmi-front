@@ -52,7 +52,6 @@ const ProfileStepPanel = () => {
           position: "sticky",
           top: "0", // Sticks the left panel to the top
           alignSelf: "flex-start", // Maintains left panel position
-          height: "100vh",
         }}
       >
         <h2 className="text-[48px] text-left font-semibold text-[#0A66C2] mb-4">
@@ -116,7 +115,7 @@ const ProfileStepPanel = () => {
       </div>
 
       {/* Right Panel - Collapsible Forms */}
-      <div className="w-1/2 p-6">
+      <div className="w-1/2 pt-6">
         {stepsComponents.map((step, index) => (
           <div
             key={index}

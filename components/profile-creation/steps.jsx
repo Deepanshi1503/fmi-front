@@ -93,7 +93,7 @@ const ProfileStep = () => {
       </div>
 
       {/* Navigation Buttons */}
-      <div className="flex gap-x-10 -mt-8 justify-end mr-[12.5rem]">
+      <div className="flex gap-x-10 mb-12 justify-end mr-[9.2em]">
         <Button
           onClick={handleBack}
           disabled={activeStep === 0}
