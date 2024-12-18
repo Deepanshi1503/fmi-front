@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { ChevronDown, ChevronUp, Check } from "lucide-react";
 import FounderForm from "@/components/profile-creation/founder-team/founder-info-form";
 
@@ -36,13 +36,6 @@ const ProfileStepPanel = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(stepsComponents.length).fill(false));
 
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "auto"; // Reset on component unmount
-    };
-  }, []);
-
   const handleToggleForm = (index) => {
     setIsFormOpen((prevState) =>
       prevState.map((isOpen, i) => (i === index ? !isOpen : false))
@@ -51,14 +44,25 @@ const ProfileStepPanel = () => {
   };
 
   return (
-    <div className="flex mx-44 pl-12">
+    <div className="flex mx-36 pl-16">
       {/* Left Panel - Step Progress Bar */}
-      <div className="w-1/2 p-6">
-        <h2 className="text-[48px] text-left font-semibold text-[#0A66C2] mb-4">Founder & Team</h2>
+      <div
+        className="w-1/2 p-6"
+        style={{
+          position: "sticky",
+          top: "0", // Sticks the left panel to the top
+          alignSelf: "flex-start", // Maintains left panel position
+          height: "100vh",
+        }}
+      >
+        <h2 className="text-[48px] text-left font-semibold text-[#0A66C2] mb-4">
+          Founder & Team
+        </h2>
         <h4 className="text-[15px] font-normal text-left text-[#181818CC] mb-12">
           Make it easy for people
         </h4>
-        <div className="relative">
+
+        <div>
           {stepsComponents.map((step, index) => (
             <div key={index} className="relative flex items-start mb-6">
               {/* Step Circle */}
@@ -112,20 +116,12 @@ const ProfileStepPanel = () => {
       </div>
 
       {/* Right Panel - Collapsible Forms */}
-      <div
-        className="w-1/2 p-6"
-        style={{
-          maxHeight: "60vh",
-          overflowY: "auto",
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-        }}
-      >
+      <div className="w-1/2 p-6">
         {stepsComponents.map((step, index) => (
           <div
             key={index}
             className={`mb-10 bg-[#f9f9f9] rounded-[16px] ${
-              isFormOpen[index] ? "bg-[#18181833] p-2" : ""
+              isFormOpen[index] ? "" : ""
             }`}
           >
             {/* Collapsible Header */}

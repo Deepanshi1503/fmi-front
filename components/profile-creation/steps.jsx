@@ -46,11 +46,11 @@ const ProfileStep = () => {
   return (
     <div className="w-full relative">
       {/* Stepper Container */}
-      <div className="flex items-center justify-evenly relative ml-20 mr-2 px-32 py-2 flex-wrap">
+      <div className="flex items-center justify-evenly relative ml-20 mr-2 px-32 py-3 flex-wrap">
         {steps.map((label, index) => (
           <div
             key={index}
-            className={`relative flex items-center relative flex-wrap cursor-pointer ${index <= activeStep ? "opacity-100" : "opacity-70"}`}
+            className={`relative flex items-center cursor-pointer ${index <= activeStep ? "opacity-100" : "opacity-70"}`}
             onClick={() => setActiveStep(index)}
           >
             {/* Vertical Line */}
