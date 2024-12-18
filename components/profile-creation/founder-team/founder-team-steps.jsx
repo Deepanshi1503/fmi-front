@@ -44,7 +44,7 @@ const ProfileStepPanel = () => {
   };
 
   return (
-    <div className="flex mx-36 pl-16">
+    <div className="flex mx-40 pl-12">
       {/* Left Panel - Step Progress Bar */}
       <div
         className="w-1/2 p-6"

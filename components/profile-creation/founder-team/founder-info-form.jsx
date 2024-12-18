@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
+import { Pencil, Trash2 } from "lucide-react";
 
 const FounderForm = () => {
   const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
   const [founders, setFounders] = useState([]); // List to store founders' data
   const [isPopupOpen, setIsPopupOpen] = useState(false); // Popup visibility state
+  const [editingIndex, setEditingIndex] = useState(null); // Track the founder being edited
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -19,8 +21,16 @@ const FounderForm = () => {
       return;
     }
 
-    // Add the current data to the founders list
-    setFounders([...founders, formData]);
+    if (editingIndex !== null) {
+      // Update the founder if editing
+      const updatedFounders = [...founders];
+      updatedFounders[editingIndex] = formData;
+      setFounders(updatedFounders);
+      setEditingIndex(null);
+    } else {
+      // Add a new founder
+      setFounders([...founders, formData]);
+    }
 
     // Reset the form fields
     setFormData({ name: "", email: "", phone: "" });
@@ -29,21 +39,47 @@ const FounderForm = () => {
     setIsPopupOpen(false);
   };
 
+  const handleEdit = (index) => {
+    setEditingIndex(index);
+    setFormData(founders[index]);
+    setIsPopupOpen(true);
+  };
+
+  const handleDelete = (index) => {
+    const updatedFounders = founders.filter((_, i) => i !== index);
+    setFounders(updatedFounders);
+  };
+
   return (
     <div className="mx-12 relative">
       {/* Co-founders List */}
-      <div className="mt-8 space-y-4">
+      <div className="space-y-4">
         {founders.map((founder, index) => (
-          <div key={index} className="border border-[#E1E3E6] rounded-lg p-4">
+          <div key={index} className="flex justify-between border border-[#E1E3E6] rounded-lg p-4">
             <details>
-              <summary className="text-[#404D61] font-medium text-[18px] cursor-pointer">
-                {founder.name}
+              <summary className="text-[#404D61] font-medium text-[18px] text-left cursor-pointer flex items-center">
+              <span className="mr-4">{founder.name}</span>
               </summary>
-              <div className="mt-2 text-sm text-gray-600">
-                <p><strong>Email:</strong> {founder.email}</p>
-                <p><strong>Phone:</strong> {founder.phone}</p>
+              <div className="mt-2 text-sm text-left text-gray-600">
+                <h5><strong>Email:</strong> {founder.email}</h5>
+                <h5><strong>Phone:</strong> {founder.phone}</h5>
               </div>
             </details>
+            {/* Edit and Delete Buttons */}
+            <div className="flex space-x-4 h-[2rem]">
+              <button
+                onClick={() => handleEdit(index)}
+                className="px-3 py-1 bg-blue-500 text-white rounded-lg inline-flex items-center justify-center min-w-fit"
+              >
+                <Pencil size={16}/>
+              </button>
+              <button
+                onClick={() => handleDelete(index)}
+                className="px-3 py-1 bg-red-500 text-white rounded-lg inline-flex items-center justify-center"
+              >
+                <Trash2 size={16}/>
+              </button>
+            </div>
           </div>
         ))}
       </div>
@@ -52,7 +88,9 @@ const FounderForm = () => {
       <button
         type="button"
         onClick={() => setIsPopupOpen(true)}
-        className="mt-4 px-4 font-medium py-2 bg-[#0B66C3] text-white rounded-[16px] text-[18px]"
+        className={`${
+          founders.length > 0 ? "mt-4" : ""
+        } px-4 font-medium py-2 bg-[#0B66C3] text-white rounded-[16px] text-[18px]`}
       >
         + Add a co-founder
       </button>
@@ -62,7 +100,7 @@ const FounderForm = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg w-[90%] max-w-md p-6">
             <h2 className="text-[20px] font-semibold text-[#404D61] mb-4">
-              Add Co-founder
+              {editingIndex !== null ? "Edit Co-founder Details" : "Add Co-founder Details"}
             </h2>
             <form className="space-y-6">
               {/* Full Name */}
@@ -123,7 +161,10 @@ const FounderForm = () => {
               <div className="flex justify-end space-x-4">
                 <button
                   type="button"
-                  onClick={() => setIsPopupOpen(false)}
+                  onClick={() => {
+                    setIsPopupOpen(false);
+                    setEditingIndex(null);
+                  }}
                   className="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg"
                 >
                   Cancel
@@ -133,7 +174,7 @@ const FounderForm = () => {
                   onClick={handleAddCoFounder}
                   className="px-4 py-2 bg-[#0B66C3] text-white rounded-lg"
                 >
-                  Add
+                  {editingIndex !== null ? "Save" : "Add"}
                 </button>
               </div>
             </form>
