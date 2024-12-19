@@ -20,7 +20,7 @@ const stepsComponents = [
   },
   {
     image: "/images/advisor-details.png",
-    name: "Key Advisors and Board Members",
+    name: "Key Advisors & Board Members",
     description: "List your key advisors and board members with their roles and expertise.",
     formComponent: () => <p>Advisors Form Component Placeholder</p>,
   },
@@ -44,20 +44,20 @@ const ProfileStepPanel = () => {
   };
 
   return (
-    <div className="flex mx-40 pl-12">
-      {/* Left Panel - Step Progress Bar */}
+    <div className="flex flex-col xl:flex-row mx-6 2xl:mx-40 2xl:pl-12">
+      {/* Left Panel - Step Progress Bar for desktop */}
       <div
-        className="w-1/2 p-6"
+        className="w-1/2 p-6 hidden xl:block"
         style={{
           position: "sticky",
           top: "0", // Sticks the left panel to the top
           alignSelf: "flex-start", // Maintains left panel position
         }}
       >
-        <h2 className="text-[48px] text-left font-semibold text-[#0A66C2] mb-4">
+        <h2 className="text-[32px] xl:text-[48px] whitespace-nowrap flex justify-center 2xl:justify-start font-semibold text-[#0A66C2] mb-4">
           Founder & Team
         </h2>
-        <h4 className="text-[15px] font-normal text-left text-[#181818CC] mb-12">
+        <h4 className="text-[12px] xl:text-[15px] whitespace-nowrap font-normal flex justify-center 2xl:justify-start text-[#181818CC] mb-12">
           Make it easy for people
         </h4>
 
@@ -114,8 +114,52 @@ const ProfileStepPanel = () => {
         </div>
       </div>
 
+      {/* Top Panel - Step Progress Bar for mobile */}
+      <div
+        className="w-full lg:hidden sm:block"
+      >
+        <h2 className="text-[32px] xl:text-[48px]  font-semibold text-[#0A66C2] mb-4">
+          Founder & Team
+        </h2>
+        <h4 className="text-[12px] xl:text-[15px] whitespace-nowrap font-normal flex justify-center 2xl:justify-start text-[#181818CC] mb-8">
+          Make it easy for people
+        </h4>
+
+        {/* <div className="flex items-center justify-between">
+          {stepsComponents.map((step, index) => (
+            <div key={index} className="flex items-center">
+              <div
+                className={`w-8 h-8 flex items-center justify-center rounded-full font-bold z-10 ${
+                  index < activeStep
+                    ? "bg-[#0A66C2]" // Completed step - blue background
+                    : index === activeStep
+                    ? "bg-transparent border-2 border-[#0A66C2]" // Active step - blue border
+                    : "border-2 border-[#D4D4D4]" // Inactive step - grey border
+                }`}
+              >
+                {index < activeStep ? (
+                  <Check className="w-5 h-5 text-white" /> // Checkmark icon for completed steps
+                ) : index === activeStep ? (
+                  <div className="w-3 h-3 bg-[#0A66C2] rounded-full"></div> // Blue dot for active step
+                ) : (
+                  <div></div> // Empty for inactive step
+                )}
+              </div>
+              {index !== stepsComponents.length - 1 && (
+                <div
+                  className={`h-[2px] flex-1 ${
+                    index < activeStep ? "bg-blue-500" : "bg-gray-300"
+                  }`}
+                  style={{ width: "100px" }}
+                ></div>
+              )}
+            </div>
+          ))}
+        </div> */}
+      </div>
+
       {/* Right Panel - Collapsible Forms */}
-      <div className="w-1/2 pt-6">
+      <div className="w-full lg:w-1/2 pt-6">
         {stepsComponents.map((step, index) => (
           <div
             key={index}
@@ -136,11 +180,11 @@ const ProfileStepPanel = () => {
                 <img
                   src={step.image}
                   alt={`${step.name} illustration`}
-                  className="w-[38px] h-[38px] rounded"
+                  className="2xl:w-[38px] 2xl:h-[38px] w-[30px] h-[30px] rounded"
                 />
               )}
               <div className="justify-between w-full items-center flex">
-                <h2 className="font-normal text-[28px] ml-3 text-[#181818]">
+                <h2 className="font-normal text-left text-[18px] 2xl:text-[28px] ml-3 text-[#181818]">
                   {step.name}
                 </h2>
                 <div>

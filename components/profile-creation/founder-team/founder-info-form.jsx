@@ -51,18 +51,38 @@ const FounderForm = () => {
   };
 
   return (
-    <div className="mx-12 relative">
+    <div className="2xl:mx-12 relative">
       {/* Co-founders List */}
       <div className="space-y-4">
         {founders.map((founder, index) => (
-          <div key={index} className="flex justify-between border border-[#E1E3E6] rounded-lg p-4">
-            <details>
+          <div
+            key={index}
+            className="flex justify-between border border-[#E1E3E6] rounded-lg p-4"
+          >
+            <details
+              className="flex-grow"
+              onToggle={(e) => {
+                const detailElement = e.target;
+                const summary = detailElement.querySelector("summary span");
+                if (summary) {
+                  summary.style.whiteSpace = detailElement.open
+                    ? "normal"
+                    : "nowrap"; // Toggle truncation on expand
+                }
+              }}
+            >
               <summary className="text-[#404D61] font-medium text-[18px] text-left cursor-pointer flex items-center">
-              <span className="mr-4">{founder.name}</span>
+                <span className="mr-4 truncate w-[50px] sm:w-auto">
+                  {founder.name}
+                </span>
               </summary>
               <div className="mt-2 text-sm text-left text-gray-600">
-                <h5><strong>Email:</strong> {founder.email}</h5>
-                <h5><strong>Phone:</strong> {founder.phone}</h5>
+                <h5>
+                  <strong>Email:</strong> {founder.email}
+                </h5>
+                <h5>
+                  <strong>Phone:</strong> {founder.phone}
+                </h5>
               </div>
             </details>
             {/* Edit and Delete Buttons */}
@@ -71,26 +91,26 @@ const FounderForm = () => {
                 onClick={() => handleEdit(index)}
                 className="px-3 py-1 bg-blue-500 text-white rounded-lg inline-flex items-center justify-center min-w-fit"
               >
-                <Pencil size={16}/>
+                <Pencil size={16} />
               </button>
               <button
                 onClick={() => handleDelete(index)}
                 className="px-3 py-1 bg-red-500 text-white rounded-lg inline-flex items-center justify-center"
               >
-                <Trash2 size={16}/>
+                <Trash2 size={16} />
               </button>
             </div>
           </div>
         ))}
       </div>
 
+
       {/* Add Co-founder Button */}
       <button
         type="button"
         onClick={() => setIsPopupOpen(true)}
-        className={`${
-          founders.length > 0 ? "mt-4" : ""
-        } px-4 font-medium py-2 bg-[#0B66C3] text-white rounded-[16px] text-[18px]`}
+        className={`${founders.length > 0 ? "mt-4" : ""
+          } px-4 font-medium py-2 bg-[#0B66C3] text-white rounded-[16px] text-[12px] 2xl:text-[18px]`}
       >
         + Add a co-founder
       </button>

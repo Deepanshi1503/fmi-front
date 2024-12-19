@@ -46,19 +46,19 @@ const ProfileStep = () => {
   return (
     <div className="w-full relative">
       {/* Stepper Container */}
-      <div className="flex items-center justify-evenly relative ml-20 mr-2 px-32 py-3 flex-wrap">
+      <div className="flex items-center justify-evenly relative 2xl:ml-20 2xl:mr-2 2xl:px-32 2xl:py-3 overflow-x-auto">
         {steps.map((label, index) => (
           <div
             key={index}
-            className={`relative flex items-center cursor-pointer ${index <= activeStep ? "opacity-100" : "opacity-70"}`}
+            className={`relative flex items-center cursor-pointer transition-transform duration-300 ease-in-out ${index <= activeStep ? "opacity-100" : "opacity-70"}`}
             onClick={() => setActiveStep(index)}
           >
             {/* Vertical Line */}
-            <div className="absolute left-[-12px] top-0 bottom-0 w-[2px] bg-[#18181833]"></div>
+            <div className="hidden 2xl:block absolute left-[-12px] top-0 bottom-0 w-[2px] bg-[#18181833]"></div>
 
             {/* Step Number Circle */}
             <div
-              className={`w-10 h-10 flex items-center justify-center rounded-full text-lg font-semibold
+              className={`w-8 h-8 2xl:w-10 2xl:h-10 my-2 2xl:my-0 flex items-center justify-center rounded-full 2xl:text-lg font-semibold
                 ${index < activeStep
                   ? "bg-[#0A66C2] text-white"
                   : index === activeStep
@@ -71,14 +71,14 @@ const ProfileStep = () => {
 
             {/* Step Label */}
             <div
-              className={`ml-3 text-[13px] font-medium break-words max-w-[140px] ${index === activeStep ? "text-[#0A66C2]" : "text-gray-500"}`}
+              className={`hidden 2xl:block ml-3 text-[13px] font-medium break-words max-w-[140px] ${index === activeStep ? "text-[#0A66C2]" : "text-gray-500"}`}
             >
               {renderLabelWithLineBreaks(label)}
             </div>
 
             {/* Vertical line at the end of the last step */}
             {index === steps.length - 1 && (
-              <div className="absolute right-[-12px] top-0 bottom-0 w-[2px] bg-[#18181833]"></div>
+              <div className="hidden 2xl:block absolute right-[-12px] top-0 bottom-0 w-[2px] bg-[#18181833]"></div>
             )}
           </div>
         ))}
@@ -93,7 +93,7 @@ const ProfileStep = () => {
       </div>
 
       {/* Navigation Buttons */}
-      <div className="flex gap-x-10 mb-12 justify-end mr-[9.2em]">
+      <div className="flex gap-x-4 2xl:gap-x-10 mb-8 2xl:mb-12 justify-center 2xl:justify-end 2xl:mr-[10rem]">
         <Button
           onClick={handleBack}
           disabled={activeStep === 0}
