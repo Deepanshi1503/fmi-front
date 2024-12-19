@@ -87,6 +87,17 @@
 
 @media only screen and (max-width:1199px) {
 
+    .inner-banner-main .inner-banner-left-block .getstarted-btn {
+        margin-top: 15px !important;
+    }
+    .inner-banner-main .herobanner-wrap {
+        padding-bottom: 40px !important;
+    }
+
+    .about-status-section .counter-block-main .counter-box span {
+        font-size: 52px !important;
+    }
+
     .container {
         padding-left: 2rem !important;
         padding-right: 2rem !important;
@@ -103,12 +114,39 @@
 
     .herobanner-wrap p {
         max-width: 100% !important;
+        margin-top: 0 !important;
     }
 
 }
 
 
 @media only screen and (max-width:1024px) {
+
+    .about-status-section .counter-block-main .counter-box span {
+        font-size: 40px !important;
+    }
+
+    .about-stats-wrap {
+        gap: 2rem !important;
+    }
+
+    .about-status-section .counter-block-main {
+        flex-direction: row !important;
+    }
+
+    .about-status-section .counter-block-main .counter-box + .counter-box {
+        justify-content: flex-start !important;
+        border-top: 0 !important;
+    }
+
+    .about-status-section .counter-block-main .counter-box {
+        height: auto !important;
+    }
+
+    .stats-middle-women-image-block {
+        display: none;
+    }
+
     .home-card-expan-wrap {
         flex-direction: column;
     }
@@ -199,6 +237,14 @@
 }
 
 @media only screen and (max-width:767px) {
+
+    .about-status-section, .ourCoureServices {
+        padding-top: 0;
+    }
+
+    .about-status-section .counter-block-main {
+        flex-wrap: wrap !important;
+    }
 
     .footer-copyright .row {
         gap: 0;

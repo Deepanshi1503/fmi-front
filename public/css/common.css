@@ -743,6 +743,7 @@ transition: 0.3s;
     text-transform: capitalize;
     font-size: 18px;
     display: inline-flex;
+    align-items: center;
 }
 
 .footer-copyright {
@@ -823,4 +824,53 @@ transition: 0.3s;
 
 .inner-banner-main .herobanner-wrap {
     padding-bottom: 140px;
+}
+
+
+.about-status-section .counter-block-main {
+    margin-top: 0 !important;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-wrap: nowrap !important;
+}
+
+.about-stats-wrap {
+    display: flex;
+    justify-content: center;
+    gap: 5rem;
+}
+
+.stats-middle-women-image-block {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.about-status-section .counter-block-main .counter-box {
+    text-align: center;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+}
+
+.about-status-section .counter-block-main .counter-box span {
+    color: #0a66c2;
+    font-size: 70px;
+}
+
+.about-status-section .counter-block-main .counter-box + .counter-box {
+    justify-content: flex-end;
+    border-top: 1px solid #ccc;
+}
+
+.about-status-section .counter-block-main .counter-box p {
+ font-size: 20px;   
+    
+}
+
+.ourCoureServices .service-box-main ul {
+    padding-top: 15px;
+}
+
+.main-navigation-block .navbar-toggler {
+    z-index: 1;
 }
