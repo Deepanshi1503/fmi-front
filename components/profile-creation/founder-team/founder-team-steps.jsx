@@ -23,16 +23,10 @@ const stepsComponents = [
     name: "Key Advisors & Board Members",
     description: "List your key advisors and board members with their roles and expertise.",
     formComponent: () => <p>Advisors Form Component Placeholder</p>,
-  },
-  {
-    image: "/images/contact-details.png",
-    name: "Contact Information",
-    description: "Share your preferred contact information for inquiries and collaboration.",
-    formComponent: () => <p>Contact Information Form Component Placeholder</p>,
-  },
+  }
 ];
 
-const ProfileStepPanel = () => {
+const FounderTeam = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(stepsComponents.length).fill(false));
 
@@ -47,7 +41,7 @@ const ProfileStepPanel = () => {
     <div className="flex flex-col xl:flex-row mx-6 xl:mx-44 xl:pl-12">
       {/* Left Panel - Step Progress Bar for desktop */}
       <div
-        className="w-1/3 p-6 xl:mr-16 hidden xl:block"
+        className="w-1/3 p-6 xl:mr-20 hidden xl:block"
         style={{
           position: "sticky",
           top: "0", // Sticks the left panel to the top
@@ -66,42 +60,35 @@ const ProfileStepPanel = () => {
             <div key={index} className="relative flex items-start mb-6">
               {/* Step Circle */}
               <div
-                className={`w-8 h-8 flex items-center justify-center rounded-full font-bold z-10 ${
-                  index < activeStep
+                className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full font-bold z-10 ${index < activeStep
                     ? "bg-[#0A66C2]" // Completed step - blue background
                     : index === activeStep
-                    ? "bg-transparent border-2 border-[#0A66C2]" // Active step - blue border
-                    : "border-2 border-[#D4D4D4]" // Inactive step - grey border
-                }`}
+                      ? "bg-transparent border-2 border-[#0A66C2]" // Active step - blue border
+                      : "border-2 border-[#D4D4D4]" // Inactive step - grey border
+                  }`}
               >
                 {index < activeStep ? (
                   <Check className="w-5 h-5 text-white" /> // Checkmark icon for completed steps
                 ) : index === activeStep ? (
                   <div className="w-3 h-3 bg-[#0A66C2] rounded-full"></div> // Blue dot for active step
-                ) : (
-                  <div></div> // Empty for inactive step
-                )}
+                ) : null}
               </div>
 
               {/* Step Line */}
               {index !== stepsComponents.length - 1 && (
                 <div
-                  className={`absolute left-[15px] top-8 w-[2px] ${
-                    index < activeStep ? "bg-blue-500" : "bg-gray-300"
-                  }`}
-                  style={{ height: activeStep === index ? "90%" : "1.5rem" }}
+                  className={`absolute left-[15px] top-8 w-[2px] ${index < activeStep ? "bg-blue-500" : "bg-gray-300"
+                    }`}
+                    style={{ height: activeStep === index ? "90%" : "1.5rem" }}
                 ></div>
               )}
 
               {/* Step Content */}
-              <div
-                className="ml-4 text-left cursor-pointer"
-                onClick={() => handleToggleForm(index)}
-              >
+              <div className="ml-4 text-left cursor-pointer w-full">
                 <h3
-                  className={`text-[16px] font-semibold ${
-                    activeStep === index ? "text-blue-500" : "text-gray-700"
-                  }`}
+                  className={`text-[16px] font-semibold ${activeStep === index ? "text-blue-500" : "text-gray-700"
+                    }`}
+                  onClick={() => handleToggleForm(index)}
                 >
                   {step.name}
                 </h3>
@@ -112,11 +99,12 @@ const ProfileStepPanel = () => {
             </div>
           ))}
         </div>
+
       </div>
 
       {/* Top Panel - Step Progress Bar for mobile */}
       <div
-        className="w-full lg:hidden sm:block"
+        className="w-full xl:hidden sm:block"
       >
         <h2 className="text-[32px] xl:text-[48px]  font-semibold text-[#0A66C2] mb-4">
           Founder & Team
@@ -125,7 +113,7 @@ const ProfileStepPanel = () => {
           Make it easy for people
         </h4>
 
-        {/* <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between">
           {stepsComponents.map((step, index) => (
             <div key={index} className="flex items-center">
               <div
@@ -155,25 +143,23 @@ const ProfileStepPanel = () => {
               )}
             </div>
           ))}
-        </div> */}
+        </div>
       </div>
 
       {/* Right Panel - Collapsible Forms */}
-      <div className="w-[90%] lg:w-2/3 pt-6">
+      <div className="w-[100%] xl:w-2/3 pt-6">
         {stepsComponents.map((step, index) => (
           <div
             key={index}
-            className={`mb-10 bg-[#f9f9f9] rounded-[16px] ${
-              isFormOpen[index] ? "" : ""
-            }`}
+            className={`mb-16 bg-[#f9f9f9] rounded-[16px] ${isFormOpen[index] ? "" : ""
+              }`}
           >
             {/* Collapsible Header */}
             <div
-              className={`flex items-center p-3 border cursor-pointer ${
-                isFormOpen[index]
+              className={`flex items-center p-3 border cursor-pointer ${isFormOpen[index]
                   ? "bg-white border-2 border-[#18181833] rounded-t-[16px] rounded-b-none"
                   : "bg-white rounded-[16px] shadow-md"
-              }`}
+                }`}
               onClick={() => handleToggleForm(index)}
             >
               {step.image && (
@@ -210,4 +196,4 @@ const ProfileStepPanel = () => {
   );
 };
 
-export default ProfileStepPanel;
+export default FounderTeam;
