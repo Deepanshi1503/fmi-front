@@ -3,32 +3,52 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp, Check } from "lucide-react";
 import FounderForm from "@/components/profile-creation/founder-team/founder-info-form";
-
-const stepsComponents = [
-  {
-    image: "/images/founder-details.png",
-    name: "Founder Details",
-    description:
-      "Introduce yourself and your team with a concise description of your expertise.",
-    formComponent: FounderForm,
-  },
-  {
-    image: "/images/team-details.png",
-    name: "Team",
-    description: "Provide details about your team members, their roles, and key contributions to the company.",
-    formComponent: () => <p>Team Form Component Placeholder</p>,
-  },
-  {
-    image: "/images/advisor-details.png",
-    name: "Key Advisors & Board Members",
-    description: "List your key advisors and board members with their roles and expertise.",
-    formComponent: () => <p>Advisors Form Component Placeholder</p>,
-  }
-];
+import { useGlobalContext } from "@/context/context";
 
 const FounderTeam = () => {
+  const { founders, setFounders, teamMembers, setTeamMembers, advisors, setAdvisors } = useGlobalContext(); // Accessing global context
   const [activeStep, setActiveStep] = useState(0);
-  const [isFormOpen, setIsFormOpen] = useState(Array(stepsComponents.length).fill(false));
+  const [isFormOpen, setIsFormOpen] = useState(Array(3).fill(false));
+
+  const stepsComponents = [
+    {
+      image: "/images/founder-details.png",
+      name: "Founder Details",
+      description:
+        "Introduce yourself and your team with a concise description of your expertise.",
+      formComponent: () => (
+        <FounderForm
+          data={founders}
+          setData={setFounders}
+          title="Co-Founder"
+        />
+      ),
+    },
+    {
+      image: "/images/team-details.png",
+      name: "Team",
+      description: "Provide details about your team members, their roles, and key contributions to the company.",
+      formComponent: () => (
+        <FounderForm
+          data={teamMembers}
+          setData={setTeamMembers}
+          title="Team Member"
+        />
+      ),
+    },
+    {
+      image: "/images/advisor-details.png",
+      name: "Key Advisors & Board Members",
+      description: "List your key advisors and board members with their roles and expertise.",
+      formComponent: () => (
+        <FounderForm
+          data={advisors}
+          setData={setAdvisors}
+          title="advisor or board member"
+        />
+      ),
+    }
+  ];
 
   const handleToggleForm = (index) => {
     setIsFormOpen((prevState) =>
@@ -61,10 +81,10 @@ const FounderTeam = () => {
               {/* Step Circle */}
               <div
                 className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full font-bold z-10 ${index < activeStep
-                    ? "bg-[#0A66C2]" // Completed step - blue background
-                    : index === activeStep
-                      ? "bg-transparent border-2 border-[#0A66C2]" // Active step - blue border
-                      : "border-2 border-[#D4D4D4]" // Inactive step - grey border
+                  ? "bg-[#0A66C2]" // Completed step - blue background
+                  : index === activeStep
+                    ? "bg-transparent border-2 border-[#0A66C2]" // Active step - blue border
+                    : "border-2 border-[#D4D4D4]" // Inactive step - grey border
                   }`}
               >
                 {index < activeStep ? (
@@ -79,7 +99,7 @@ const FounderTeam = () => {
                 <div
                   className={`absolute left-[15px] top-8 w-[2px] ${index < activeStep ? "bg-blue-500" : "bg-gray-300"
                     }`}
-                    style={{ height: activeStep === index ? "90%" : "1.5rem" }}
+                  style={{ height: activeStep === index ? "90%" : "1.5rem" }}
                 ></div>
               )}
 
@@ -117,13 +137,12 @@ const FounderTeam = () => {
           {stepsComponents.map((step, index) => (
             <div key={index} className="flex items-center">
               <div
-                className={`w-8 h-8 flex items-center justify-center rounded-full font-bold z-10 ${
-                  index < activeStep
+                className={`w-8 h-8 flex items-center justify-center rounded-full font-bold z-10 ${index < activeStep
                     ? "bg-[#0A66C2]" // Completed step - blue background
                     : index === activeStep
-                    ? "bg-transparent border-2 border-[#0A66C2]" // Active step - blue border
-                    : "border-2 border-[#D4D4D4]" // Inactive step - grey border
-                }`}
+                      ? "bg-transparent border-2 border-[#0A66C2]" // Active step - blue border
+                      : "border-2 border-[#D4D4D4]" // Inactive step - grey border
+                  }`}
               >
                 {index < activeStep ? (
                   <Check className="w-5 h-5 text-white" /> // Checkmark icon for completed steps
@@ -135,9 +154,8 @@ const FounderTeam = () => {
               </div>
               {index !== stepsComponents.length - 1 && (
                 <div
-                  className={`h-[2px] flex-1 ${
-                    index < activeStep ? "bg-blue-500" : "bg-gray-300"
-                  }`}
+                  className={`h-[2px] flex-1 ${index < activeStep ? "bg-blue-500" : "bg-gray-300"
+                    }`}
                   style={{ width: "100px" }}
                 ></div>
               )}
@@ -157,8 +175,8 @@ const FounderTeam = () => {
             {/* Collapsible Header */}
             <div
               className={`flex items-center p-3 border cursor-pointer ${isFormOpen[index]
-                  ? "bg-white border-2 border-[#18181833] rounded-t-[16px] rounded-b-none"
-                  : "bg-white rounded-[16px] shadow-md"
+                ? "bg-white border-2 border-[#18181833] rounded-t-[16px] rounded-b-none"
+                : "bg-white rounded-[16px] shadow-md"
                 }`}
               onClick={() => handleToggleForm(index)}
             >
