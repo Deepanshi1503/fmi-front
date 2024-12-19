@@ -5,57 +5,52 @@ import { Sun, Menu, Search } from "lucide-react";
 
 export default function Header() {
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
   };
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
   return (
     <header className="bg-[#0B66C3] text-white w-full">
-      <div className="flex items-center justify-between px-6 py-3">
+      <div className="flex items-center justify-between px-4 py-2 md:px-6 md:py-3">
         {/* Left Section */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 md:gap-4">
           {/* Logo */}
           <Image
             src="/images/logo2.png"
             alt="Logo"
-            width={150}
-            height={60}
-            className="hidden md:block"
+            className="block w-28 h-auto md:w-40 lg:w-48"
+            width={0} // Let Tailwind handle width
+            height={0} // Let Tailwind handle height
+            sizes="(max-width: 768px) 7rem, (max-width: 1024px) 10rem, 12rem"
           />
 
-          {/* Hamburger Menu - visible only on small screens */}
-          <button
-            className="p-2 rounded-md md:hidden hover:bg-[#094BA1]"
-            onClick={toggleMenu}
-          >
-            <Menu size={32} />
+
+          {/* Hamburger Menu - visible on all screen sizes */}
+          <button className="p-2 rounded-md hover:bg-[#094BA1]">
+            <Menu size={26} />
           </button>
 
           {/* Search Bar */}
-          <div className="flex items-center text-white hidden md:flex">
-            <Search size={26} className="mr-2" />
+          <div className="flex items-center text-white">
+            <Search size={22} className="mr-2" />
             <input
               type="text"
               placeholder="Search..."
-              className="bg-transparent text-white mt-1 placeholder-white focus:outline-none"
+              className="hidden md:block bg-transparent text-white placeholder-white focus:outline-none text-sm"
             />
           </div>
+
         </div>
 
         {/* Right Section */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 md:gap-4">
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
             className="p-2 rounded-md hover:bg-[#094BA1]"
           >
-            <Sun size={32} fill="white" />
+            <Sun size={26} fill="white" />
           </button>
 
           {/* Mail */}
@@ -63,14 +58,14 @@ export default function Header() {
             <Image
               src="/images/mail-open.png"
               alt="Mail"
-              width={32}
-              height={32}
+              width={26}
+              height={26}
               className="rounded-full"
             />
           </div>
 
           {/* Profile */}
-          <div className="relative w-8 h-8">
+          <div className="relative w-6 h-6 md:w-8 md:h-8">
             <Image
               src="/images/user-image.png"
               alt="Profile"
@@ -81,24 +76,6 @@ export default function Header() {
           </div>
         </div>
       </div>
-
-      {/* Mobile Menu - Sidebar */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-white text-black fixed top-0 left-0 w-full h-full z-50 flex flex-col items-center pt-10">
-          <button onClick={toggleMenu} className="absolute top-4 right-4 text-3xl">
-            ✖️
-          </button>
-          <button onClick={() => alert("Navigate to Home")} className="mt-4">
-            Home
-          </button>
-          <button onClick={() => alert("Navigate to Search")} className="mt-4">
-            Search
-          </button>
-          <button onClick={toggleTheme} className="mt-4">
-            {isDarkMode ? "Light Mode" : "Dark Mode"}
-          </button>
-        </div>
-      )}
     </header>
   );
 }

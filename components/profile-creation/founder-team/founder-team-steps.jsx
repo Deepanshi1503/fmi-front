@@ -44,10 +44,10 @@ const ProfileStepPanel = () => {
   };
 
   return (
-    <div className="flex flex-col xl:flex-row mx-6 2xl:mx-40 2xl:pl-12">
+    <div className="flex flex-col xl:flex-row mx-6 xl:mx-44 xl:pl-12">
       {/* Left Panel - Step Progress Bar for desktop */}
       <div
-        className="w-1/2 p-6 hidden xl:block"
+        className="w-1/3 p-6 xl:mr-16 hidden xl:block"
         style={{
           position: "sticky",
           top: "0", // Sticks the left panel to the top
@@ -159,7 +159,7 @@ const ProfileStepPanel = () => {
       </div>
 
       {/* Right Panel - Collapsible Forms */}
-      <div className="w-full lg:w-1/2 pt-6">
+      <div className="w-[90%] lg:w-2/3 pt-6">
         {stepsComponents.map((step, index) => (
           <div
             key={index}
