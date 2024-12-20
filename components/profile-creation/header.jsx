@@ -44,7 +44,7 @@ export default function Header() {
         </div>
 
         {/* Right Section */}
-        <div className="flex items-center gap-3 md:gap-4">
+        <div className="flex items-center gap-3 md:gap-4 mr-6">
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}

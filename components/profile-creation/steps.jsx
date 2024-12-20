@@ -3,10 +3,11 @@ import React, {useState, useEffect} from "react";
 import { Button } from "@/components/ui/button";
 import { Check, MoveLeft, MoveRight } from "lucide-react";
 import FounderTeam from "@/components/profile-creation/founder-team/founder-team-steps";
+import CompanyOverview from "@/components/profile-creation/company-overview/company-overview-steps"
 import { GlobalContextProvider } from "@/context/context";
 
 const stepsConfig = [
-  { id: "company-overview", label: "Company/nOverview", component: <div>Company Overview Component</div> },
+  { id: "company-overview", label: "Company/nOverview", component: <CompanyOverview /> },
   { id: "products-services", label: "Products and/nServices", component: <div>Products and Services Component</div> },
   { id: "founder-team", label: "Founder/n& Team", component: <FounderTeam /> },
   { id: "progress-traction", label: "Progress &/nTraction", component: <div>Progress and Traction Component</div> },

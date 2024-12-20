@@ -3,13 +3,18 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp, Check, AlertCircle } from "lucide-react";
 import FounderForm from "@/components/profile-creation/founder-team/founder-info-form";
+import ListingForm from "@/components/profile-creation/company-overview/listing-info-form"
+import CompanyDetailForm from "@/components/profile-creation/company-overview/company-detail-form"
 import { useGlobalContext } from "@/context/context";
+import WorkforceDetailForm from "@/components/profile-creation/company-overview/workforce-detail-form";
+import GeographicalDetailForm from "@/components/profile-creation/company-overview/geographical-detail-form";
+import ContactForm from "@/components/profile-creation/company-overview/contact-form"
 
-const FounderTeam = () => {
-  const { founders, setFounders, teamMembers, setTeamMembers, advisors, setAdvisors } = useGlobalContext(); // Accessing global context
+const CompanyOverview = () => {
+  const { founders, setFounders, teamMembers, setTeamMembers, advisors, setAdvisors } = useGlobalContext();
   const [activeStep, setActiveStep] = useState(0);
-  const [isFormOpen, setIsFormOpen] = useState(Array(3).fill(false));
-  const [visitedSteps, setVisitedSteps] = useState(Array(3).fill(false)); // Tracks visited steps
+  const [isFormOpen, setIsFormOpen] = useState(Array(5).fill(false));
+  const [visitedSteps, setVisitedSteps] = useState(Array(5).fill(false));
 
   // Check if a step has data
   const hasData = [founders, teamMembers, advisors].map((data) => data.length > 0);
@@ -17,11 +22,11 @@ const FounderTeam = () => {
   const stepsComponents = [
     {
       image: "/images/founder-details.png",
-      name: "Founder Details",
+      name: "Listing Details",
       description:
         "Introduce yourself and your team with a concise description of your expertise.",
       formComponent: () => (
-        <FounderForm
+        <ListingForm
           data={founders}
           setData={setFounders}
           title="Co-Founder"
@@ -30,10 +35,10 @@ const FounderTeam = () => {
     },
     {
       image: "/images/team-details.png",
-      name: "Team",
+      name: "Company Overview",
       description: "Provide details about your team members, their roles, and key contributions to the company.",
       formComponent: () => (
-        <FounderForm
+        <CompanyDetailForm
           data={teamMembers}
           setData={setTeamMembers}
           title="Team Member"
@@ -42,10 +47,34 @@ const FounderTeam = () => {
     },
     {
       image: "/images/advisor-details.png",
-      name: "Key Advisors & Board Members",
+      name: "Workforce",
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
-        <FounderForm
+        <WorkforceDetailForm
+          data={advisors}
+          setData={setAdvisors}
+          title="Advisor or Board Member"
+        />
+      ),
+    },
+    {
+      image: "/images/advisor-details.png",
+      name: "Geographics",
+      description: "List your key advisors and board members with their roles and expertise.",
+      formComponent: () => (
+        <GeographicalDetailForm
+          data={advisors}
+          setData={setAdvisors}
+          title="Advisor or Board Member"
+        />
+      ),
+    },
+    {
+      image: "/images/advisor-details.png",
+      name: "Contact Details",
+      description: "List your key advisors and board members with their roles and expertise.",
+      formComponent: () => (
+        <ContactForm
           data={advisors}
           setData={setAdvisors}
           title="Advisor or Board Member"
@@ -76,7 +105,7 @@ const FounderTeam = () => {
         }}
       >
         <h2 className="text-[32px] xl:text-[48px] whitespace-nowrap flex justify-center 2xl:justify-start font-semibold text-[#0A66C2] mb-4">
-          Founder & Team
+          Company Overview
         </h2>
         <h4 className="text-[12px] xl:text-[15px] whitespace-nowrap font-normal flex justify-center 2xl:justify-start text-[#181818CC] mb-12">
           Make it easy for people
@@ -182,4 +211,4 @@ const FounderTeam = () => {
   );
 };
 
-export default FounderTeam;
+export default CompanyOverview;
