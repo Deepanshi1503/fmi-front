@@ -1,30 +1,48 @@
 "use client";
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { Button } from "@/components/ui/button";
 import { Check, MoveLeft, MoveRight } from "lucide-react";
 import FounderTeam from "@/components/profile-creation/founder-team/founder-team-steps";
 import { GlobalContextProvider } from "@/context/context";
 
-const stepComponents = [
-  <FounderTeam />
+const stepsConfig = [
+  { id: "company-overview", label: "Company/nOverview", component: <div>Company Overview Component</div> },
+  { id: "products-services", label: "Products and/nServices", component: <div>Products and Services Component</div> },
+  { id: "founder-team", label: "Founder/n& Team", component: <FounderTeam /> },
+  { id: "progress-traction", label: "Progress &/nTraction", component: <div>Progress and Traction Component</div> },
+  { id: "market-competition", label: "Market and/nCompetition", component: <div>Market and Competition Component</div> },
+  { id: "business-model", label: "Business Model/n& Strategy", component: <div>Business Model Component</div> },
+  { id: "financial", label: "Financial", component: <div>Financial Component</div> },
+  { id: "equity-fundraising", label: "Equity &/nFundraising", component: <div>Equity and Fundraising Component</div> },
 ];
 
 const ProfileStep = () => {
   const [activeStep, setActiveStep] = React.useState(0);
 
-  const steps = [
-    "Founder/n& Team",
-    "Company/nOverview",
-    "Products and/nServices",
-    "Progress &/nTraction",
-    "Market and/nCompetition",
-    "Business Model/n& Strategy",
-    "Financial",
-    "Equity &/nFundraising",
-  ];
+  const [stepCompletion, setStepCompletion] = useState(() =>
+    stepsConfig.reduce((acc, step) => {
+      acc[step.id] = false;
+      return acc;
+    }, {})
+  );
+
+  // Load state from localStorage on page load
+  useEffect(() => {
+    const savedActiveStep = localStorage.getItem("activeStep");
+    const savedStepCompletion = JSON.parse(localStorage.getItem("stepCompletion") || "{}");
+
+    if (savedActiveStep) setActiveStep(Number(savedActiveStep));
+    if (savedStepCompletion) setStepCompletion(savedStepCompletion);
+  }, []);
+
+  // Save state to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("activeStep", activeStep);
+    localStorage.setItem("stepCompletion", JSON.stringify(stepCompletion));
+  }, [activeStep, stepCompletion]);
 
   const handleNext = () => {
-    if (activeStep < steps.length - 1) setActiveStep((prev) => prev + 1);
+    if (activeStep < stepsConfig.length - 1) setActiveStep((prev) => prev + 1);
   };
 
   const handleBack = () => {
@@ -33,6 +51,13 @@ const ProfileStep = () => {
 
   const handleReset = () => {
     setActiveStep(0);
+  };
+
+  const toggleStepCompletion = (stepId) => {
+    setStepCompletion((prev) => ({
+      ...prev,
+      [stepId]: !prev[stepId],
+    }));
   };
 
   const renderLabelWithLineBreaks = (label) => {
@@ -49,9 +74,9 @@ const ProfileStep = () => {
       <div className="w-full relative">
         {/* Stepper Container */}
         <div className="flex items-center justify-evenly relative 2xl:ml-20 2xl:mr-2 2xl:px-32 2xl:py-3 overflow-x-auto">
-          {steps.map((label, index) => (
+          {stepsConfig.map((step, index) => (
             <div
-              key={index}
+              key={step.id}
               className={`relative flex items-center cursor-pointer transition-transform duration-300 ease-in-out ${index <= activeStep ? "opacity-100" : "opacity-70"}`}
               onClick={() => setActiveStep(index)}
             >
@@ -61,25 +86,26 @@ const ProfileStep = () => {
               {/* Step Number Circle */}
               <div
                 className={`w-8 h-8 2xl:w-10 2xl:h-10 my-2 2xl:my-0 flex items-center justify-center rounded-full 2xl:text-lg font-semibold
-                ${index < activeStep
-                    ? "bg-[#0A66C2] text-white"
-                    : index === activeStep
+                  ${
+                    stepCompletion[step.id]
+                      ? "bg-green-500 text-white"
+                      : index === activeStep
                       ? "bg-[#0A66C2] text-white"
-                      : "border border-[#181818CC] text-[#181818CC]"
+                      : "border border-gray-400 text-gray-400"
                   }`}
               >
-                {index < activeStep ? <Check size={20} /> : index + 1}
+                {stepCompletion[step.id] ? <Check size={20} /> : index + 1}
               </div>
 
               {/* Step Label */}
               <div
                 className={`hidden 2xl:block ml-3 text-[13px] font-medium break-words max-w-[140px] ${index === activeStep ? "text-[#0A66C2]" : "text-gray-500"}`}
               >
-                {renderLabelWithLineBreaks(label)}
+                {renderLabelWithLineBreaks(step.label)}
               </div>
 
               {/* Vertical line at the end of the last step */}
-              {index === steps.length - 1 && (
+              {index === stepsConfig.length - 1 && (
                 <div className="hidden 2xl:block absolute right-[-12px] top-0 bottom-0 w-[2px] bg-[#18181833]"></div>
               )}
             </div>
@@ -91,7 +117,7 @@ const ProfileStep = () => {
 
         {/* Step Content */}
         <div className="mt-4 mb-4 text-center">
-          {stepComponents[activeStep]}
+          {stepsConfig[activeStep].component}
         </div>
 
         {/* Navigation Buttons */}
@@ -104,7 +130,7 @@ const ProfileStep = () => {
             <MoveLeft size={19} className="mr-2" /> Back
           </Button>
 
-          {activeStep === steps.length - 1 ? (
+          {activeStep === stepsConfig.length - 1 ? (
             <Button
               onClick={handleReset}
               className="bg-red-500 hover:bg-red-600 text-white rounded-xl text-[18px] w-[129px] h-[45px]"

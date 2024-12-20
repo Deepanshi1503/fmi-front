@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronDown, ChevronUp, Check } from "lucide-react";
+import { ChevronDown, ChevronUp, Check, AlertCircle } from "lucide-react";
 import FounderForm from "@/components/profile-creation/founder-team/founder-info-form";
 import { useGlobalContext } from "@/context/context";
 
@@ -9,6 +9,10 @@ const FounderTeam = () => {
   const { founders, setFounders, teamMembers, setTeamMembers, advisors, setAdvisors } = useGlobalContext(); // Accessing global context
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(3).fill(false));
+  const [visitedSteps, setVisitedSteps] = useState(Array(3).fill(false)); // Tracks visited steps
+
+  // Check if a step has data
+  const hasData = [founders, teamMembers, advisors].map((data) => data.length > 0);
 
   const stepsComponents = [
     {
@@ -44,17 +48,20 @@ const FounderTeam = () => {
         <FounderForm
           data={advisors}
           setData={setAdvisors}
-          title="advisor or board member"
+          title="Advisor or Board Member"
         />
       ),
-    }
+    },
   ];
 
   const handleToggleForm = (index) => {
     setIsFormOpen((prevState) =>
       prevState.map((isOpen, i) => (i === index ? !isOpen : false))
     );
-    setActiveStep(index); // Set the current active step
+    setActiveStep(index);
+
+    // Mark the step as visited
+    setVisitedSteps((prev) => prev.map((visited, i) => (i === index ? true : visited)));
   };
 
   return (
@@ -80,17 +87,21 @@ const FounderTeam = () => {
             <div key={index} className="relative flex items-start mb-6">
               {/* Step Circle */}
               <div
-                className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full font-bold z-10 ${index < activeStep
-                  ? "bg-[#0A66C2]" // Completed step - blue background
-                  : index === activeStep
-                    ? "bg-transparent border-2 border-[#0A66C2]" // Active step - blue border
-                    : "border-2 border-[#D4D4D4]" // Inactive step - grey border
+                className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full font-bold z-10 ${index === activeStep
+                  ? "bg-transparent border-2 border-[#0A66C2]" // Active step - blue border
+                  : visitedSteps[index] && !hasData[index]
+                    ? "bg-[#FF6347]" // Visited step with no data - red background
+                    : hasData[index]
+                      ? "bg-[#0A66C2]" // Completed step with data - blue background
+                      : "border-2 border-[#D4D4D4]" // Unvisited step - grey border
                   }`}
               >
-                {index < activeStep ? (
-                  <Check className="w-5 h-5 text-white" /> // Checkmark icon for completed steps
-                ) : index === activeStep ? (
+                {index === activeStep ? (
                   <div className="w-3 h-3 bg-[#0A66C2] rounded-full"></div> // Blue dot for active step
+                ) : visitedSteps[index] && !hasData[index] ? (
+                  <AlertCircle className="w-5 h-5 text-white" /> // Alert icon for visited steps with no data
+                ) : hasData[index] ? (
+                  <Check className="w-5 h-5 text-white" /> // Checkmark icon for steps with data
                 ) : null}
               </div>
 
@@ -116,49 +127,6 @@ const FounderTeam = () => {
                   <p className="text-[12px] text-gray-500 mt-1">{step.description}</p>
                 )}
               </div>
-            </div>
-          ))}
-        </div>
-
-      </div>
-
-      {/* Top Panel - Step Progress Bar for mobile */}
-      <div
-        className="w-full xl:hidden sm:block"
-      >
-        <h2 className="text-[32px] xl:text-[48px]  font-semibold text-[#0A66C2] mb-4">
-          Founder & Team
-        </h2>
-        <h4 className="text-[12px] xl:text-[15px] whitespace-nowrap font-normal flex justify-center 2xl:justify-start text-[#181818CC] mb-8">
-          Make it easy for people
-        </h4>
-
-        <div className="flex items-center justify-between">
-          {stepsComponents.map((step, index) => (
-            <div key={index} className="flex items-center">
-              <div
-                className={`w-8 h-8 flex items-center justify-center rounded-full font-bold z-10 ${index < activeStep
-                    ? "bg-[#0A66C2]" // Completed step - blue background
-                    : index === activeStep
-                      ? "bg-transparent border-2 border-[#0A66C2]" // Active step - blue border
-                      : "border-2 border-[#D4D4D4]" // Inactive step - grey border
-                  }`}
-              >
-                {index < activeStep ? (
-                  <Check className="w-5 h-5 text-white" /> // Checkmark icon for completed steps
-                ) : index === activeStep ? (
-                  <div className="w-3 h-3 bg-[#0A66C2] rounded-full"></div> // Blue dot for active step
-                ) : (
-                  <div></div> // Empty for inactive step
-                )}
-              </div>
-              {index !== stepsComponents.length - 1 && (
-                <div
-                  className={`h-[2px] flex-1 ${index < activeStep ? "bg-blue-500" : "bg-gray-300"
-                    }`}
-                  style={{ width: "100px" }}
-                ></div>
-              )}
             </div>
           ))}
         </div>
