@@ -7,6 +7,7 @@ import LeftImageWithContent from '@/components/about-us/left-image-with-content'
 import RightImageWithContent from '@/components/about-us/right-image-with-content'
 import OurCoreServices from '@/components/about-us/our-core-services'
 import AboutStatsCounter from '@/components/about-us/about-stats-counter'
+import Footer from '@/components/footer'
 
 
 export default function page() {
@@ -37,6 +38,9 @@ export default function page() {
 
             {/* stats */}
             <AboutStatsCounter />
+
+            {/* footer */}
+            <Footer />
 
         </div>
 
