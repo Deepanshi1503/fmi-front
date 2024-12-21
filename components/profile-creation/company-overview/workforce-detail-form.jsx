@@ -79,7 +79,7 @@ const WorkforceDetailForm = ({ data, setData, title }) => {
             onChange={handleChange}
             rows="4"
             className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
-            placeholder="Share any diversity metrics or inclusion efforts"
+            placeholder="Share any diversity metrics, such as gender ratio or inclusion efforts"
             required
           />
         </div>
