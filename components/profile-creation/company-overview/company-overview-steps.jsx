@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp, Check, AlertCircle } from "lucide-react";
-import FounderForm from "@/components/profile-creation/founder-team/founder-info-form";
 import ListingForm from "@/components/profile-creation/company-overview/listing-info-form"
 import CompanyDetailForm from "@/components/profile-creation/company-overview/company-detail-form"
 import { useGlobalContext } from "@/context/context";
