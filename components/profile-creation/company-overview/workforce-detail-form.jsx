@@ -38,7 +38,7 @@ const WorkforceDetailForm = ({ data, setData, title }) => {
             value={formData.numberOfEmployees}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded-lg focus:outline-none"
+            className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
           >
             <option value="">Select a range</option>
             <option value="1-10">1-10</option>
@@ -61,7 +61,7 @@ const WorkforceDetailForm = ({ data, setData, title }) => {
             id="workforceRatio"
             value={formData.workforceRatio}
             onChange={handleChange}
-            className="w-full p-3 border rounded-lg focus:outline-none"
+            className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
             placeholder="Indicate the ratio or percentage"
             required
           />
@@ -78,7 +78,7 @@ const WorkforceDetailForm = ({ data, setData, title }) => {
             value={formData.diversityInfo}
             onChange={handleChange}
             rows="4"
-            className="w-full p-3 border rounded-lg focus:outline-none"
+            className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
             placeholder="Share any diversity metrics or inclusion efforts"
             required
           />

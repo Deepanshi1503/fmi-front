@@ -94,7 +94,7 @@ const GeographicsForm = ({ data, setData, title }) => {
             value={formData.headquarters}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded-lg focus:outline-none"
+            className="w-full p-3 border rounded-lg focus:ring-1 focus:blue-500"
             placeholder="Enter the City, State, and Country"
           />
         </div>
@@ -146,7 +146,7 @@ const GeographicsForm = ({ data, setData, title }) => {
             value={formData.geographicalPresence}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded-lg focus:outline-none"
+            className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
             placeholder="Enter the Countries/Regions Where You Operate"
           />
         </div>
@@ -163,7 +163,7 @@ const GeographicsForm = ({ data, setData, title }) => {
             value={formData.currentGeography}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded-lg focus:outline-none"
+            className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
             placeholder="Specify the Primary Country, Region, or Area of Operation"
           />
         </div>
@@ -179,7 +179,7 @@ const GeographicsForm = ({ data, setData, title }) => {
             id="parentCompany"
             value={formData.parentCompany}
             onChange={handleChange}
-            className="w-full p-3 border rounded-lg focus:outline-none"
+            className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
             placeholder="Enter Parent Company Name, if applicable"
           />
         </div>

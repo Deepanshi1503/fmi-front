@@ -83,7 +83,7 @@ const ListingForm = ({ data, setData, title }) => {
               value={formData.lookingFor}
               onChange={handleChange}
               required
-              className="w-full p-3 border rounded-lg focus:outline-none"
+              className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
             >o
               <option value="">Select an option</option>
               {lookingForOptions.map((option) => (
@@ -106,7 +106,7 @@ const ListingForm = ({ data, setData, title }) => {
             value={formData.reason}
             onChange={handleChange}
             rows="4"
-            className="w-full p-3 border rounded-lg focus:outline-none"
+            className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
             placeholder="Provide a brief explanation"
             required
           />
@@ -124,7 +124,7 @@ const ListingForm = ({ data, setData, title }) => {
               value={formData.preferredTimeframe}
               onChange={handleChange}
               required
-              className="w-full p-3 border rounded-lg focus:outline-none"
+              className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
             >
               <option value="">Select a timeframe</option>
               {timeframeOptions.map((option) => (

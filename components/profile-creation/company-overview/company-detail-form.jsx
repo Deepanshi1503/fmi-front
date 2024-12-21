@@ -100,7 +100,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         value={formData.companyName}
                         onChange={handleChange}
                         required
-                        className="w-full p-3 border rounded-lg focus:outline-none"
+                        className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
                         placeholder="Enter Your Company Name"
                     />
                 </div>
@@ -117,7 +117,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         value={formData.website}
                         onChange={handleChange}
                         required
-                        className="w-full p-3 border rounded-lg focus:outline-none"
+                        className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
                         placeholder="www.example.com"
                     />
                 </div>
@@ -134,7 +134,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                             value={formData.yearOfIncorporation}
                             onChange={handleChange}
                             required
-                            className="w-full p-3 border rounded-lg focus:outline-none"
+                            className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
                         >
                             <option value="" className="max-h-[50px]">Select a Year</option>
                             {[...Array(50).keys()].map((i) => (
@@ -158,7 +158,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         value={formData.companyStage}
                         onChange={handleChange}
                         required
-                        className="w-full p-3 border rounded-lg focus:outline-none"
+                        className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
                     >
                         <option value="">Select a Stage</option>
                         {companyStageOptions.map((option) => (
@@ -182,7 +182,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         value={formData.companyType}
                         onChange={handleChange}
                         required
-                        className="w-full p-3 border rounded-lg focus:outline-none"
+                        className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
                     >
                         <option value="">Select a Type</option>
                         {companyTypeOptions.map((option) => (
@@ -206,7 +206,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         value={formData.industry}
                         onChange={handleChange}
                         required
-                        className="w-full p-3 border rounded-lg focus:outline-none"
+                        className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
                     >
                         <option value="">Select an Industry</option>
                         {industryOptions.map((industry) => (
@@ -229,7 +229,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         id="subIndustry"
                         value={formData.subIndustry}
                         onChange={handleChange}
-                        className="w-full p-3 border rounded-lg focus:outline-none"
+                        className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
                         placeholder="Sub Industry (optional)"
                     />
                 </div>
@@ -245,7 +245,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         value={formData.description}
                         onChange={handleChange}
                         rows="4"
-                        className="w-full p-3 border rounded-lg focus:outline-none"
+                        className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
                         placeholder="Write about your company"
                         required
                     />
@@ -262,7 +262,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         value={formData.mission}
                         onChange={handleChange}
                         rows="4"
-                        className="w-full p-3 border rounded-lg focus:outline-none"
+                        className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
                         placeholder="Enter your company's mission"
                         required
                     />
@@ -279,7 +279,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         value={formData.vision}
                         onChange={handleChange}
                         rows="4"
-                        className="w-full p-3 border rounded-lg focus:outline-none"
+                        className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
                         placeholder="Enter your company's vision"
                         required
                     />

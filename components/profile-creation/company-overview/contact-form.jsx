@@ -58,7 +58,7 @@ const ContactForm = ({ data, setData, title }) => {
             value={formData.professionalEmail}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded-lg focus:outline-none"
+            className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
             placeholder="Enter Your Professional Email ID"
           />
         </div>
@@ -75,7 +75,7 @@ const ContactForm = ({ data, setData, title }) => {
             value={formData.phoneNumber}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded-lg focus:outline-none"
+            className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
             placeholder="Enter Your Contact Number"
           />
         </div>
@@ -91,7 +91,7 @@ const ContactForm = ({ data, setData, title }) => {
             id="linkedInId"
             value={formData.linkedInId}
             onChange={handleChange}
-            className="w-full p-3 border rounded-lg focus:outline-none"
+            className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
             placeholder="Enter Your LinkedIn ID"
           />
         </div>
