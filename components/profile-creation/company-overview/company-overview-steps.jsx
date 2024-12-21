@@ -1,19 +1,64 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp, Check, AlertCircle } from "lucide-react";
+import axios from "axios";
 import ListingForm from "@/components/profile-creation/company-overview/listing-info-form"
 import CompanyDetailForm from "@/components/profile-creation/company-overview/company-detail-form"
-import { useGlobalContext } from "@/context/context";
 import WorkforceDetailForm from "@/components/profile-creation/company-overview/workforce-detail-form";
 import GeographicalDetailForm from "@/components/profile-creation/company-overview/geographical-detail-form";
-import ContactForm from "@/components/profile-creation/company-overview/contact-form"
+import ContactForm from "@/components/profile-creation/company-overview/contact-form";
+import { useGlobalContext } from "@/context/context";
 
 const CompanyOverview = () => {
-  const { founders, setFounders, teamMembers, setTeamMembers, advisors, setAdvisors } = useGlobalContext();
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(5).fill(false));
   const [visitedSteps, setVisitedSteps] = useState(Array(5).fill(false));
+    const { founders, setFounders, teamMembers, setTeamMembers, advisors, setAdvisors } = useGlobalContext();
+
+  // Centralized state for all form data
+  const [allFormData, setAllFormData] = useState({
+    listingDetails: {},
+    companyDetails: {},
+    workforceDetails: {},
+    geographicalDetails: {},
+    contactDetails: {},
+  });
+
+  // Fetch the data using the ID stored in local storage
+  useEffect(() => {
+    const fetchData = async () => {
+      const instanceId = localStorage.getItem("companyOverviewId");
+      if (instanceId) {
+        try {
+          const response = await axios.get(`/api/company-overview/${instanceId}`);
+          setAllFormData(response.data);
+        } catch (error) {
+          console.error("Failed to fetch data:", error);
+        }
+      }
+    };
+    fetchData();
+  }, []);
+
+  // Form submission
+  const handleSubmitAll = async () => {
+    try {
+      const instanceId = localStorage.getItem("companyOverviewId");
+      if (instanceId) {
+        // Update the existing instance
+        await axios.put(`/api/company-overview/${instanceId}`, allFormData);
+        alert("Data updated successfully!");
+      } else {
+        // Create a new instance
+        const response = await axios.post("/api/company-overview", allFormData);
+        localStorage.setItem("companyOverviewId", response.data.id); // Save the new ID to localStorage
+        alert("Data submitted successfully!");
+      }
+    } catch (error) {
+      console.error("Failed to submit data:", error);
+    }
+  };
 
   // Check if a step has data
   const hasData = [founders, teamMembers, advisors].map((data) => data.length > 0);
