@@ -41,25 +41,6 @@ const CompanyOverview = () => {
     fetchData();
   }, []);
 
-  // Form submission
-  const handleSubmitAll = async () => {
-    try {
-      const instanceId = localStorage.getItem("companyOverviewId");
-      if (instanceId) {
-        // Update the existing instance
-        await axios.put(`/api/company-overview/${instanceId}`, allFormData);
-        alert("Data updated successfully!");
-      } else {
-        // Create a new instance
-        const response = await axios.post("/api/company-overview", allFormData);
-        localStorage.setItem("companyOverviewId", response.data.id); // Save the new ID to localStorage
-        alert("Data submitted successfully!");
-      }
-    } catch (error) {
-      console.error("Failed to submit data:", error);
-    }
-  };
-
   // Check if a step has data
   const hasData = [founders, teamMembers, advisors].map((data) => data.length > 0);
 

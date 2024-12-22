@@ -5,7 +5,8 @@ import axios from "axios";
 const CompanyDetailForm = ({ data, setData, title }) => {
     const [companyTypeOptions, setCompanyTypeOptions] = useState([]); // Options for 'Type of Company'
     const [companyStageOptions, setCompanyStageOptions] = useState([]); // Options for 'Stage of the Company'
-    const [industryOptions, setIndustryOptions] = useState([]); // Options for 'Industry'
+    const [industryOptions, setIndustryOptions] = useState([]); // Options for Industry
+    const [subIndustryOptions, setSubIndustryOptions] = useState([]); // Options for Sub-Industry
     const [formData, setFormData] = useState({
         companyName: "",
         website: "",
@@ -25,21 +26,34 @@ const CompanyDetailForm = ({ data, setData, title }) => {
     useEffect(() => {
         const fetchOptions = async () => {
             try {
-                // Fetch 'Type of Company' options (type enum)
-                const typeResponse = await axios.get("/api/businesses/enumeration-options");
-                setCompanyTypeOptions(typeResponse.data.typeOptions);
+                const response = await axios.get(
+                    "http://localhost:1337/api/content-type-builder/content-types/api::business.business"
+                );
 
-                // Fetch 'Stage of Company' options (stage_of_company enum)
-                const stageResponse = await axios.get("/api/businesses/enumeration-options");
-                setCompanyStageOptions(stageResponse.data.stageOptions);
+                const response2 = await axios.get(
+                    "http://localhost:1337/api/industries?populate=sub_industries"
+                );
 
-                // Fetch 'Industry' options (industry relation)
-                const industryResponse = await axios.get("/api/industries");
-                setIndustryOptions(industryResponse.data);
+                const schemaAttributes = response.data?.data?.schema?.attributes || {};
 
+                // Fetch 'Type of Company' options
+                const typeOptions =
+                    schemaAttributes?.type_of_company?.enum.map((option) =>
+                        option.replace(/^"|"$/g, "") // Removes double quotes
+                    ) || [];
+
+                // Fetch 'Stage of Company' options
+                const stageOptions =
+                    schemaAttributes?.stage_of_company?.enum.map((option) =>
+                        option.replace(/^"|"$/g, "") // Removes double quotes
+                    ) || [];
+
+                setCompanyTypeOptions(typeOptions);
+                setCompanyStageOptions(stageOptions);
+                setIndustryOptions(response2.data.data || []);
             } catch (err) {
-                console.error("Error fetching options:", err);
-                setError("Failed to load options.");
+                console.error("Error fetching company options:", err);
+                setError("Failed to load company options.");
             }
         };
 
@@ -49,10 +63,16 @@ const CompanyDetailForm = ({ data, setData, title }) => {
     // Handle form data change
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+        if (name === "industry") {
+            const selectedIndustry = industryOptions.find((industry) => industry.id === parseInt(value));
+            setSubIndustryOptions(selectedIndustry?.attributes?.sub_industries?.data || []);
+            setFormData((prev) => ({ ...prev, [name]: value, subIndustry: "" }));
+        } else {
+            setFormData((prev) => ({
+                ...prev,
+                [name]: value,
+            }));
+        }
     };
 
     // Handle form submission
@@ -66,20 +86,6 @@ const CompanyDetailForm = ({ data, setData, title }) => {
 
         // Add the new form data to the list
         setData([...data, formData]);
-
-        // Clear the form after submission
-        setFormData({
-            companyName: "",
-            website: "",
-            yearOfIncorporation: "",
-            companyStage: "",
-            companyType: "",
-            industry: "",
-            subIndustry: "",
-            description: "",
-            mission: "",
-            vision: "",
-        });
         setError(""); // Clear error
     };
 
@@ -152,21 +158,21 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         Stage of Company*
                     </label>
                     <div className="select-wrapper relative">
-                    <select
-                        name="companyStage"
-                        id="companyStage"
-                        value={formData.companyStage}
-                        onChange={handleChange}
-                        required
-                        className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
-                    >
-                        <option value="">Select a Stage</option>
-                        {companyStageOptions.map((option) => (
-                            <option key={option} value={option}>
-                                {option}
-                            </option>
-                        ))}
-                    </select>
+                        <select
+                            name="companyStage"
+                            id="companyStage"
+                            value={formData.companyStage}
+                            onChange={handleChange}
+                            required
+                            className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
+                        >
+                            <option value="">Select a Stage</option>
+                            {companyStageOptions.map((option) => (
+                                <option key={option} value={option}>
+                                    {option}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </div>
 
@@ -176,21 +182,21 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         Type of Company*
                     </label>
                     <div className="select-wrapper relative">
-                    <select
-                        name="companyType"
-                        id="companyType"
-                        value={formData.companyType}
-                        onChange={handleChange}
-                        required
-                        className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
-                    >
-                        <option value="">Select a Type</option>
-                        {companyTypeOptions.map((option) => (
-                            <option key={option} value={option}>
-                                {option}
-                            </option>
-                        ))}
-                    </select>
+                        <select
+                            name="companyType"
+                            id="companyType"
+                            value={formData.companyType}
+                            onChange={handleChange}
+                            required
+                            className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
+                        >
+                            <option value="">Select a Type</option>
+                            {companyTypeOptions.map((option) => (
+                                <option key={option} value={option}>
+                                    {option}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </div>
 
@@ -200,21 +206,21 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         Industry*
                     </label>
                     <div className="select-wrapper relative">
-                    <select
-                        name="industry"
-                        id="industry"
-                        value={formData.industry}
-                        onChange={handleChange}
-                        required
-                        className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
-                    >
-                        <option value="">Select an Industry</option>
-                        {industryOptions.map((industry) => (
-                            <option key={industry.id} value={industry.id}>
-                                {industry.name}
-                            </option>
-                        ))}
-                    </select>
+                        <select
+                            name="industry"
+                            id="industry"
+                            value={formData.industry}
+                            onChange={handleChange}
+                            required
+                            className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
+                        >
+                            <option value="">Select an Industry</option>
+                            {industryOptions.map((industry) => (
+                                <option key={industry.id} value={industry.id}>
+                                    {industry.attributes.name}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </div>
 
@@ -223,15 +229,23 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                     <label htmlFor="subIndustry" className="block mb-3 text-[16px] text-left font-medium">
                         Sub Industry
                     </label>
-                    <input
-                        type="text"
-                        name="subIndustry"
-                        id="subIndustry"
-                        value={formData.subIndustry}
-                        onChange={handleChange}
-                        className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
-                        placeholder="Sub Industry (optional)"
-                    />
+                    <div className="select-wrapper relative">
+                        <select
+                            name="subIndustry"
+                            id="subIndustry"
+                            value={formData.subIndustry}
+                            onChange={handleChange}
+                            disabled={!formData.industry}
+                            className="w-full p-3 border rounded-lg"
+                        >
+                            <option value="">Select a Sub-Industry</option>
+                            {subIndustryOptions.map((subIndustry) => (
+                                <option key={subIndustry.id} value={subIndustry.id}>
+                                    {subIndustry.attributes.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
 
                 {/* Description */}

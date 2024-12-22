@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useGlobalContext } from "@/context/context";
 import axios from "axios";
 
 const ListingForm = ({ data, setData, title }) => {
-  const [lookingForOptions, setLookingForOptions] = useState([]); // Options for 'What are you looking to do?'
-  const [timeframeOptions, setTimeframeOptions] = useState([]); // Options for 'Preferred Timeframe'
+  const [lookingForOptions, setLookingForOptions] = useState([]);
+  const [timeFrameOptions, setTimeFrameOptions] = useState([]);
   const [formData, setFormData] = useState({
     lookingFor: "",
     reason: "",
@@ -13,27 +12,35 @@ const ListingForm = ({ data, setData, title }) => {
 
   const [error, setError] = useState("");
 
-  // Fetch options from the backend
+  // Fetch the enum options for 'purpose_of_listing_business'
   useEffect(() => {
-    const fetchOptions = async () => {
+    const fetchEnumOptions = async () => {
       try {
-        // Fetch "What are you looking to do?" options (type enum)
-        const lookingForResponse = await axios.get("/api/businesses");
-        const lookingForData = lookingForResponse.data.map(item => item.type); // Extract type values
+        const response = await axios.get(
+          "http://localhost:1337/api/content-type-builder/content-types/api::business.business"
+        );
 
-        // Fetch "Preferred Timeframe" options (time_frame_for_action enum)
-        const timeframeResponse = await axios.get("/api/businesses");
-        const timeframeData = timeframeResponse.data.map(item => item.time_frame_for_action); // Extract timeframe values
+        const enumOptions =
+          response.data?.data?.schema?.attributes || {};
 
-        setLookingForOptions(lookingForData);
-        setTimeframeOptions(timeframeData);
+        const lookingForEnum =
+          enumOptions?.purpose_of_listing_business?.enum || [];
+        const timeframeEnum =
+          enumOptions?.preferred_timeframe_for_action?.enum.map((item) =>
+            item
+              .replace(/^"|"$/g, "") // Removes double quotes
+              .replace(/\s*-\s*/g, " - ") // Ensures proper formatting around dashes
+          ) || [];
+
+        setLookingForOptions(lookingForEnum);
+        setTimeFrameOptions(timeframeEnum);
       } catch (err) {
-        console.error("Error fetching options:", err);
+        console.error("Error fetching enum options:", err);
         setError("Failed to load options.");
       }
     };
 
-    fetchOptions();
+    fetchEnumOptions();
   }, []);
 
   // Handle form data change
@@ -45,53 +52,32 @@ const ListingForm = ({ data, setData, title }) => {
     }));
   };
 
-  // // Handle form submission
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (!formData.lookingFor || !formData.preferredTimeframe || !formData.reason) {
-  //     setError("Please fill all required fields.");
-  //     return;
-  //   }
-
-  //   // Add the new form data to the list
-  //   setData([...data, formData]);
-
-  //   // Clear the form after submission
-  //   setFormData({
-  //     lookingFor: "",
-  //     reason: "",
-  //     preferredTimeframe: "",
-  //   });
-  //   setError(""); // Clear error
-  // };
-
   return (
     <div className="form-container mx-auto px-4 w-full">
-
-      {/* {error && <div className="text-red-500 text-center mb-4">{error}</div>} */}
+      {error && <div className="text-red-500 text-center mb-4">{error}</div>}
 
       <form className="space-y-4">
-        {/* "What are you looking to do?" Dropdown */}
+        {/* "What are you looking to do?" Radio Buttons */}
         <div className="form-group mb-4">
           <label htmlFor="lookingFor" className="block mb-3 text-[16px] text-left font-medium">
             What are you looking to do?*
           </label>
-          <div className="select-wrapper">
-            <select
-              name="lookingFor"
-              id="lookingFor"
-              value={formData.lookingFor}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
-            >o
-              <option value="">Select an option</option>
-              {lookingForOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
+          <div className="flex space-x-12">
+            {lookingForOptions.map((option) => (
+              <div key={option} className="">
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="lookingFor"
+                    value={option}
+                    checked={formData.lookingFor === option}
+                    onChange={handleChange}
+                    className="form-radio text-blue-600"
+                  />
+                  <span className="ml-2 text-gray-700 whitespace-nowrap">{option}</span>
+                </label>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -127,7 +113,8 @@ const ListingForm = ({ data, setData, title }) => {
               className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
             >
               <option value="">Select a timeframe</option>
-              {timeframeOptions.map((option) => (
+              {/* Add hardcoded or dynamically fetched options here */}
+              {timeFrameOptions.map((option) => (
                 <option key={option} value={option}>
                   {option}
                 </option>
@@ -145,8 +132,8 @@ const ListingForm = ({ data, setData, title }) => {
             Save
           </button>
         </div> */}
-      </form >
-    </div >
+      </form>
+    </div>
   );
 };
 

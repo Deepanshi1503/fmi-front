@@ -9,7 +9,30 @@ const WorkforceDetailForm = ({ data, setData, title }) => {
     diversityInfo: "",
   });
 
+  const [workforceRangeOptions, setWorkforceRangeOptions] = useState([]);
   const [error, setError] = useState("");
+
+  // Fetch workforce range options from the backend
+  useEffect(() => {
+    const fetchWorkforceRanges = async () => {
+      try {
+        const response = await axios.get("http://localhost:1337/api/content-type-builder/content-types/api::business.business");
+        const schemaAttributes = response.data?.data?.schema?.attributes || {};
+
+        // Fetch 'Stage of Company' options
+        const workforceOptions =
+          schemaAttributes?.workforce_range?.enum.map((option) =>
+            option.replace(/^"|"$/g, "") // Removes double quotes
+          ) || [];
+        setWorkforceRangeOptions(workforceOptions)
+      } catch (err) {
+        console.error("Error fetching workforce range options:", err);
+        setError("Failed to load workforce range options.");
+      }
+    };
+
+    fetchWorkforceRanges();
+  }, []);
 
   // Handle form data change
   const handleChange = (e) => {
@@ -32,21 +55,21 @@ const WorkforceDetailForm = ({ data, setData, title }) => {
             Number of Employees*
           </label>
           <div className="select-wrapper relative">
-          <select
-            name="numberOfEmployees"
-            id="numberOfEmployees"
-            value={formData.numberOfEmployees}
-            onChange={handleChange}
-            required
-            className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
-          >
-            <option value="">Select a range</option>
-            <option value="1-10">1-10</option>
-            <option value="11-50">11-50</option>
-            <option value="51-200">51-200</option>
-            <option value="201-500">201-500</option>
-            <option value="501+">501+</option>
-          </select>
+            <select
+              name="numberOfEmployees"
+              id="numberOfEmployees"
+              value={formData.numberOfEmployees}
+              onChange={handleChange}
+              required
+              className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
+            >
+              <option value="">Select a range</option>
+              {workforceRangeOptions.map((range) => (
+                <option key={range} value={range}>
+                  {range}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
