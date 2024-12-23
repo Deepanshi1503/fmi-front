@@ -8,12 +8,13 @@ import CompanyDetailForm from "@/components/profile-creation/company-overview/co
 import WorkforceDetailForm from "@/components/profile-creation/company-overview/workforce-detail-form";
 import GeographicalDetailForm from "@/components/profile-creation/company-overview/geographical-detail-form";
 import ContactForm from "@/components/profile-creation/company-overview/contact-form";
+import DocumentForm from "@/components/profile-creation/company-overview/document-detail-form"
 import { useGlobalContext } from "@/context/context";
 
 const CompanyOverview = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const [isFormOpen, setIsFormOpen] = useState(Array(5).fill(false));
-  const [visitedSteps, setVisitedSteps] = useState(Array(5).fill(false));
+  const [isFormOpen, setIsFormOpen] = useState(Array(6).fill(false));
+  const [visitedSteps, setVisitedSteps] = useState(Array(6).fill(false));
     const { founders, setFounders, teamMembers, setTeamMembers, advisors, setAdvisors } = useGlobalContext();
 
   // Centralized state for all form data
@@ -100,6 +101,18 @@ const CompanyOverview = () => {
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
         <ContactForm
+          data={advisors}
+          setData={setAdvisors}
+          title="Advisor or Board Member"
+        />
+      ),
+    },
+    {
+      image: "/images/advisor-details.png",
+      name: "Documents",
+      description: "List your key advisors and board members with their roles and expertise.",
+      formComponent: () => (
+        <DocumentForm
           data={advisors}
           setData={setAdvisors}
           title="Advisor or Board Member"
