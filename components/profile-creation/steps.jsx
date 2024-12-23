@@ -9,7 +9,7 @@ import { GlobalContextProvider } from "@/context/context";
 const stepsConfig = [
   { id: "company-overview", label: "Company/nOverview", component: <CompanyOverview /> },
   { id: "products-services", label: "Products and/nServices", component: <div>Products and Services Component</div> },
-  { id: "founder-team", label: "Founder/n& Team", component: <FounderTeam /> },
+  { id: "founder-team", label: "Founder/n& Team", component: <div>Products and Services Component</div>  },
   { id: "progress-traction", label: "Progress &/nTraction", component: <div>Progress and Traction Component</div> },
   { id: "market-competition", label: "Market and/nCompetition", component: <div>Market and Competition Component</div> },
   { id: "business-model", label: "Business Model/n& Strategy", component: <div>Business Model Component</div> },
