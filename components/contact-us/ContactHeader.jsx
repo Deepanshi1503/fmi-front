@@ -8,9 +8,9 @@ export default function ContactHeader() {
             <div className='container'>
                 <div className='xl:flex lg:gap-8'>
                     <div className='xl:w-3/5 lg:w-full items-start flex flex-col sm:mb-8 mb-8'>
-                        <h1 className=''>Have questions? We're here to help—reach out to us today</h1>
+                        <h1 className='mb-3 xl-mb-12'>Have questions? We're here to help—reach out to us today</h1>
                         <p>Share a few details, and we’ll get back to you shortly.</p>
-                        <Link className="view-all-btn" href="#">Send us an email <svg
+                        <Link className="view-all-btn xl-mt-8 mt-3" href="#">Send us an email <svg
                             xmlns="http://www.w3.org/2000/svg"
                             xmlSpace="preserve"
                             width="30"
