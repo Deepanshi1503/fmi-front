@@ -4,27 +4,25 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { ChevronDown, ChevronUp, Check, AlertCircle } from "lucide-react";
 import axios from "axios";
-import ListingForm from "@/components/profile-creation/company-overview/listing-info-form"
-import CompanyDetailForm from "@/components/profile-creation/company-overview/company-detail-form"
-import WorkforceDetailForm from "@/components/profile-creation/company-overview/workforce-detail-form";
-import GeographicalDetailForm from "@/components/profile-creation/company-overview/geographical-detail-form";
-import ContactForm from "@/components/profile-creation/company-overview/contact-form";
-import DocumentForm from "@/components/profile-creation/company-overview/document-detail-form"
 import { useGlobalContext } from "@/context/context";
+import ProductServiceForm from "@/components/profile-creation/product-services/product-services-details"
+import KeyFeaturesForm from "@/components/profile-creation/product-services/key-features-usp-form"
+import TargetMarketForm from "@/components/profile-creation/product-services/target-market-details"
+import MarketNeed from "@/components/profile-creation/product-services/market-need"
+import RevenueModel from "@/components/profile-creation/product-services/revenue-model"
 
-const CompanyOverview = () => {
+const ProductServices = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(6).fill(false));
   const [visitedSteps, setVisitedSteps] = useState(Array(6).fill(false));
 
   // Centralized state for all form data
   const [formData, setFormData] = useState({
-    listingDetails: {},
-    companyDetails: {},
-    workforceDetails: {},
-    geographicalDetails: {},
-    contactDetails: {},
-    documents: {}
+    productServiceDetail: {},
+    keyFeaturesUSPs: {},
+    targetMarket: {},
+    marketNeed: {},
+    revenueModel: {}
   });
 
   // Check if a step has data
@@ -32,68 +30,57 @@ const CompanyOverview = () => {
   const stepsComponents = [
     {
       image: "/images/founder-details.png",
-      name: "Listing Details",
+      name: "Product / Service Offering",
       description:
         "Introduce yourself and your team with a concise description of your expertise.",
       formComponent: () => (
-        <ListingForm
-          data={formData.listingDetails}
-          setData={(data) => updateFormData("listingDetails", data)}
+        <ProductServiceForm
+          data={formData.productServiceDetail}
+          setData={(data) => updateFormData("productServiceDetail", data)}
         />
       ),
     },
     {
       image: "/images/team-details.png",
-      name: "Company Overview",
+      name: "Key Features / USPs",
       description: "Provide details about your team members, their roles, and key contributions to the company.",
       formComponent: () => (
-        <CompanyDetailForm
-          data={formData.companyDetails}
-          setData={(data) => updateFormData("companyDetails", data)}
+        <KeyFeaturesForm
+          data={formData.keyFeaturesUSPs}
+          setData={(data) => updateFormData("keyFeaturesUSPs", data)}
         />
       ),
     },
     {
       image: "/images/advisor-details.png",
-      name: "Workforce",
+      name: "Target Market & Customer Segments",
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
-        <WorkforceDetailForm
-          data={formData.workforceDetails}
-          setData={(data) => updateFormData("workforceDetails", data)}
+        <TargetMarketForm
+          data={formData.targetMarket}
+          setData={(data) => updateFormData("targetMarket", data)}
         />
       ),
     },
     {
       image: "/images/advisor-details.png",
-      name: "Geographics",
+      name: "Market Need / Problem Solved",
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
-        <GeographicalDetailForm
-          data={formData.geographicalDetails}
-          setData={(data) => updateFormData("geographicalDetails", data)}
+        <MarketNeed
+          data={formData.marketNeed}
+          setData={(data) => updateFormData("marketNeed", data)}
         />
       ),
     },
     {
       image: "/images/advisor-details.png",
-      name: "Contact Details",
+      name: "Revenue Model & Pricing Strategy",
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
-        <ContactForm
-          data={formData.contactDetails}
-          setData={(data) => updateFormData("contactDetails", data)}
-        />
-      ),
-    },
-    {
-      image: "/images/advisor-details.png",
-      name: "Documents",
-      description: "List your key advisors and board members with their roles and expertise.",
-      formComponent: () => (
-        <DocumentForm
-          data={formData.documents}
-          setData={(data) => updateFormData("documents", data)}
+        <RevenueModel
+          data={formData.revenueModel}
+          setData={(data) => updateFormData("revenueModel", data)}
         />
       ),
     },
@@ -121,7 +108,7 @@ const CompanyOverview = () => {
         }}
       >
         <h2 className="text-[32px] xl:text-[48px] whitespace-nowrap flex justify-center 2xl:justify-start font-semibold text-[#0A66C2] mb-4">
-          Company Overview
+          Product & Services
         </h2>
         <h4 className="text-[12px] xl:text-[15px] whitespace-nowrap font-normal flex justify-center 2xl:justify-start text-[#181818CC] mb-12">
           Make it easy for people
@@ -223,4 +210,4 @@ const CompanyOverview = () => {
   );
 };
 
-export default CompanyOverview;
+export default ProductServices;

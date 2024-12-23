@@ -9,7 +9,7 @@ const FounderTeam = () => {
   const { founders, setFounders, teamMembers, setTeamMembers, advisors, setAdvisors } = useGlobalContext(); // Accessing global context
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(3).fill(false));
-  const [visitedSteps, setVisitedSteps] = useState(Array(3).fill(false)); // Tracks visited steps
+  const [visitedSteps, setVisitedSteps] = useState(Array(3).fill(false));
 
   // Check if a step has data
   const hasData = [founders, teamMembers, advisors].map((data) => data.length > 0);

@@ -3,13 +3,14 @@ import React, {useState, useEffect} from "react";
 import { Button } from "@/components/ui/button";
 import { Check, MoveLeft, MoveRight } from "lucide-react";
 import FounderTeam from "@/components/profile-creation/founder-team/founder-team-steps";
-import CompanyOverview from "@/components/profile-creation/company-overview/company-overview-steps"
+import CompanyOverview from "@/components/profile-creation/company-overview/company-overview-steps";
+import ProductServices from "@/components/profile-creation/product-services/product-services-steps"
 import { GlobalContextProvider } from "@/context/context";
 
 const stepsConfig = [
   { id: "company-overview", label: "Company/nOverview", component: <CompanyOverview /> },
-  { id: "products-services", label: "Products and/nServices", component: <div>Products and Services Component</div> },
-  { id: "founder-team", label: "Founder/n& Team", component: <div>Products and Services Component</div>  },
+  { id: "products-services", label: "Products and/nServices", component: <ProductServices/>},
+  { id: "founder-team", label: "Founder/n& Team", component: <FounderTeam/> },
   { id: "progress-traction", label: "Progress &/nTraction", component: <div>Progress and Traction Component</div> },
   { id: "market-competition", label: "Market and/nCompetition", component: <div>Market and Competition Component</div> },
   { id: "business-model", label: "Business Model/n& Strategy", component: <div>Business Model Component</div> },
@@ -19,28 +20,6 @@ const stepsConfig = [
 
 const ProfileStep = () => {
   const [activeStep, setActiveStep] = React.useState(0);
-
-  const [stepCompletion, setStepCompletion] = useState(() =>
-    stepsConfig.reduce((acc, step) => {
-      acc[step.id] = false;
-      return acc;
-    }, {})
-  );
-
-  // Load state from localStorage on page load
-  useEffect(() => {
-    const savedActiveStep = localStorage.getItem("activeStep");
-    const savedStepCompletion = JSON.parse(localStorage.getItem("stepCompletion") || "{}");
-
-    if (savedActiveStep) setActiveStep(Number(savedActiveStep));
-    if (savedStepCompletion) setStepCompletion(savedStepCompletion);
-  }, []);
-
-  // Save state to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem("activeStep", activeStep);
-    localStorage.setItem("stepCompletion", JSON.stringify(stepCompletion));
-  }, [activeStep, stepCompletion]);
 
   const handleNext = () => {
     if (activeStep < stepsConfig.length - 1) setActiveStep((prev) => prev + 1);
@@ -52,13 +31,6 @@ const ProfileStep = () => {
 
   const handleReset = () => {
     setActiveStep(0);
-  };
-
-  const toggleStepCompletion = (stepId) => {
-    setStepCompletion((prev) => ({
-      ...prev,
-      [stepId]: !prev[stepId],
-    }));
   };
 
   const renderLabelWithLineBreaks = (label) => {
@@ -88,14 +60,12 @@ const ProfileStep = () => {
               <div
                 className={`w-8 h-8 2xl:w-10 2xl:h-10 my-2 2xl:my-0 flex items-center justify-center rounded-full 2xl:text-lg font-semibold
                   ${
-                    stepCompletion[step.id]
-                      ? "bg-green-500 text-white"
-                      : index === activeStep
+                    index === activeStep
                       ? "bg-[#0A66C2] text-white"
                       : "border border-gray-400 text-gray-400"
                   }`}
               >
-                {stepCompletion[step.id] ? <Check size={20} /> : index + 1}
+                {index + 1}
               </div>
 
               {/* Step Label */}

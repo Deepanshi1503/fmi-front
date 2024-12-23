@@ -13,15 +13,6 @@ export const GlobalContextProvider = ({ children }) => {
     const [advisors, setAdvisors] = useState([]);
     const [isFormOpen, setIsFormOpen] = useState([]);
 
-    const [profileData, setProfileData] = useState({
-        companyOverview: {},
-        productsServices: {},
-        founderTeam: {},
-        // Add other steps as needed
-    });
-
-    const [unsavedChanges, setUnsavedChanges] = useState(false);
-
     // useEffect(() => {
     //     // Load data from localStorage
     //     const savedData = {
@@ -62,10 +53,6 @@ export const GlobalContextProvider = ({ children }) => {
                 setAdvisors,
                 isFormOpen,
                 setIsFormOpen,
-                profileData,
-                setProfileData,
-                unsavedChanges,
-                setUnsavedChanges
             }}
         >
             {children}
