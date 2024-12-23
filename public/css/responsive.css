@@ -87,6 +87,10 @@
 
 @media only screen and (max-width:1199px) {
 
+    body .contact-top-header {
+        padding-top: 0 !important;
+    }
+
     .inner-banner-main .inner-banner-left-block .getstarted-btn {
         margin-top: 15px !important;
     }
@@ -238,6 +242,11 @@
 
 @media only screen and (max-width:767px) {
 
+    .contact-top-header h1 {
+        font-size: 40px !important;
+        line-height: 45px !important;
+    }
+
     .about-status-section, .ourCoureServices {
         padding-top: 0;
     }
@@ -247,7 +256,7 @@
     }
 
     .footer-copyright .row {
-        gap: 0;
+        gap: 0 !important;
     }
 
     .footer-copyright .col-12+.col-12 p {

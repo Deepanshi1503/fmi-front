@@ -1,10 +1,11 @@
 import React from 'react'
+import Link from 'next/link'
 
 export default function OurCoreServices() {
     return (
         <section className='ourCoureServices padding2'>
             <div className='container'>
-                <div class="looking-investment-heading-block"><h2>Our Core Services</h2><a class="view-all-btn" href="#">View all
+                <div class="looking-investment-heading-block"><h2>Our Core Services</h2><Link class="view-all-btn" href="#">View all
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         xmlSpace="preserve"
@@ -22,7 +23,7 @@ export default function OurCoreServices() {
                                 data-original="#000000"
                             ></path>
                         </g>
-                    </svg></a>
+                    </svg></Link>
                 </div>
 
                 <div className='service-box-main'>

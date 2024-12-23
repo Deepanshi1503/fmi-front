@@ -874,3 +874,7 @@ transition: 0.3s;
 .main-navigation-block .navbar-toggler {
     z-index: 1;
 }
+
+.contact-top-header {
+    padding-top: 40px;
+}
