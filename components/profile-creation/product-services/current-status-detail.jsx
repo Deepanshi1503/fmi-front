@@ -2,12 +2,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const RevenueModel = ({ data, setData }) => {
+const CurrentStatusForm = ({ data, setData }) => {
   const [formData, setFormData] = useState({
-    revenueModel: "",
+    currentStatus: "",
   });
 
-  const [revenueOptions, setRevenueOptions] = useState([]);
+  const [statusOptions, setStatusOptions] = useState([]);
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -20,11 +20,11 @@ const RevenueModel = ({ data, setData }) => {
 
         // Fetch 'Status' options
         const typeOptions =
-          schemaAttributes?.revenue_model?.enum.map((option) =>
+          schemaAttributes?.current_status?.enum.map((option) =>
             option.replace(/^"|"$/g, "") // Removes double quotes
           ) || [];
 
-        setRevenueOptions(typeOptions);
+        setStatusOptions(typeOptions);
       } catch (err) {
         console.error("Error fetching company options:", err);
         // setError("Failed to load company options.");
@@ -46,24 +46,24 @@ const RevenueModel = ({ data, setData }) => {
   return (
     <div className="form-container mx-auto px-4 w-full">
       <form className="space-y-4">
-        {/* Revenue Model */}
+        {/* Current Status */}
         <div className="form-group mb-4">
-          <label htmlFor="revenueModel" className="block mb-3 text-[16px] text-left font-medium">
-            Revenue Model*
+          <label htmlFor="currentStatus" className="block mb-3 text-[16px] text-left font-medium">
+            Current Status*
           </label>
           <div className="select-wrapper relative">
             <select
-              name="revenueModel"
-              id="revenueModel"
-              value={formData.revenueModel}
+              name="currentStatus"
+              id="currentStatus"
+              value={formData.currentStatus}
               onChange={handleChange}
               required
               className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
             >
               <option value="">Select an option</option>
-              {revenueOptions.map((model) => (
-                <option key={model} value={model}>
-                  {model}
+              {statusOptions.map((status) => (
+                <option key={status} value={status}>
+                  {status}
                 </option>
               ))}
             </select>
@@ -74,4 +74,4 @@ const RevenueModel = ({ data, setData }) => {
   );
 };
 
-export default RevenueModel;
+export default CurrentStatusForm;

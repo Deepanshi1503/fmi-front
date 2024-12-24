@@ -5,14 +5,14 @@ import { useRouter } from "next/router";
 import { ChevronDown, ChevronUp, Check, AlertCircle } from "lucide-react";
 import axios from "axios";
 import { useGlobalContext } from "@/context/context";
-import ProductServiceForm from "@/components/profile-creation/product-services/product-services-details"
-import RevenueModel from "@/components/profile-creation/product-services/revenue-model"
-import CurrentSatusForm from "@/components/profile-creation/product-services/current-status-detail"
+import OpportunitySizeForm from "@/components/profile-creation/market-competition/opportunity-size-form"
+import CompetitorAnalysisForm from "@/components/profile-creation/market-competition/competitor-analysis-form"
+import CompetetiveAdvantagesForm from "@/components/profile-creation/market-competition/competitive-advantages-form"
 
-const ProductServices = () => {
+const MarketCompetition = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const [isFormOpen, setIsFormOpen] = useState(Array(6).fill(false));
-  const [visitedSteps, setVisitedSteps] = useState(Array(6).fill(false));
+  const [isFormOpen, setIsFormOpen] = useState(Array(3).fill(false));
+  const [visitedSteps, setVisitedSteps] = useState(Array(3).fill(false));
 
   // Centralized state for all form data
   const [formData, setFormData] = useState({
@@ -26,11 +26,11 @@ const ProductServices = () => {
   const stepsComponents = [
     {
       image: "/images/founder-details.png",
-      name: "Product / Service Offering",
+      name: "Market Opportunity & Size",
       description:
         "Introduce yourself and your team with a concise description of your expertise.",
       formComponent: () => (
-        <ProductServiceForm
+        <OpportunitySizeForm
           data={formData.productServiceDetail}
           setData={(data) => updateFormData("productServiceDetail", data)}
         />
@@ -38,10 +38,10 @@ const ProductServices = () => {
     },
     {
       image: "/images/advisor-details.png",
-      name: "Revenue Model",
+      name: "Competitor Analysis",
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
-        <RevenueModel
+        <CompetitorAnalysisForm
           data={formData.revenueModel}
           setData={(data) => updateFormData("revenueModel", data)}
         />
@@ -49,10 +49,10 @@ const ProductServices = () => {
     },
     {
       image: "/images/advisor-details.png",
-      name: "Current Status",
+      name: "Competitive Advantages & Differentiators",
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
-        <CurrentSatusForm
+        <CompetetiveAdvantagesForm
           data={formData.revenueModel}
           setData={(data) => updateFormData("revenueModel", data)}
         />
@@ -82,7 +82,7 @@ const ProductServices = () => {
         }}
       >
         <h2 className="text-[32px] xl:text-[48px] whitespace-nowrap flex justify-center 2xl:justify-start font-semibold text-[#0A66C2] mb-4">
-          Product & Services
+          Market & Competition
         </h2>
         <h4 className="text-[12px] xl:text-[15px] whitespace-nowrap font-normal flex justify-center 2xl:justify-start text-[#181818CC] mb-12">
           Make it easy for people
@@ -173,7 +173,7 @@ const ProductServices = () => {
 
             {/* Collapsible Form */}
             {isFormOpen[index] && (
-              <div className="p-4 border rounded-b-[16px] bg-white mt-1">
+              <div className="pt-4 border rounded-b-[16px] bg-white mt-1">
                 <step.formComponent />
               </div>
             )}
@@ -184,4 +184,4 @@ const ProductServices = () => {
   );
 };
 
-export default ProductServices;
+export default MarketCompetition;

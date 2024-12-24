@@ -1,36 +1,37 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import { ChevronDown, ChevronUp, Check, AlertCircle } from "lucide-react";
+import { ChevronDown, ChevronUp, Check, AlertCircle, Lock } from "lucide-react"; // Added Lock icon for restricted state
 import axios from "axios";
 import { useGlobalContext } from "@/context/context";
-import ProductServiceForm from "@/components/profile-creation/product-services/product-services-details"
-import RevenueModel from "@/components/profile-creation/product-services/revenue-model"
-import CurrentSatusForm from "@/components/profile-creation/product-services/current-status-detail"
+import FundraisingStatus from "@/components/profile-creation/equity-fundraising/current-fundraising-status-form";
+import InvestmentDetails from "@/components/profile-creation/equity-fundraising/investment-details";
+import SaleDetails from "@/components/profile-creation/equity-fundraising/sale-detail-form";
 
 const ProductServices = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(6).fill(false));
   const [visitedSteps, setVisitedSteps] = useState(Array(6).fill(false));
 
+  // State to track whether it's a Sale Listing or Fundraise Listing
+  const [isSaleListing, setIsSaleListing] = useState(false); // Default to Fundraise Listing
+
   // Centralized state for all form data
   const [formData, setFormData] = useState({
-    productServiceDetail: {},
-    revenueModel: {},
-    currentStatus:{}
+    currentFUndraisingStatus: {},
+    investmentDetails: {},
+    saleDetails: {},
   });
 
   // Check if a step has data
-
   const stepsComponents = [
     {
       image: "/images/founder-details.png",
-      name: "Product / Service Offering",
+      name: "Current fundraising status",
       description:
         "Introduce yourself and your team with a concise description of your expertise.",
       formComponent: () => (
-        <ProductServiceForm
+        <FundraisingStatus
           data={formData.productServiceDetail}
           setData={(data) => updateFormData("productServiceDetail", data)}
         />
@@ -38,29 +39,33 @@ const ProductServices = () => {
     },
     {
       image: "/images/advisor-details.png",
-      name: "Revenue Model",
+      name: "Investment Required",
       description: "List your key advisors and board members with their roles and expertise.",
-      formComponent: () => (
-        <RevenueModel
-          data={formData.revenueModel}
-          setData={(data) => updateFormData("revenueModel", data)}
-        />
-      ),
+      formComponent: () =>
+        !isSaleListing ? (
+          <InvestmentDetails
+            data={formData.revenueModel}
+            setData={(data) => updateFormData("revenueModel", data)}
+          />
+        ) : null, // Conditionally render based on the listing type
     },
     {
       image: "/images/advisor-details.png",
-      name: "Current Status",
+      name: "Sale Offer",
       description: "List your key advisors and board members with their roles and expertise.",
-      formComponent: () => (
-        <CurrentSatusForm
-          data={formData.revenueModel}
-          setData={(data) => updateFormData("revenueModel", data)}
-        />
-      ),
+      formComponent: () =>
+        isSaleListing ? (
+          <SaleDetails
+            data={formData.revenueModel}
+            setData={(data) => updateFormData("revenueModel", data)}
+          />
+        ) : null, // Conditionally render based on the listing type
     },
   ];
 
   const handleToggleForm = (index) => {
+    if (!isSaleListing && index === 2) return; // Prevent toggling the SaleOffer form if it's not a Sale Listing
+
     setIsFormOpen((prevState) =>
       prevState.map((isOpen, i) => (i === index ? !isOpen : false))
     );
@@ -68,6 +73,14 @@ const ProductServices = () => {
 
     // Mark the step as visited
     setVisitedSteps((prev) => prev.map((visited, i) => (i === index ? true : visited)));
+  };
+
+  // Update form data dynamically
+  const updateFormData = (key, data) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [key]: data,
+    }));
   };
 
   return (
@@ -81,8 +94,8 @@ const ProductServices = () => {
           alignSelf: "flex-start", // Maintains left panel position
         }}
       >
-        <h2 className="text-[32px] xl:text-[48px] whitespace-nowrap flex justify-center 2xl:justify-start font-semibold text-[#0A66C2] mb-4">
-          Product & Services
+        <h2 className="text-[32px] xl:text-[40px] whitespace-nowrap flex justify-center 2xl:justify-start font-semibold text-[#0A66C2] mb-4">
+          Equity & Raising / Sale
         </h2>
         <h4 className="text-[12px] xl:text-[15px] whitespace-nowrap font-normal flex justify-center 2xl:justify-start text-[#181818CC] mb-12">
           Make it easy for people
@@ -119,12 +132,24 @@ const ProductServices = () => {
               {/* Step Content */}
               <div className="ml-4 text-left cursor-pointer w-full">
                 <h3
-                  className={`text-[16px] font-semibold ${activeStep === index ? "text-blue-500" : "text-gray-700"
+                  className={`text-[16px] font-semibold ${index === 2 && !isSaleListing
+                    ? "text-gray-400" // Disabled step - grey text for Sale Offer when not a Sale Listing
+                    : activeStep === index
+                      ? "text-blue-500"
+                      : "text-gray-700"
                     }`}
                   onClick={() => handleToggleForm(index)}
+                  style={{
+                    cursor: index === 2 && !isSaleListing ? "not-allowed" : "pointer", // Disable clicking on Sale Offer if not a Sale Listing
+                  }}
                 >
                   {step.name}
                 </h3>
+                {index === 2 && !isSaleListing && (
+                  <div className="absolute top-1 right-1">
+                    <Lock className="text-gray-400 w-6 h-6" />
+                  </div>
+                )}
                 {activeStep === index && (
                   <p className="text-[12px] text-gray-500 mt-1">{step.description}</p>
                 )}
@@ -147,8 +172,11 @@ const ProductServices = () => {
               className={`flex items-center p-3 border cursor-pointer ${isFormOpen[index]
                 ? "bg-white border-2 border-[#18181833] rounded-t-[16px] rounded-b-none"
                 : "bg-white rounded-[16px] shadow-md"
-                }`}
+                } ${index === 2 && !isSaleListing ? "cursor-not-allowed" : ""}`} // Disable cursor for the Sale Offer form
               onClick={() => handleToggleForm(index)}
+              style={{
+                pointerEvents: index === 2 && !isSaleListing ? "none" : "auto", // Prevent opening SaleOffer if not a Sale Listing
+              }}
             >
               {step.image && (
                 <img
@@ -162,7 +190,9 @@ const ProductServices = () => {
                   {step.name}
                 </h2>
                 <div>
-                  {isFormOpen[index] ? (
+                  {index === 2 && !isSaleListing ? (
+                    <Lock className="text-gray-400 w-6 h-6" /> // Show locked icon when SaleOffer is disabled
+                  ) : isFormOpen[index] ? (
                     <ChevronUp className="w-8 h-8 text-blue-500" />
                   ) : (
                     <ChevronDown className="w-8 h-8 text-gray-500" />

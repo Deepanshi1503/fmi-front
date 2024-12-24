@@ -27,6 +27,30 @@ const CompanyOverview = () => {
     documents: {}
   });
 
+  const updateFormData = (step, updatedData) => {
+    setFormData((prevData) => {
+      const newData = {
+        ...prevData,
+        [step]: {
+          ...prevData[step],
+          ...updatedData,
+        },
+      };
+
+      // Save to local storage
+      localStorage.setItem("companyOverviewData", JSON.stringify(newData));
+      return newData;
+    });
+  };
+
+  useEffect(() => {
+    const savedData = localStorage.getItem("companyOverviewData");
+    if (savedData) {
+      setFormData(JSON.parse(savedData));
+    }
+  }, []);
+
+
   // Check if a step has data
 
   const stepsComponents = [
@@ -108,6 +132,20 @@ const CompanyOverview = () => {
     // Mark the step as visited
     setVisitedSteps((prev) => prev.map((visited, i) => (i === index ? true : visited)));
   };
+
+  // Passing data and update functions to child forms
+  stepsComponents.map((step, index) => (
+    <div key={index}>
+      {isFormOpen[index] && (
+        <div>
+          <step.formComponent
+            data={formData[step.name.toLowerCase().replace(" ", "")]}
+            setData={(data) => updateFormData(step.name.toLowerCase().replace(" ", ""), data)}
+          />
+        </div>
+      )}
+    </div>
+  ));
 
   return (
     <div className="flex flex-col xl:flex-row mx-6 xl:mx-44 xl:pl-12">

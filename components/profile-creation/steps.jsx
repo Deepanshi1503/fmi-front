@@ -4,18 +4,21 @@ import { Button } from "@/components/ui/button";
 import { Check, MoveLeft, MoveRight } from "lucide-react";
 import FounderTeam from "@/components/profile-creation/founder-team/founder-team-steps";
 import CompanyOverview from "@/components/profile-creation/company-overview/company-overview-steps";
-import ProductServices from "@/components/profile-creation/product-services/product-services-steps"
+import ProductServices from "@/components/profile-creation/product-services/product-services-steps";
+import MarketCompetition from "@/components/profile-creation/market-competition/market-competition-steps";
+import Financial from "@/components/profile-creation/financial/financial-form"
+import EquitySale from "@/components/profile-creation/equity-fundraising/equity-sell-steps"
 import { GlobalContextProvider } from "@/context/context";
 
 const stepsConfig = [
-  { id: "company-overview", label: "Company/nOverview", component: <CompanyOverview /> },
-  { id: "products-services", label: "Products and/nServices", component: <ProductServices/>},
-  { id: "founder-team", label: "Founder/n& Team", component: <FounderTeam/> },
-  { id: "progress-traction", label: "Progress &/nTraction", component: <div>Progress and Traction Component</div> },
-  { id: "market-competition", label: "Market and/nCompetition", component: <div>Market and Competition Component</div> },
-  { id: "business-model", label: "Business Model/n& Strategy", component: <div>Business Model Component</div> },
-  { id: "financial", label: "Financial", component: <div>Financial Component</div> },
-  { id: "equity-fundraising", label: "Equity &/nFundraising", component: <div>Equity and Fundraising Component</div> },
+  { id: "company-overview", label: "Company Overview", component: <CompanyOverview /> },
+  { id: "products-services", label: "Products and Services", component: <ProductServices/>},
+  { id: "founder-team", label: "Founder & Team", component: <FounderTeam/> },
+  // { id: "progress-traction", label: "Progress & Traction", component: <div>Progress and Traction Component</div> },
+  { id: "market-competition", label: "Market and Competition", component: <MarketCompetition/>},
+  // { id: "business-model", label: "Business Model/n& Strategy", component: <div>Business Model Component</div> },
+  { id: "financial", label: "Financial", component: <Financial/> },
+  { id: "equity-fundraising", label: "Equity & Fundraising", component: <EquitySale/> },
 ];
 
 const ProfileStep = () => {
@@ -33,14 +36,14 @@ const ProfileStep = () => {
     setActiveStep(0);
   };
 
-  const renderLabelWithLineBreaks = (label) => {
-    return label.split("/n").map((line, index) => (
-      <React.Fragment key={index}>
-        {line}
-        <br />
-      </React.Fragment>
-    ));
-  };
+  // const renderLabelWithLineBreaks = (label) => {
+  //   return label.split("/n").map((line, index) => (
+  //     <React.Fragment key={index}>
+  //       {line}
+  //       <br />
+  //     </React.Fragment>
+  //   ));
+  // };
 
   return (
     <GlobalContextProvider>
@@ -70,9 +73,9 @@ const ProfileStep = () => {
 
               {/* Step Label */}
               <div
-                className={`hidden 2xl:block ml-3 text-[13px] font-medium break-words max-w-[140px] ${index === activeStep ? "text-[#0A66C2]" : "text-gray-500"}`}
+                className={`hidden whitespace-nowrap 2xl:block ml-3 text-[13px] font-medium break-words max-w-[140px] ${index === activeStep ? "text-[#0A66C2]" : "text-gray-500"}`}
               >
-                {renderLabelWithLineBreaks(step.label)}
+                {step.label}
               </div>
 
               {/* Vertical line at the end of the last step */}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useGlobalContext } from "@/context/context";
 import axios from "axios";
 
-const CompanyDetailForm = ({ data, setData, title }) => {
+const CompanyDetailForm = ({ data, setData }) => {
     const [companyTypeOptions, setCompanyTypeOptions] = useState([]); // Options for 'Type of Company'
     const [companyStageOptions, setCompanyStageOptions] = useState([]); // Options for 'Stage of the Company'
     const [industryOptions, setIndustryOptions] = useState([]); // Options for Industry
@@ -68,32 +68,17 @@ const CompanyDetailForm = ({ data, setData, title }) => {
             setSubIndustryOptions(selectedIndustry?.attributes?.sub_industries?.data || []);
             setFormData((prev) => ({ ...prev, [name]: value, subIndustry: "" }));
         } else {
-            setFormData((prev) => ({
-                ...prev,
-                [name]: value,
-            }));
+            const updatedData = { [name]: value };
+            setData(updatedData); // Updates the parent data
+            setFormData((prev) => ({ ...prev, ...updatedData }));
         }
-    };
-
-    // Handle form submission
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Validate required fields
-        if (!formData.companyName || !formData.website || !formData.companyStage || !formData.companyType) {
-            setError("Please fill all required fields.");
-            return;
-        }
-
-        // Add the new form data to the list
-        setData([...data, formData]);
-        setError(""); // Clear error
     };
 
     return (
         <div className="form-container mx-auto px-4 w-full">
             {/* {error && <div className="text-red-500 text-center mb-4">{error}</div>} */}
 
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <form className="space-y-4">
                 {/* Company Name */}
                 <div className="form-group mb-4">
                     <label htmlFor="companyName" className="block mb-3 text-[16px] text-left font-medium">
@@ -103,7 +88,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         type="text"
                         name="companyName"
                         id="companyName"
-                        value={formData.companyName}
+                        value={data.companyName || ""}
                         onChange={handleChange}
                         required
                         className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
@@ -120,7 +105,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         type="text"
                         name="website"
                         id="website"
-                        value={formData.website}
+                        value={data.website || ""}
                         onChange={handleChange}
                         required
                         className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
@@ -137,7 +122,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         <select
                             name="yearOfIncorporation"
                             id="yearOfIncorporation"
-                            value={formData.yearOfIncorporation}
+                            value={data.yearOfIncorporation || ""}
                             onChange={handleChange}
                             required
                             className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
@@ -161,7 +146,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         <select
                             name="companyStage"
                             id="companyStage"
-                            value={formData.companyStage}
+                            value={data.companyStage || ""}
                             onChange={handleChange}
                             required
                             className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
@@ -185,7 +170,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         <select
                             name="companyType"
                             id="companyType"
-                            value={formData.companyType}
+                            value={data.companyType || ""}
                             onChange={handleChange}
                             required
                             className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
@@ -209,7 +194,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         <select
                             name="industry"
                             id="industry"
-                            value={formData.industry}
+                            value={data.industry || ""}
                             onChange={handleChange}
                             required
                             className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
@@ -233,9 +218,9 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         <select
                             name="subIndustry"
                             id="subIndustry"
-                            value={formData.subIndustry}
+                            value={data.subIndustry || ""}
                             onChange={handleChange}
-                            disabled={!formData.industry}
+                            disabled={!data.industry}
                             className="w-full p-3 border rounded-lg"
                         >
                             <option value="">Select a Sub-Industry</option>
@@ -256,7 +241,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                     <textarea
                         name="description"
                         id="description"
-                        value={formData.description}
+                        value={data.description || ""}
                         onChange={handleChange}
                         rows="4"
                         className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
@@ -273,7 +258,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                     <textarea
                         name="mission"
                         id="mission"
-                        value={formData.mission}
+                        value={data.mission || ""}
                         onChange={handleChange}
                         rows="4"
                         className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
@@ -290,7 +275,7 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                     <textarea
                         name="vision"
                         id="vision"
-                        value={formData.vision}
+                        value={data.vision || ""}
                         onChange={handleChange}
                         rows="4"
                         className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
@@ -298,16 +283,6 @@ const CompanyDetailForm = ({ data, setData, title }) => {
                         required
                     />
                 </div>
-
-                {/* Submit Button */}
-                {/* <div className="text-center">
-          <button
-            type="submit"
-            className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none"
-          >
-            Save
-          </button>
-        </div> */}
             </form>
         </div>
     );
