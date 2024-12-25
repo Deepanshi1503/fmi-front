@@ -56,7 +56,7 @@ const CompanyOverview = () => {
     });
 
     // Store the accumulated data in a new key
-    localStorage.setItem("combinedCompanyInfo", JSON.stringify(accumulatedData));
+    localStorage.setItem("combinedInfo", JSON.stringify(accumulatedData));
 
     // Optional: Update the state with the combined data
     setFormData((prev) => ({ ...prev, ...accumulatedData }));

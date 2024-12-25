@@ -24,8 +24,6 @@ const stepsConfig = [
 
 const ProfileStep = () => {
   const [activeStep, setActiveStep] = useState(0);
-
-  // Function to sync data with the backend
   const syncBusinessData = async (businessData) => {
     const businessId = localStorage.getItem("businessId");
 
@@ -33,27 +31,36 @@ const ProfileStep = () => {
     const payload = {
       data: {
         title: businessData.companyName,
+        slug: businessData.companyName.toLowerCase().replace(/\s+/g, '-') + '-title',
+        purpose_of_listing_business: businessData.lookingFor,
+        reason_for_selling_fundraise: businessData.reason,
+        company_name: businessData.companyName,
         website_url: businessData.website,
-        year_of_incorporation: parseInt(businessData.yearOfIncorporation) || null,
         stage_of_company: businessData.companyStage,
         type_of_company: businessData.companyType,
         description_about_company: businessData.description,
         company_mission: businessData.mission,
         company_vision: businessData.vision,
-        purpose_of_listing_business: businessData.lookingFor,
-        reason_for_selling_fundraise: businessData.reason,
-        preferred_timeframe_for_action: mapPreferredTimeframe(businessData.preferredTimeframe),
+        remote_onsite_workforce_ration: businessData.workforceRatio,
+        diversity_information: businessData.diversityInfo,
+        headquarters: businessData.headquarters,
+        country: businessData.country,
+        state: businessData.state,
+        geographical_presence: businessData.geographicalPresence,
+        current_geography: businessData.currentGeography,
+        parent_company: businessData.parentCompany,
         professional_emailid: businessData.professionalEmail,
         phone_number: businessData.phoneNumber,
         linkedin_id: businessData.linkedInId,
-        pitch_deck: businessData.pitchDeck,
-        company_profile: businessData.companyProfile,
+        year_of_incorporation: parseInt(businessData.yearOfIncorporation) || null,
         youtube_url: businessData.youtubeUrl,
+        product_name: businessData.productName,
+        product_description: businessData.productDescription,
+        revenue_model: businessData.revenueModel,
+        current_status: businessData.currentStatus,
+        preferred_timeframe_for_action: mapPreferredTimeframe(businessData.preferredTimeframe),
         workforce_range: mapNumberOfEmployees(businessData.numberOfEmployees),
-        remote_onsite_workforce_ration: businessData.workforceRatio,
-        diversity_information: businessData.diversityInfo,
       }
-      // Additional fields if required
     };
 
     const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -74,51 +81,19 @@ const ProfileStep = () => {
           headers: {
             "Content-Type": "application/json",  // Set content type to JSON
           },
-          body: JSON.stringify({
-            "data": {
-              "title": "Sample Business",
-              "slug": "sample-business-title",
-              "purpose_of_listing_business": "Raise Funds",
-              "reason_for_selling_fundraise": "Need capital to expand operations",
-              "company_name": "Sample Company",
-              "website_url": "https://samplecompany.com",
-              "stage_of_company": "Scaling",
-              "type_of_company": "Private Limited",
-              "description_about_company": "This is a sample company description.",
-              "company_mission": "Deliver quality solutions.",
-              "company_vision": "To be a global leader in our field.",
-              "remote_onsite_workforce_ration": "50:50",
-              "diversity_information": "50% women workforce",
-              "headquarters": "New York",
-              "country": "United States",
-              "state": "New York",
-              "geographical_presence": "North America, Europe",
-              "current_geography": "United States",
-              "parent_company": "Parent Corp",
-              "professional_emailid": "info@samplecompany.com",
-              "phone_number": 1234567890,
-              "linkedin_id": "https://linkedin.com/company/sample",
-              "year_of_incorporation": 2005,
-              "youtube_url": "https://youtube.com/samplevideo",
-              "product_name": "Sample Product",
-              "product_description": "Detailed description of the product.",
-              "revenue_model": "Subscription",
-              "current_status": "Launched",
-              "preferred_timeframe_for_action": "\"3 - 6 months\"",
-              "workforce_range": "\"11 - 50\""
-            }
-          }
-          ),  // Send the payload wrapped in a "data" object
+          body: JSON.stringify(payload),  // Send the payload directly
         });
-        console.log(response.data.data.id);
-
-        localStorage.setItem("businessId", response.data.data.id); // Store the created business ID
-        console.log("Business created successfully.");
+        const responseData = await response.json(); // Parse the response
+        if (responseData) {
+          console.log("Business created successfully:", responseData.data.id);
+          localStorage.setItem("businessId", responseData.data.id); // Store the created business ID
+        }
       }
     } catch (error) {
       console.error("Error syncing business data:", error);
     }
   };
+
 
   const mapPreferredTimeframe = (timeframe) => {
     const timeframeMap = {
@@ -145,27 +120,34 @@ const ProfileStep = () => {
   const handleNext = async () => {
     // Simulate form data
     const formData = {
-      companyName: "sdsdsd",
-      website: "sdsds",
-      yearOfIncorporation: "2024",
-      companyStage: "R&D",
-      companyType: "Private Limited",
-      description: "dd",
-      mission: "fgdg",
-      vision: "dfgdg",
-      lookingFor: "Sell My Business",
-      reason: "jasu da janam hoya bhaga wali raat",
-      preferredTimeframe: "Immediate",
-      professionalEmail: "info@samplecompany.com",
-      phoneNumber: "sdsdsdsd",
-      linkedInId: "sdsdsdss",
-      pitchDeck: "school18-website",
-      companyProfile: "fmi-front",
-      youtubeUrl: "asasasas",
-      numberOfEmployees: "11 - 50",
-      workforceRatio: "dsdsdsds",
-      diversityInfo: "sasasasasdsdsdsd",
-    };
+      "lookingFor": "Raise Funds",
+      "reason": "jasu da janam hoya bhaga wali raat",
+      "preferredTimeframe": "3 - 6 months",
+      "companyName": "sssssssssasasaasa",
+      "website": "ddddsssssasasa",
+      "yearOfIncorporation": "2019", // Make sure this is a number
+      "companyStage": "R&D",
+      "companyType": "Private Limited",
+      "description": "dddsdsdadasasd",
+      "mission": "dsads",
+      "vision": "asadsd",
+      "numberOfEmployees": "11 - 50",
+      "workforceRatio": "50:50", // Ensure this is in the expected format (e.g., "50:50")
+      "diversityInfo": "sasasasasdsdsdsd",
+      "headquarters": "sasasa",
+      "country": "DZ", // Ensure this is a valid country code
+      "state": "44", // Ensure this is a valid state code or name
+      "geographicalPresence": "asasas",
+      "currentGeography": "asasas",
+      "parentCompany": "asasas",
+      "professionalEmail": "info@samplecompany.com",
+      "phoneNumber": 1234567890, // Ensure this is a valid number
+      "linkedInId": "sdsdsdss",
+      "pitchDeck": "school18-website",
+      "companyProfile": "fmi-front",
+      "youtubeUrl": "asasasas"
+  };
+  
 
     // Sync with backend before navigating
     await syncBusinessData(formData);
