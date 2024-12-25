@@ -10,6 +10,28 @@ const ListingForm = ({ data, setData, title }) => {
     preferredTimeframe: "",
   });
 
+  const {lookingFor, reason, preferredTimeframe} = formData;
+
+  // Handle form data change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  useEffect(()=>{
+    const formS = JSON.parse(localStorage.getItem("listing info CO"));
+    if(lookingFor === "" && reason==="" && preferredTimeframe===""){
+      setFormData((prev)=> ({...prev, ...formS}));
+    }
+  }, []);
+
+  useEffect(()=>{
+    localStorage.setItem("listing info CO", JSON.stringify(formData));
+  },[lookingFor, reason, preferredTimeframe]);
+
   const [error, setError] = useState("");
 
   // Fetch the enum options for 'purpose_of_listing_business'
@@ -43,19 +65,8 @@ const ListingForm = ({ data, setData, title }) => {
     fetchEnumOptions();
   }, []);
 
-  // Handle form data change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   return (
     <div className="form-container mx-auto px-4 w-full">
-      {error && <div className="text-red-500 text-center mb-4">{error}</div>}
-
       <form className="space-y-4">
         {/* "What are you looking to do?" Radio Buttons */}
         <div className="form-group mb-4">
@@ -122,16 +133,6 @@ const ListingForm = ({ data, setData, title }) => {
             </select>
           </div>
         </div>
-
-        {/* Submit Button */}
-        {/* <div className="text-center">
-          <button
-            type="submit"
-            className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none"
-          >
-            Save
-          </button>
-        </div> */}
       </form>
     </div>
   );

@@ -27,31 +27,41 @@ const CompanyOverview = () => {
     documents: {}
   });
 
-  const updateFormData = (step, updatedData) => {
-    setFormData((prevData) => {
-      const newData = {
-        ...prevData,
-        [step]: {
-          ...prevData[step],
-          ...updatedData,
-        },
-      };
-
-      // Save to local storage
-      localStorage.setItem("companyOverviewData", JSON.stringify(newData));
-      return newData;
-    });
-  };
-
   useEffect(() => {
-    const savedData = localStorage.getItem("companyOverviewData");
-    if (savedData) {
-      setFormData(JSON.parse(savedData));
-    }
-  }, []);
+    // Define the keys you want to combine
+    const keysToCombine = [
+      "listing info CO",
+      "company info CO",
+      "workforce info CO",
+      "geographical info CO",
+      "document info CO",
+      "contact info CO",
+      // Add other keys as needed
+    ];
 
+    // Initialize an object to accumulate data
+    const accumulatedData = {};
 
-  // Check if a step has data
+    // Iterate through the keys and accumulate data
+    keysToCombine.forEach((key) => {
+      const storedData = localStorage.getItem(key);
+      if (storedData) {
+        try {
+          // Parse and merge data
+          Object.assign(accumulatedData, JSON.parse(storedData));
+        } catch (error) {
+          console.error(`Error parsing data for key: ${key}`, error);
+        }
+      }
+    });
+
+    // Store the accumulated data in a new key
+    localStorage.setItem("combinedCompanyInfo", JSON.stringify(accumulatedData));
+
+    // Optional: Update the state with the combined data
+    setFormData((prev) => ({ ...prev, ...accumulatedData }));
+  }, []); // Runs once when the component mounts
+
 
   const stepsComponents = [
     {
@@ -60,10 +70,7 @@ const CompanyOverview = () => {
       description:
         "Introduce yourself and your team with a concise description of your expertise.",
       formComponent: () => (
-        <ListingForm
-          data={formData.listingDetails}
-          setData={(data) => updateFormData("listingDetails", data)}
-        />
+        <ListingForm />
       ),
     },
     {
@@ -71,10 +78,7 @@ const CompanyOverview = () => {
       name: "Company Overview",
       description: "Provide details about your team members, their roles, and key contributions to the company.",
       formComponent: () => (
-        <CompanyDetailForm
-          data={formData.companyDetails}
-          setData={(data) => updateFormData("companyDetails", data)}
-        />
+        <CompanyDetailForm />
       ),
     },
     {
@@ -82,10 +86,7 @@ const CompanyOverview = () => {
       name: "Workforce",
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
-        <WorkforceDetailForm
-          data={formData.workforceDetails}
-          setData={(data) => updateFormData("workforceDetails", data)}
-        />
+        <WorkforceDetailForm />
       ),
     },
     {
@@ -93,10 +94,7 @@ const CompanyOverview = () => {
       name: "Geographics",
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
-        <GeographicalDetailForm
-          data={formData.geographicalDetails}
-          setData={(data) => updateFormData("geographicalDetails", data)}
-        />
+        <GeographicalDetailForm />
       ),
     },
     {
@@ -104,10 +102,7 @@ const CompanyOverview = () => {
       name: "Contact Details",
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
-        <ContactForm
-          data={formData.contactDetails}
-          setData={(data) => updateFormData("contactDetails", data)}
-        />
+        <ContactForm />
       ),
     },
     {
@@ -115,10 +110,7 @@ const CompanyOverview = () => {
       name: "Documents",
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
-        <DocumentForm
-          data={formData.documents}
-          setData={(data) => updateFormData("documents", data)}
-        />
+        <DocumentForm />
       ),
     },
   ];
@@ -132,20 +124,6 @@ const CompanyOverview = () => {
     // Mark the step as visited
     setVisitedSteps((prev) => prev.map((visited, i) => (i === index ? true : visited)));
   };
-
-  // Passing data and update functions to child forms
-  stepsComponents.map((step, index) => (
-    <div key={index}>
-      {isFormOpen[index] && (
-        <div>
-          <step.formComponent
-            data={formData[step.name.toLowerCase().replace(" ", "")]}
-            setData={(data) => updateFormData(step.name.toLowerCase().replace(" ", ""), data)}
-          />
-        </div>
-      )}
-    </div>
-  ));
 
   return (
     <div className="flex flex-col xl:flex-row mx-6 xl:mx-44 xl:pl-12">

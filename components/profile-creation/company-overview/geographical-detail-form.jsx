@@ -16,7 +16,27 @@ const GeographicsForm = ({ data, setData, title }) => {
     parentCompany: "",
   });
 
-  const [error, setError] = useState("");
+  const {headquarters, country, state, geographicalPresence, currentGeography, parentCompany} = formData;
+
+  // Handle form data change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  useEffect(()=>{
+    const formS = JSON.parse(localStorage.getItem("geographical info CO"));
+    if(headquarters === "" && country==="" && state==="" && geographicalPresence==="" && currentGeography==="" && parentCompany===""){
+      setFormData((prev)=> ({...prev, ...formS}));
+    }
+  }, []);
+
+  useEffect(()=>{
+    localStorage.setItem("geographical info CO", JSON.stringify(formData));
+  },[headquarters, country, state, geographicalPresence, currentGeography, parentCompany]);
 
   // Fetch Country options and State options dynamically
   useEffect(() => {
@@ -44,44 +64,10 @@ const GeographicsForm = ({ data, setData, title }) => {
     }
   }, [formData.country]);
 
-  // Handle form data change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Validate required fields
-    if (!formData.headquarters || !formData.country || !formData.state || !formData.geographicalPresence || !formData.currentGeography) {
-      setError("Please fill all required fields.");
-      return;
-    }
-
-    // Add the new form data to the list
-    setData([...data, formData]);
-
-    // Clear the form after submission
-    setFormData({
-      headquarters: "",
-      country: "",
-      state: "",
-      geographicalPresence: "",
-      currentGeography: "",
-      parentCompany: "",
-    });
-    setError(""); // Clear error
-  };
-
   return (
     <div className="form-container mx-auto px-4 w-full">
-      {error && <div className="text-red-500 text-center mb-4">{error}</div>}
 
-      <form className="space-y-4" onSubmit={handleSubmit}>
+      <form className="space-y-4">
         {/* Headquarters */}
         <div className="form-group mb-4">
           <label htmlFor="headquarters" className="block mb-3 text-[16px] text-left font-medium">
@@ -183,16 +169,6 @@ const GeographicsForm = ({ data, setData, title }) => {
             placeholder="Enter Parent Company Name, if applicable"
           />
         </div>
-
-        {/* Submit Button */}
-        {/* <div className="text-center">
-          <button
-            type="submit"
-            className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none"
-          >
-            Save
-          </button>
-        </div> */}
       </form>
     </div>
   );

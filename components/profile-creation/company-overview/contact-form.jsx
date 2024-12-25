@@ -9,7 +9,7 @@ const ContactForm = ({ data, setData, title }) => {
     linkedInId: "",
   });
 
-  const [error, setError] = useState("");
+  const {professionalEmail, phoneNumber, linkedInId} = formData;
 
   // Handle form data change
   const handleChange = (e) => {
@@ -20,32 +20,20 @@ const ContactForm = ({ data, setData, title }) => {
     }));
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Validate required fields
-    if (!formData.professionalEmail || !formData.phoneNumber) {
-      setError("Please fill all required fields.");
-      return;
+  useEffect(()=>{
+    const formS = JSON.parse(localStorage.getItem("contact info CO"));
+    if(professionalEmail === "" && phoneNumber==="" && linkedInId===""){
+      setFormData((prev)=> ({...prev, ...formS}));
     }
+  }, []);
 
-    // Add the new form data to the list
-    setData([...data, formData]);
-
-    // Clear the form after submission
-    setFormData({
-      professionalEmail: "",
-      phoneNumber: "",
-      linkedInId: "",
-    });
-    setError(""); // Clear error
-  };
+  useEffect(()=>{
+    localStorage.setItem("contact info CO", JSON.stringify(formData));
+  },[professionalEmail, phoneNumber, linkedInId]);
 
   return (
     <div className="form-container mx-auto px-4 w-full">
-      {error && <div className="text-red-500 text-center mb-4">{error}</div>}
-
-      <form className="space-y-4" onSubmit={handleSubmit}>
+      <form className="space-y-4">
         {/* Professional Email ID */}
         <div className="form-group mb-4">
           <label htmlFor="professionalEmail" className="block mb-3 text-[16px] text-left font-medium">
@@ -95,16 +83,6 @@ const ContactForm = ({ data, setData, title }) => {
             placeholder="Enter Your LinkedIn ID"
           />
         </div>
-
-        {/* Submit Button */}
-        {/* <div className="text-center">
-          <button
-            type="submit"
-            className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none"
-          >
-            Save
-          </button>
-        </div> */}
       </form>
     </div>
   );

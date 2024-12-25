@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const DocumentForm = () => {
   const [formData, setFormData] = useState({
@@ -7,9 +7,9 @@ const DocumentForm = () => {
     youtubeUrl: "", // YouTube URL
   });
 
-  const [error, setError] = useState("");
+  const {pitchDeck, companyProfile, youtubeUrl} = formData;
 
-  // Handle text field changes
+  // Handle form data change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -18,35 +18,42 @@ const DocumentForm = () => {
     }));
   };
 
+  useEffect(()=>{
+    const formS = JSON.parse(localStorage.getItem("document info CO"));
+    if (formS) {
+      setFormData((prev) => ({
+        ...prev,
+        youtubeUrl: formS.youtubeUrl || "",
+      }));
+    }
+  }, []);
+
+  useEffect(()=>{
+    const savedFormData = JSON.parse(localStorage.getItem("document info CO")) || {};
+    savedFormData.youtubeUrl = youtubeUrl;
+    localStorage.setItem("document info CO", JSON.stringify(savedFormData));
+  },[youtubeUrl]);
+
   // Handle file uploads
   const handleFileChange = (e) => {
     const { name, files } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: files[0], // Store the selected file
-    }));
-  };
+    if (files.length > 0) {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: files[0], // Store the file object in state
+      }));
 
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Validate required fields
-    if (!formData.professionalEmail || !formData.phoneNumber) {
-      setError("Please fill all required fields.");
-      return;
+      // Save the file name in localStorage (optional)
+      const savedFormData = JSON.parse(localStorage.getItem("document info CO")) || {};
+      savedFormData[name] = files[0].name; // Store the file name
+      localStorage.setItem("document info CO", JSON.stringify(savedFormData));
     }
-
-    // Handle form submission logic
-    console.log("Submitted Data:", formData);
-    setError(""); // Clear any previous errors
   };
 
   return (
     <div className="form-container mx-auto px-4 w-full">
-      {error && <div className="text-red-500 text-center mb-4">{error}</div>}
 
-      <form className="space-y-4" onSubmit={handleSubmit}>
+      <form className="space-y-4">
         {/* Pitch Deck */}
         <div className="form-group flex justify-between items-center mb-4">
           <label

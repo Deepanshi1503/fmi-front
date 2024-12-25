@@ -12,6 +12,28 @@ const WorkforceDetailForm = ({ data, setData, title }) => {
   const [workforceRangeOptions, setWorkforceRangeOptions] = useState([]);
   const [error, setError] = useState("");
 
+  const {numberOfEmployees, workforceRatio, diversityInfo} = formData;
+
+  // Handle form data change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  useEffect(()=>{
+    const formS = JSON.parse(localStorage.getItem("workforce info CO"));
+    if(numberOfEmployees === "" && workforceRatio==="" && diversityInfo===""){
+      setFormData((prev)=> ({...prev, ...formS}));
+    }
+  }, []);
+
+  useEffect(()=>{
+    localStorage.setItem("workforce info CO", JSON.stringify(formData));
+  },[numberOfEmployees, workforceRatio, diversityInfo]);
+
   // Fetch workforce range options from the backend
   useEffect(() => {
     const fetchWorkforceRanges = async () => {
@@ -34,19 +56,8 @@ const WorkforceDetailForm = ({ data, setData, title }) => {
     fetchWorkforceRanges();
   }, []);
 
-  // Handle form data change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   return (
     <div className="form-container mx-auto px-4 w-full">
-
-      {/* {error && <div className="text-red-500 text-center mb-4">{error}</div>} */}
 
       <form className="space-y-4">
         {/* "Number of Employees" Dropdown */}
@@ -106,16 +117,6 @@ const WorkforceDetailForm = ({ data, setData, title }) => {
             required
           />
         </div>
-
-        {/* Submit Button */}
-        {/* <div className="text-center">
-          <button
-            type="submit"
-            className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none"
-          >
-            Save
-          </button>
-        </div> */}
       </form>
     </div>
   );

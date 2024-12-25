@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useGlobalContext } from "@/context/context";
 import axios from "axios";
 
-const CompanyDetailForm = ({ data, setData }) => {
+const CompanyDetailForm = () => {
     const [companyTypeOptions, setCompanyTypeOptions] = useState([]); // Options for 'Type of Company'
     const [companyStageOptions, setCompanyStageOptions] = useState([]); // Options for 'Stage of the Company'
     const [industryOptions, setIndustryOptions] = useState([]); // Options for Industry
@@ -19,6 +19,48 @@ const CompanyDetailForm = ({ data, setData }) => {
         mission: "",
         vision: "",
     });
+
+    const { companyName, website, yearOfIncorporation, companyStage, companyType, industry, subIndustry, description, mission, vision } = formData;
+
+    // Handle form data change
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        if (name === "industry") {
+            // Update sub-industries based on selected industry
+            const selectedIndustry = industryOptions.find(
+                (industry) => industry.id === parseInt(value)
+            );
+            setSubIndustryOptions(selectedIndustry?.attributes?.sub_industries?.data || []);
+            setFormData((prev) => ({
+                ...prev,
+                [name]: value,
+                subIndustry: "", // Reset sub-industry when industry changes
+            }));
+        } else {
+            setFormData((prev) => ({
+                ...prev,
+                [name]: value,
+            }));
+        }
+    };
+
+    useEffect(() => {
+        const formS = JSON.parse(localStorage.getItem("company info CO"));
+        if (companyName === "" && website === "" && yearOfIncorporation === "" && companyStage === "" && companyType === "" && industry === "" && subIndustry === "" && description === "" && mission === "" && vision === "") {
+            setFormData((prev) => ({ ...prev, ...formS }));
+            // Populate subIndustryOptions based on the saved industry
+            if (formS?.industry) {
+                const selectedIndustry = industryOptions.find(
+                    (industry) => industry.id === parseInt(formS.industry)
+                );
+                setSubIndustryOptions(selectedIndustry?.attributes?.sub_industries?.data || []);
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem("company info CO", JSON.stringify(formData));
+    }, [companyName, website, yearOfIncorporation, companyStage, companyType, industry, subIndustry, description, mission, vision]);
 
     const [error, setError] = useState("");
 
@@ -60,24 +102,8 @@ const CompanyDetailForm = ({ data, setData }) => {
         fetchOptions();
     }, []);
 
-    // Handle form data change
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        if (name === "industry") {
-            const selectedIndustry = industryOptions.find((industry) => industry.id === parseInt(value));
-            setSubIndustryOptions(selectedIndustry?.attributes?.sub_industries?.data || []);
-            setFormData((prev) => ({ ...prev, [name]: value, subIndustry: "" }));
-        } else {
-            const updatedData = { [name]: value };
-            setData(updatedData); // Updates the parent data
-            setFormData((prev) => ({ ...prev, ...updatedData }));
-        }
-    };
-
     return (
         <div className="form-container mx-auto px-4 w-full">
-            {/* {error && <div className="text-red-500 text-center mb-4">{error}</div>} */}
-
             <form className="space-y-4">
                 {/* Company Name */}
                 <div className="form-group mb-4">
@@ -88,7 +114,7 @@ const CompanyDetailForm = ({ data, setData }) => {
                         type="text"
                         name="companyName"
                         id="companyName"
-                        value={data.companyName || ""}
+                        value={formData.companyName || ""}
                         onChange={handleChange}
                         required
                         className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
@@ -105,7 +131,7 @@ const CompanyDetailForm = ({ data, setData }) => {
                         type="text"
                         name="website"
                         id="website"
-                        value={data.website || ""}
+                        value={formData.website || ""}
                         onChange={handleChange}
                         required
                         className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
@@ -122,7 +148,7 @@ const CompanyDetailForm = ({ data, setData }) => {
                         <select
                             name="yearOfIncorporation"
                             id="yearOfIncorporation"
-                            value={data.yearOfIncorporation || ""}
+                            value={formData.yearOfIncorporation || ""}
                             onChange={handleChange}
                             required
                             className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
@@ -146,7 +172,7 @@ const CompanyDetailForm = ({ data, setData }) => {
                         <select
                             name="companyStage"
                             id="companyStage"
-                            value={data.companyStage || ""}
+                            value={formData.companyStage || ""}
                             onChange={handleChange}
                             required
                             className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
@@ -170,7 +196,7 @@ const CompanyDetailForm = ({ data, setData }) => {
                         <select
                             name="companyType"
                             id="companyType"
-                            value={data.companyType || ""}
+                            value={formData.companyType || ""}
                             onChange={handleChange}
                             required
                             className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
@@ -194,7 +220,7 @@ const CompanyDetailForm = ({ data, setData }) => {
                         <select
                             name="industry"
                             id="industry"
-                            value={data.industry || ""}
+                            value={formData.industry || ""}
                             onChange={handleChange}
                             required
                             className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-[#cccccc]"
@@ -218,9 +244,9 @@ const CompanyDetailForm = ({ data, setData }) => {
                         <select
                             name="subIndustry"
                             id="subIndustry"
-                            value={data.subIndustry || ""}
+                            value={formData.subIndustry || ""}
                             onChange={handleChange}
-                            disabled={!data.industry}
+                            disabled={!formData.industry}
                             className="w-full p-3 border rounded-lg"
                         >
                             <option value="">Select a Sub-Industry</option>
@@ -241,7 +267,7 @@ const CompanyDetailForm = ({ data, setData }) => {
                     <textarea
                         name="description"
                         id="description"
-                        value={data.description || ""}
+                        value={formData.description || ""}
                         onChange={handleChange}
                         rows="4"
                         className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
@@ -258,7 +284,7 @@ const CompanyDetailForm = ({ data, setData }) => {
                     <textarea
                         name="mission"
                         id="mission"
-                        value={data.mission || ""}
+                        value={formData.mission || ""}
                         onChange={handleChange}
                         rows="4"
                         className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
@@ -275,7 +301,7 @@ const CompanyDetailForm = ({ data, setData }) => {
                     <textarea
                         name="vision"
                         id="vision"
-                        value={data.vision || ""}
+                        value={formData.vision || ""}
                         onChange={handleChange}
                         rows="4"
                         className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
