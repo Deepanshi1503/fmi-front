@@ -119,34 +119,7 @@ const ProfileStep = () => {
 
   const handleNext = async () => {
     // Simulate form data
-    const formData = {
-      "lookingFor": "Raise Funds",
-      "reason": "jasu da janam hoya bhaga wali raat",
-      "preferredTimeframe": "3 - 6 months",
-      "companyName": "sssssssssasasaasa",
-      "website": "ddddsssssasasa",
-      "yearOfIncorporation": "2019", // Make sure this is a number
-      "companyStage": "R&D",
-      "companyType": "Private Limited",
-      "description": "dddsdsdadasasd",
-      "mission": "dsads",
-      "vision": "asadsd",
-      "numberOfEmployees": "11 - 50",
-      "workforceRatio": "50:50", // Ensure this is in the expected format (e.g., "50:50")
-      "diversityInfo": "sasasasasdsdsdsd",
-      "headquarters": "sasasa",
-      "country": "DZ", // Ensure this is a valid country code
-      "state": "44", // Ensure this is a valid state code or name
-      "geographicalPresence": "asasas",
-      "currentGeography": "asasas",
-      "parentCompany": "asasas",
-      "professionalEmail": "info@samplecompany.com",
-      "phoneNumber": 1234567890, // Ensure this is a valid number
-      "linkedInId": "sdsdsdss",
-      "pitchDeck": "school18-website",
-      "companyProfile": "fmi-front",
-      "youtubeUrl": "asasasas"
-  };
+    const formData = JSON.parse(localStorage.getItem("combinedInfo"));
   
 
     // Sync with backend before navigating

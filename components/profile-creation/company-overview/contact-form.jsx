@@ -9,7 +9,9 @@ const ContactForm = ({ data, setData, title }) => {
     linkedInId: "",
   });
 
-  const {professionalEmail, phoneNumber, linkedInId} = formData;
+  const [errors, setErrors] = useState({});
+
+  const { professionalEmail, phoneNumber, linkedInId } = formData;
 
   // Handle form data change
   const handleChange = (e) => {
@@ -18,18 +20,33 @@ const ContactForm = ({ data, setData, title }) => {
       ...prev,
       [name]: value,
     }));
+
+    if (name === "phoneNumber") {
+      const phoneRegex = /^[+]?[0-9]{10,15}$/;
+      if (!phoneRegex.test(value)) {
+        setErrors((prev) => ({
+          ...prev,
+          phoneNumber: "Please enter a valid phone number (10-15 digits).",
+        }));
+      } else {
+        setErrors((prev) => {
+          const { phoneNumber, ...rest } = prev;
+          return rest;
+        });
+      }
+    }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     const formS = JSON.parse(localStorage.getItem("contact info CO"));
-    if(professionalEmail === "" && phoneNumber==="" && linkedInId===""){
-      setFormData((prev)=> ({...prev, ...formS}));
+    if (professionalEmail === "" && phoneNumber === "" && linkedInId === "") {
+      setFormData((prev) => ({ ...prev, ...formS }));
     }
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     localStorage.setItem("contact info CO", JSON.stringify(formData));
-  },[professionalEmail, phoneNumber, linkedInId]);
+  }, [professionalEmail, phoneNumber, linkedInId]);
 
   return (
     <div className="form-container mx-auto px-4 w-full">
@@ -66,6 +83,9 @@ const ContactForm = ({ data, setData, title }) => {
             className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
             placeholder="Enter Your Contact Number"
           />
+          {errors.phoneNumber && (
+            <p className="text-red-500 text-sm mt-2">{errors.phoneNumber}</p>
+          )}
         </div>
 
         {/* LinkedIn ID */}
