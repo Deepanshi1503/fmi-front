@@ -20,7 +20,18 @@ const CompanyDetailForm = () => {
         vision: "",
     });
 
-    const { companyName, website, yearOfIncorporation, companyStage, companyType, industry, subIndustry, description, mission, vision } = formData;
+    const {
+        companyName,
+        website,
+        yearOfIncorporation,
+        companyStage,
+        companyType,
+        industry,
+        subIndustry,
+        description,
+        mission,
+        vision,
+    } = formData;
 
     // Handle form data change
     const handleChange = (e) => {
@@ -45,22 +56,22 @@ const CompanyDetailForm = () => {
     };
 
     useEffect(() => {
-        const formS = JSON.parse(localStorage.getItem("company info CO"));
-        if (companyName === "" && website === "" && yearOfIncorporation === "" && companyStage === "" && companyType === "" && industry === "" && subIndustry === "" && description === "" && mission === "" && vision === "") {
-            setFormData((prev) => ({ ...prev, ...formS }));
-            // Populate subIndustryOptions based on the saved industry
-            if (formS?.industry) {
-                const selectedIndustry = industryOptions.find(
-                    (industry) => industry.id === parseInt(formS.industry)
-                );
-                setSubIndustryOptions(selectedIndustry?.attributes?.sub_industries?.data || []);
-            }
+        const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+        const mergedData = { ...formData, ...savedData };
+        setFormData(mergedData);
+        if (mergedData.industry) {
+            const selectedIndustry = industryOptions.find(
+                (industry) => industry.id === parseInt(mergedData.industry)
+            );
+            setSubIndustryOptions(selectedIndustry?.attributes?.sub_industries?.data || []);
         }
     }, []);
 
     useEffect(() => {
-        localStorage.setItem("company info CO", JSON.stringify(formData));
-    }, [companyName, website, yearOfIncorporation, companyStage, companyType, industry, subIndustry, description, mission, vision]);
+        const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+        const updatedData = { ...savedData, ...formData };
+        localStorage.setItem("combineInfo", JSON.stringify(updatedData));
+    }, [formData]);
 
     const [error, setError] = useState("");
 

@@ -38,15 +38,16 @@ const ContactForm = ({ data, setData, title }) => {
   };
 
   useEffect(() => {
-    const formS = JSON.parse(localStorage.getItem("contact info CO"));
-    if (professionalEmail === "" && phoneNumber === "" && linkedInId === "") {
-      setFormData((prev) => ({ ...prev, ...formS }));
-    }
+    const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+    const mergedData = { ...formData, ...savedData };
+    setFormData(mergedData);
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("contact info CO", JSON.stringify(formData));
-  }, [professionalEmail, phoneNumber, linkedInId]);
+    const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+    const updatedData = { ...savedData, ...formData };
+    localStorage.setItem("combineInfo", JSON.stringify(updatedData));
+  }, [formData]);
 
   return (
     <div className="form-container mx-auto px-4 w-full">

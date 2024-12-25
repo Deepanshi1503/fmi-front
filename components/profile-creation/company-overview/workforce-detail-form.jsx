@@ -23,16 +23,17 @@ const WorkforceDetailForm = ({ data, setData, title }) => {
     }));
   };
 
-  useEffect(()=>{
-    const formS = JSON.parse(localStorage.getItem("workforce info CO"));
-    if(numberOfEmployees === "" && workforceRatio==="" && diversityInfo===""){
-      setFormData((prev)=> ({...prev, ...formS}));
-    }
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+    const mergedData = { ...formData, ...savedData };
+    setFormData(mergedData);
   }, []);
 
-  useEffect(()=>{
-    localStorage.setItem("workforce info CO", JSON.stringify(formData));
-  },[numberOfEmployees, workforceRatio, diversityInfo]);
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+    const updatedData = { ...savedData, ...formData };
+    localStorage.setItem("combineInfo", JSON.stringify(updatedData));
+  }, [formData]);
 
   // Fetch workforce range options from the backend
   useEffect(() => {

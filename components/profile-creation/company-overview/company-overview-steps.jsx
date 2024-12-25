@@ -17,52 +17,6 @@ const CompanyOverview = () => {
   const [isFormOpen, setIsFormOpen] = useState(Array(6).fill(false));
   const [visitedSteps, setVisitedSteps] = useState(Array(6).fill(false));
 
-  // Centralized state for all form data
-  const [formData, setFormData] = useState({
-    listingDetails: {},
-    companyDetails: {},
-    workforceDetails: {},
-    geographicalDetails: {},
-    contactDetails: {},
-    documents: {}
-  });
-
-  useEffect(() => {
-    // Define the keys you want to combine
-    const keysToCombine = [
-      "listing info CO",
-      "company info CO",
-      "workforce info CO",
-      "geographical info CO",
-      "document info CO",
-      "contact info CO",
-      // Add other keys as needed
-    ];
-
-    // Initialize an object to accumulate data
-    const accumulatedData = {};
-
-    // Iterate through the keys and accumulate data
-    keysToCombine.forEach((key) => {
-      const storedData = localStorage.getItem(key);
-      if (storedData) {
-        try {
-          // Parse and merge data
-          Object.assign(accumulatedData, JSON.parse(storedData));
-        } catch (error) {
-          console.error(`Error parsing data for key: ${key}`, error);
-        }
-      }
-    });
-
-    // Store the accumulated data in a new key
-    localStorage.setItem("combinedInfo", JSON.stringify(accumulatedData));
-
-    // Optional: Update the state with the combined data
-    setFormData((prev) => ({ ...prev, ...accumulatedData }));
-  }, []); // Runs once when the component mounts
-
-
   const stepsComponents = [
     {
       image: "/images/founder-details.png",

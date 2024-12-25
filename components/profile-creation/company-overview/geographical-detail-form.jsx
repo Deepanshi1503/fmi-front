@@ -27,16 +27,17 @@ const GeographicsForm = ({ data, setData, title }) => {
     }));
   };
 
-  useEffect(()=>{
-    const formS = JSON.parse(localStorage.getItem("geographical info CO"));
-    if(headquarters === "" && country==="" && state==="" && geographicalPresence==="" && currentGeography==="" && parentCompany===""){
-      setFormData((prev)=> ({...prev, ...formS}));
-    }
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+    const mergedData = { ...formData, ...savedData };
+    setFormData(mergedData);
   }, []);
 
-  useEffect(()=>{
-    localStorage.setItem("geographical info CO", JSON.stringify(formData));
-  },[headquarters, country, state, geographicalPresence, currentGeography, parentCompany]);
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+    const updatedData = { ...savedData, ...formData };
+    localStorage.setItem("combineInfo", JSON.stringify(updatedData));
+  }, [formData]);
 
   // Fetch Country options and State options dynamically
   useEffect(() => {

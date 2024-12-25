@@ -18,21 +18,17 @@ const DocumentForm = () => {
     }));
   };
 
-  useEffect(()=>{
-    const formS = JSON.parse(localStorage.getItem("document info CO"));
-    if (formS) {
-      setFormData((prev) => ({
-        ...prev,
-        youtubeUrl: formS.youtubeUrl || "",
-      }));
-    }
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+    const mergedData = { ...formData, ...savedData };
+    setFormData(mergedData);
   }, []);
 
-  useEffect(()=>{
-    const savedFormData = JSON.parse(localStorage.getItem("document info CO")) || {};
-    savedFormData.youtubeUrl = youtubeUrl;
-    localStorage.setItem("document info CO", JSON.stringify(savedFormData));
-  },[youtubeUrl]);
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+    const updatedData = { ...savedData, ...formData };
+    localStorage.setItem("combineInfo", JSON.stringify(updatedData));
+  }, [formData]);
 
   // Handle file uploads
   const handleFileChange = (e) => {
@@ -44,9 +40,9 @@ const DocumentForm = () => {
       }));
 
       // Save the file name in localStorage (optional)
-      const savedFormData = JSON.parse(localStorage.getItem("document info CO")) || {};
+      const savedFormData = JSON.parse(localStorage.getItem("combineInfo")) || {};
       savedFormData[name] = files[0].name; // Store the file name
-      localStorage.setItem("document info CO", JSON.stringify(savedFormData));
+      localStorage.setItem("combineInfo", JSON.stringify(savedFormData));
     }
   };
 

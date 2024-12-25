@@ -119,7 +119,7 @@ const ProfileStep = () => {
 
   const handleNext = async () => {
     // Simulate form data
-    const formData = JSON.parse(localStorage.getItem("combinedInfo"));
+    const formData = JSON.parse(localStorage.getItem("combineInfo"));
   
 
     // Sync with backend before navigating

@@ -21,16 +21,17 @@ const ListingForm = ({ data, setData, title }) => {
     }));
   };
 
-  useEffect(()=>{
-    const formS = JSON.parse(localStorage.getItem("listing info CO"));
-    if(lookingFor === "" && reason==="" && preferredTimeframe===""){
-      setFormData((prev)=> ({...prev, ...formS}));
-    }
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+    const mergedData = { ...formData, ...savedData };
+    setFormData(mergedData);
   }, []);
 
-  useEffect(()=>{
-    localStorage.setItem("listing info CO", JSON.stringify(formData));
-  },[lookingFor, reason, preferredTimeframe]);
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+    const updatedData = { ...savedData, ...formData };
+    localStorage.setItem("combineInfo", JSON.stringify(updatedData));
+  }, [formData]);
 
   const [error, setError] = useState("");
 
