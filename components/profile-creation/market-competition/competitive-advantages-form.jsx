@@ -1,15 +1,22 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import countries from "world-countries";
 
 const CompetitiveAnalysisForm = () => {
-    const [globalMarketSize, setGlobalMarketSize] = useState([{ country: "", currency: "", amount: "" }]);
-    const [currentMarketShare, setCurrentMarketShare] = useState([{ country: "", share: "", value: "" }]);
-    const [descriptions, setDescriptions] = useState({
-        competitors: "",
-        whyDifferent: "",
-        whyNow: "",
+    const [globalMarketSize, setGlobalMarketSize] = useState(() => {
+        const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+        return savedData.competitiveAnalysis?.globalMarketSize || [{ country: "", currency: "", amount: "" }];
+    });
+
+    const [currentMarketShare, setCurrentMarketShare] = useState(() => {
+        const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+        return savedData.competitiveAnalysis?.currentMarketShare || [{ country: "", share: "", value: "" }];
+    });
+
+    const [descriptions, setDescriptions] = useState(() => {
+        const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+        return savedData.competitiveAnalysis?.descriptions || { competitors: "", whyDifferent: "", whyNow: "" };
     });
 
     // Prepare countries for react-select
@@ -51,6 +58,44 @@ const CompetitiveAnalysisForm = () => {
     const removeRow = (index, setRows) => {
         setRows((prev) => prev.filter((_, i) => i !== index));
     };
+
+    // Save form data to localStorage
+    useEffect(() => {
+        const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+
+        // Merge the existing data with the current form data
+        const mergedData = {
+            ...savedData,
+            competitiveAnalysis: {
+                globalMarketSize,
+                currentMarketShare,
+                descriptions,
+            },
+        };
+
+        setGlobalMarketSize(mergedData.competitiveAnalysis?.globalMarketSize || [{ country: "", currency: "", amount: "" }]);
+        setCurrentMarketShare(mergedData.competitiveAnalysis?.currentMarketShare || [{ country: "", share: "", value: "" }]);
+        setDescriptions(mergedData.competitiveAnalysis?.descriptions || { competitors: "", whyDifferent: "", whyNow: "" });
+    }, []);
+
+    // Update localStorage when data changes
+    useEffect(() => {
+        // Merge updated form data with existing data in localStorage
+        const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+
+        // Avoid overwriting with empty values
+        const updatedData = {
+            ...savedData,
+            competitiveAnalysis: {
+                globalMarketSize: globalMarketSize.length ? globalMarketSize : savedData.competitiveAnalysis?.globalMarketSize || [],
+                currentMarketShare: currentMarketShare.length ? currentMarketShare : savedData.competitiveAnalysis?.currentMarketShare || [],
+                descriptions: descriptions || savedData.competitiveAnalysis?.descriptions || {},
+            },
+        };
+
+        localStorage.setItem("combineInfo", JSON.stringify(updatedData));
+    }, [globalMarketSize, currentMarketShare, descriptions]);
+
 
     return (
         <div className="form-container mx-auto px-4 w-full">

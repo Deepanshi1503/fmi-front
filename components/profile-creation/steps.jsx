@@ -23,7 +23,6 @@ const stepsConfig = [
 
 const ProfileStep = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const { founders, teamMembers, advisors } = useGlobalContext();
   
   
   const syncBusinessData = async (businessData, founderData, teamData, advisorData) => {
@@ -89,6 +88,19 @@ const ProfileStep = () => {
         })),
         market_opportunity_size: businessData.marketOpportunity,
         competitor_analysis:businessData.competitorAnalysis,
+        global_market_share: businessData.competitiveAnalysis.globalMarketSize.map((item) => ({
+          country: item.country,
+          currency: item.currency,
+          amount: item.amount,
+        })),
+        current_market_share: businessData.competitiveAnalysis.currentMarketShare.map((item) => ({
+          country: item.country,
+          share_percentage: item.share,
+          value: item.value,
+        })),
+        your_competitors: businessData.competitiveAnalysis.descriptions.competitors,
+        why_are_you_different: businessData.competitiveAnalysis.descriptions.whyDifferent,
+        why_you_why_now: businessData.competitiveAnalysis.descriptions.whyNow,
       }
     };
 
