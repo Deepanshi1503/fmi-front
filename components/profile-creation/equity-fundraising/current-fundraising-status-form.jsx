@@ -21,6 +21,30 @@ const FundraisingStatusForm = () => {
         setFundraisingStatus((prev) => prev.filter((_, i) => i !== index));
     };
 
+    // Load data from localStorage on component mount
+    useEffect(() => {
+        const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+        const fundraisingData = savedData.fundraisingStatus || { fundraisingStatus: [{ lender: "", amount: "" }], totalFundsRaised: 0 };
+
+        setFundraisingStatus(fundraisingData.fundraisingStatus || [{ lender: "", amount: "" }]);
+        setTotalFundsRaised(fundraisingData.totalFundsRaised || 0);
+    }, []);
+
+    // Save data to localStorage when state changes
+    useEffect(() => {
+        const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+
+        const updatedData = {
+            ...savedData,
+            fundraisingStatus: {
+                fundraisingStatus,
+                totalFundsRaised,
+            },
+        };
+
+        localStorage.setItem("combineInfo", JSON.stringify(updatedData));
+    }, [fundraisingStatus, totalFundsRaised]);
+
     // Calculate the total funds raised based on the entered amounts
     useEffect(() => {
         const total = fundraisingStatus.reduce((acc, row) => acc + (parseFloat(row.amount) || 0), 0);

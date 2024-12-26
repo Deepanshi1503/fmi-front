@@ -10,30 +10,25 @@ const SaleForm = ({ data, setData }) => {
         reasonForSale: "",
     });
 
-    const [reasonOptions] = useState([
-        "Retirement",
-        "Financial Constraints",
-        "Strategic Partnership",
-    ]);
+    const [reasonOptions, setReasonOptions] = useState([]);
 
     useEffect(() => {
         const fetchOptions = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:1337/api/content-type-builder/content-types/api::business.business"
+                    "http://localhost:1337/api/content-type-builder/components/form.sale-offer-business-listing-detail"
                 );
 
                 const schemaAttributes = response.data?.data?.schema?.attributes || {};
 
-                // Fetch 'Revenue Model' options
-                const typeOptions =
-                    schemaAttributes?.revenue_model?.enum.map((option) =>
-                        option.replace(/^"|"$/g, "") // Removes double quotes
+                const reasonOptions =
+                    schemaAttributes?.reason_for_sale?.enum.map((option) =>
+                        option.replace(/^"|"$/g, "") // Removes double quotes if present
                     ) || [];
 
-                setRevenueOptions(typeOptions);
+                setReasonOptions(reasonOptions);
             } catch (err) {
-                console.error("Error fetching company options:", err);
+                console.error("Error fetching options:", err);
             }
         };
 

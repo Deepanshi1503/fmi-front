@@ -10,37 +10,32 @@ const InvestmentRequired = ({ data, setData }) => {
     fundsAllocation: "",
   });
 
-  const [investorRoleOptions, setInvestorRoleOptions] = useState([
-    "Angel Investor",
-    "Venture Capital",
-    "Private Equity",
-    "Crowdfunding",
-  ]);
-  const [fundingTypeOptions, setFundingTypeOptions] = useState([
-    "Equity",
-    "Debt",
-    "Convertible Notes",
-  ]);
+  const [investorRoleOptions, setInvestorRoleOptions] = useState([]);
+  const [fundingTypeOptions, setFundingTypeOptions] = useState([]);
 
   useEffect(() => {
     const fetchOptions = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:1337/api/content-type-builder/content-types/api::business.business"
+          "http://localhost:1337/api/content-type-builder/components/form.investor-business-listing-detail"
         );
 
         const schemaAttributes = response.data?.data?.schema?.attributes || {};
 
-        // Fetch 'Revenue Model' options
-        const typeOptions =
-          schemaAttributes?.revenue_model?.enum.map((option) =>
-            option.replace(/^"|"$/g, "") // Removes double quotes
+        const investorOption =
+          schemaAttributes?.investor_role?.enum.map((option) =>
+            option.replace(/^"|"$/g, "") // Removes double quotes if present
           ) || [];
 
-        setRevenueOptions(typeOptions);
+        const typeOptions =
+          schemaAttributes?.investor_role?.enum.map((option) =>
+            option.replace(/^"|"$/g, "") // Removes double quotes if present
+          ) || [];
+
+        setInvestorRoleOptions(investorOption);
+        setFundingTypeOptions(typeOptions);
       } catch (err) {
-        console.error("Error fetching company options:", err);
-        // setError("Failed to load company options.");
+        console.error("Error fetching options:", err);
       }
     };
 

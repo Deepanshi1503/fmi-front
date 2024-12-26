@@ -101,6 +101,11 @@ const ProfileStep = () => {
         your_competitors: businessData.competitiveAnalysis.descriptions.competitors,
         why_are_you_different: businessData.competitiveAnalysis.descriptions.whyDifferent,
         why_you_why_now: businessData.competitiveAnalysis.descriptions.whyNow,
+        fundraising_status: businessData.fundraisingStatus.fundraisingStatus.map((item) => ({
+          current_status: item.lender,
+          amount: item.amount,
+        })),
+        total_fundraised:businessData.fundraisingStatus.totalFundsRaised,
       }
     };
 
