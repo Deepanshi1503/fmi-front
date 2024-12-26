@@ -151,7 +151,7 @@ const ProfileStep = () => {
     <GlobalContextProvider>
       <div className="w-full relative">
         {/* Stepper Container */}
-        <div className="flex items-center justify-evenly relative 2xl:ml-20 2xl:mr-2 2xl:px-32 2xl:py-3 overflow-x-auto">
+        <div className="flex items-center justify-evenly relative 2xl:ml-20 2xl:mr-2 2xl:px-[100px] 2xl:py-3 overflow-x-auto">
           {stepsConfig.map((step, index) => (
             <div
               key={step.id}

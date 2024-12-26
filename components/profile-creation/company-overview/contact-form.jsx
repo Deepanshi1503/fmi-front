@@ -11,8 +11,6 @@ const ContactForm = ({ data, setData, title }) => {
 
   const [errors, setErrors] = useState({});
 
-  const { professionalEmail, phoneNumber, linkedInId } = formData;
-
   // Handle form data change
   const handleChange = (e) => {
     const { name, value } = e.target;

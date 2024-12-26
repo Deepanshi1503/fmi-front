@@ -15,9 +15,7 @@ const GeographicsForm = ({ data, setData, title }) => {
     currentGeography: "",
     parentCompany: "",
   });
-
-  const {headquarters, country, state, geographicalPresence, currentGeography, parentCompany} = formData;
-
+  
   // Handle form data change
   const handleChange = (e) => {
     const { name, value } = e.target;

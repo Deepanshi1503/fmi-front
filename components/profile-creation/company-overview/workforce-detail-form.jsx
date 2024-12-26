@@ -12,8 +12,6 @@ const WorkforceDetailForm = ({ data, setData, title }) => {
   const [workforceRangeOptions, setWorkforceRangeOptions] = useState([]);
   const [error, setError] = useState("");
 
-  const {numberOfEmployees, workforceRatio, diversityInfo} = formData;
-
   // Handle form data change
   const handleChange = (e) => {
     const { name, value } = e.target;

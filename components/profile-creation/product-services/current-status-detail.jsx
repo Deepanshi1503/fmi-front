@@ -43,6 +43,18 @@ const CurrentStatusForm = ({ data, setData }) => {
     }));
   };
 
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+    const mergedData = { ...formData, ...savedData };
+    setFormData(mergedData);
+  }, []);
+
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+    const updatedData = { ...savedData, ...formData };
+    localStorage.setItem("combineInfo", JSON.stringify(updatedData));
+  }, [formData]);
+
   return (
     <div className="form-container mx-auto px-4 w-full">
       <form className="space-y-4">

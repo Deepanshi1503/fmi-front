@@ -14,7 +14,7 @@ const ProductServices = () => {
   const [visitedSteps, setVisitedSteps] = useState(Array(6).fill(false));
 
   // State to track whether it's a Sale Listing or Fundraise Listing
-  const [isSaleListing, setIsSaleListing] = useState(false); // Default to Fundraise Listing
+  const [isSaleListing, setIsSaleListing] = useState(true); // Default to Fundraise Listing
 
   // Centralized state for all form data
   const [formData, setFormData] = useState({

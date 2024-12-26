@@ -7,8 +7,6 @@ const DocumentForm = () => {
     youtubeUrl: "", // YouTube URL
   });
 
-  const {pitchDeck, companyProfile, youtubeUrl} = formData;
-
   // Handle form data change
   const handleChange = (e) => {
     const { name, value } = e.target;

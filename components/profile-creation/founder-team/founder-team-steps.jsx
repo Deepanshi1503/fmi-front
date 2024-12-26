@@ -86,7 +86,7 @@ const FounderTeam = () => {
               <div
                 className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full font-bold z-10 ${index === activeStep
                   ? "bg-transparent border-2 border-[#0A66C2]" // Active step - blue border
-                  : visitedSteps[index] && !hasData[index]
+                  : visitedSteps[index]
                     ? "bg-[#FF6347]" // Visited step with no data - red background
                     // : hasData[index]
                     //   ? "bg-[#0A66C2]" // Completed step with data - blue background

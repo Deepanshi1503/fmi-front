@@ -10,8 +10,6 @@ const ListingForm = ({ data, setData, title }) => {
     preferredTimeframe: "",
   });
 
-  const {lookingFor, reason, preferredTimeframe} = formData;
-
   // Handle form data change
   const handleChange = (e) => {
     const { name, value } = e.target;

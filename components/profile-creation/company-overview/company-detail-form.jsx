@@ -20,19 +20,6 @@ const CompanyDetailForm = () => {
         vision: "",
     });
 
-    const {
-        companyName,
-        website,
-        yearOfIncorporation,
-        companyStage,
-        companyType,
-        industry,
-        subIndustry,
-        description,
-        mission,
-        vision,
-    } = formData;
-
     // Handle form data change
     const handleChange = (e) => {
         const { name, value } = e.target;
