@@ -106,6 +106,18 @@ const ProfileStep = () => {
           amount: item.amount,
         })),
         total_fundraised:businessData.fundraisingStatus.totalFundsRaised,
+        fundraise_business_details: {
+          investor_role: businessData.investorRole,
+          type_of_funding: businessData.typeOfFunding,
+          valuation:businessData.valuation,
+          funds_allocation:businessData.fundsAllocation,
+        },    
+        sale_business_details: {
+          valuation:businessData.saleValuation,
+          ownership_stake_offered: businessData.ownershipStake,
+          sale_price: businessData.salePrice,
+          reason_for_sale:businessData.reasonForSale,
+        },        
       }
     };
 

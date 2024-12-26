@@ -4,13 +4,34 @@ import axios from "axios";
 
 const SaleForm = ({ data, setData }) => {
     const [formData, setFormData] = useState({
-        valuation: "",
+        saleValuation: "",
         ownershipStake: "",
         salePrice: "",
         reasonForSale: "",
     });
 
     const [reasonOptions, setReasonOptions] = useState([]);
+
+    // Handle form data change
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    useEffect(() => {
+        const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+        const mergedData = { ...formData, ...savedData };
+        setFormData(mergedData);
+    }, []);
+
+    useEffect(() => {
+        const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+        const updatedData = { ...savedData, ...formData };
+        localStorage.setItem("combineInfo", JSON.stringify(updatedData));
+    }, [formData]);
 
     useEffect(() => {
         const fetchOptions = async () => {
@@ -35,30 +56,21 @@ const SaleForm = ({ data, setData }) => {
         fetchOptions();
     }, []);
 
-    // Handle form data change
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
-
     return (
         <div className="form-container mx-auto px-4 w-full">
             <form className="space-y-6">
                 {/* Valuation */}
                 <div className="form-group mb-4">
                     <label
-                        htmlFor="valuation"
+                        htmlFor="saleValuation"
                         className="block mb-3 text-[16px] text-left font-medium"
                     >
                         Valuation*
                     </label>
                     <input
                         type="number"
-                        name="valuation"
-                        id="valuation"
+                        name="saleValuation"
+                        id="saleValuation"
                         value={formData.valuation}
                         onChange={handleChange}
                         required

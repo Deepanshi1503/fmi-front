@@ -13,6 +13,27 @@ const InvestmentRequired = ({ data, setData }) => {
   const [investorRoleOptions, setInvestorRoleOptions] = useState([]);
   const [fundingTypeOptions, setFundingTypeOptions] = useState([]);
 
+  // Handle form data change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+    const mergedData = { ...formData, ...savedData };
+    setFormData(mergedData);
+  }, []);
+
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+    const updatedData = { ...savedData, ...formData };
+    localStorage.setItem("combineInfo", JSON.stringify(updatedData));
+  }, [formData]);
+
   useEffect(() => {
     const fetchOptions = async () => {
       try {
@@ -28,7 +49,7 @@ const InvestmentRequired = ({ data, setData }) => {
           ) || [];
 
         const typeOptions =
-          schemaAttributes?.investor_role?.enum.map((option) =>
+          schemaAttributes?.type_of_funding?.enum.map((option) =>
             option.replace(/^"|"$/g, "") // Removes double quotes if present
           ) || [];
 
@@ -41,15 +62,6 @@ const InvestmentRequired = ({ data, setData }) => {
 
     fetchOptions();
   }, []);
-
-  // Handle form data change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
 
   return (
     <div className="form-container mx-auto px-4 w-full">
