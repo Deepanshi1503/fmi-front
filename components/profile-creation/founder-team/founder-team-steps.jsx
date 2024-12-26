@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp, Check, AlertCircle } from "lucide-react";
 import FounderForm from "@/components/profile-creation/founder-team/founder-info-form";
 import { useGlobalContext } from "@/context/context";
@@ -10,6 +10,12 @@ const FounderTeam = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(3).fill(false));
   const [visitedSteps, setVisitedSteps] = useState(Array(3).fill(false));
+
+  useEffect(() => {
+    localStorage.setItem("founders", JSON.stringify(founders));
+    localStorage.setItem("teamMembers", JSON.stringify(teamMembers));
+    localStorage.setItem("advisors", JSON.stringify(advisors));
+  }, [founders, teamMembers, advisors]);
 
   const stepsComponents = [
     {

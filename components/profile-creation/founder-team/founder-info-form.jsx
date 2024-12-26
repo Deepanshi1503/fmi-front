@@ -8,6 +8,7 @@ const FounderForm = ({data, setData, title}) => {
   const [editingItem, setEditingItem] = useState(null); // Founder being edited
 
   const handleAddItem = (formData) => {
+    
     if (editingItem !== null) {
       // Update the founder if editing
       const updatedData = [...data];

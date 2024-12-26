@@ -12,6 +12,10 @@ export const GlobalContextProvider = ({ children }) => {
     const [teamMembers, setTeamMembers] = useState([]);
     const [advisors, setAdvisors] = useState([]);
     const [isFormOpen, setIsFormOpen] = useState([]);
+    // console.log("founders" , founders);
+    // console.log("team", teamMembers);
+    // console.log("advisor", advisors);
+    
 
     useEffect(() => {
         // Load data from localStorage
@@ -27,13 +31,13 @@ export const GlobalContextProvider = ({ children }) => {
         setIsFormOpen(savedData.formState);
     }, []);
 
-    useEffect(() => {
-        // Save data to localStorage
-        localStorage.setItem("founders", JSON.stringify(founders));
-        localStorage.setItem("teamMembers", JSON.stringify(teamMembers));
-        localStorage.setItem("advisors", JSON.stringify(advisors));
-        localStorage.setItem("formState", JSON.stringify(isFormOpen));
-    }, [founders, teamMembers, advisors, isFormOpen]);
+    // useEffect(() => {
+    //     // Save data to localStorage
+    //     localStorage.setItem("founders", JSON.stringify(founders));
+    //     localStorage.setItem("teamMembers", JSON.stringify(teamMembers));
+    //     localStorage.setItem("advisors", JSON.stringify(advisors));
+    //     localStorage.setItem("formState", JSON.stringify(isFormOpen));
+    // }, [founders, teamMembers, advisors, isFormOpen]);
 
     // SWR LIbraray for data fee
     //   const schoolCategoryData = useSWR(

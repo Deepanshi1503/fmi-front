@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const MarketOpportunityForm = ({ data, setData }) => {
   const [formData, setFormData] = useState({

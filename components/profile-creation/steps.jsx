@@ -10,22 +10,25 @@ import MarketCompetition from "@/components/profile-creation/market-competition/
 import Financial from "@/components/profile-creation/financial/financial-form"
 import EquitySale from "@/components/profile-creation/equity-fundraising/equity-sell-steps"
 import { GlobalContextProvider } from "@/context/context";
+import { useGlobalContext } from "@/context/context";
 
 const stepsConfig = [
   { id: "company-overview", label: "Company Overview", component: <CompanyOverview /> },
   { id: "products-services", label: "Products and Services", component: <ProductServices /> },
   { id: "founder-team", label: "Founder & Team", component: <FounderTeam /> },
-  // { id: "progress-traction", label: "Progress & Traction", component: <div>Progress and Traction Component</div> },
   { id: "market-competition", label: "Market and Competition", component: <MarketCompetition /> },
-  // { id: "business-model", label: "Business Model/n& Strategy", component: <div>Business Model Component</div> },
   { id: "financial", label: "Financial", component: <Financial /> },
   { id: "equity-fundraising", label: "Equity & Fundraising", component: <EquitySale /> },
 ];
 
 const ProfileStep = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const syncBusinessData = async (businessData) => {
+  const { founders, teamMembers, advisors } = useGlobalContext();
+  
+  
+  const syncBusinessData = async (businessData, founderData, teamData, advisorData) => {
     const businessId = localStorage.getItem("businessId");
+    console.log(businessData.marketOpportunity)
 
     // Map data to backend schema
     const payload = {
@@ -60,6 +63,32 @@ const ProfileStep = () => {
         current_status: businessData.currentStatus,
         preferred_timeframe_for_action: mapPreferredTimeframe(businessData.preferredTimeframe),
         workforce_range: mapNumberOfEmployees(businessData.numberOfEmployees),
+        founder_detail: founderData.map(founder => ({
+          name: founder.name,
+          role: founder.role,
+          background: founder.professionalBackground,
+          linkedin_profile: founder.linkedinProfile,
+          education:founder.education,
+          // image:founder.profileImage,
+        })),
+        team_details: teamData.map(member => ({
+          name: member.name,
+          role: member.role,
+          background: member.professionalBackground,
+          linkedin_profile: member.linkedinProfile,
+          education:member.education,
+          // image:member.profileImage,
+        })),
+        board_member_advisor__detail: advisorData.map(advisor => ({
+          name: advisor.name,
+          role: advisor.role,
+          background: advisor.professionalBackground,
+          linkedin_profile: advisor.linkedinProfile,
+          education:advisor.education,
+          // image:advisor.profileImage,
+        })),
+        market_opportunity_size: businessData.marketOpportunity,
+        competitor_analysis:businessData.competitorAnalysis,
       }
     };
 
@@ -120,10 +149,12 @@ const ProfileStep = () => {
   const handleNext = async () => {
     // Simulate form data
     const formData = JSON.parse(localStorage.getItem("combineInfo"));
-  
+    const founderData = JSON.parse(localStorage.getItem("founders"));
+    const teamData = JSON.parse(localStorage.getItem("teamMembers"));
+    const advisorData = JSON.parse(localStorage.getItem("advisors"));
 
     // Sync with backend before navigating
-    await syncBusinessData(formData);
+    await syncBusinessData(formData, founderData, teamData, advisorData);
 
     // Navigate to the next step
     if (activeStep < stepsConfig.length - 1) setActiveStep((prev) => prev + 1);
