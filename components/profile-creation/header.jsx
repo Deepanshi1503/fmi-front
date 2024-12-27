@@ -48,9 +48,15 @@ export default function Header() {
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-md hover:bg-[#094BA1]"
+            className="rounded-md hover:bg-[#094BA1]"
           >
-            <Sun size={26} fill="white" />
+            <Image
+              src="/images/toggle-theme.png"
+              alt="theme"
+              width={30}
+              height={30}
+              className="rounded-full"
+            />
           </button>
 
           {/* Mail */}
@@ -58,9 +64,9 @@ export default function Header() {
             <Image
               src="/images/mail-open.png"
               alt="Mail"
-              width={26}
-              height={26}
-              className="rounded-full"
+              width={30}
+              height={30}
+              className=""
             />
           </div>
 
