@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import { Minus, Plus } from "lucide-react";
@@ -11,6 +11,24 @@ const QuarterlyDataForm = () => {
     const [currentYear, setCurrentYear] = useState("");
     const [activeYearIndex, setActiveYearIndex] = useState(null);
     const [selectedCurrency, setSelectedCurrency] = useState("USD");
+
+    // Load data from localStorage on component mount
+    useEffect(() => {
+        const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+        const savedYearData = savedData.yearData || [];
+        setYearData(savedYearData);
+    }, []);
+
+    // Save data to localStorage when yearData or selectedCurrency changes
+    useEffect(() => {
+        const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+        const updatedData = {
+            ...savedData,
+            yearData: yearData,
+            selectedCurrency: selectedCurrency,
+        };
+        localStorage.setItem("combineInfo", JSON.stringify(updatedData));
+    }, [yearData, selectedCurrency]);
 
     const addYear = () => {
         if (currentYear && !yearData.some((data) => data.year === currentYear) && yearData.length < 5) {
@@ -114,7 +132,7 @@ const QuarterlyDataForm = () => {
                     <select
                         value={selectedCurrency}
                         onChange={(e) => setSelectedCurrency(e.target.value)}
-                        className="border rounded-lg p-3 w-1/4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="border rounded-lg p-2 w-1/4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                         <option value="USD">USD</option>
                         <option value="INR">INR</option>
@@ -164,8 +182,6 @@ const QuarterlyDataForm = () => {
                         </div>
                     ))}
                 </div>
-
-
 
                 {/* Quarterly Data Table */}
                 {activeYearIndex !== null && (

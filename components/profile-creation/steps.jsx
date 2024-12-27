@@ -23,11 +23,10 @@ const stepsConfig = [
 
 const ProfileStep = () => {
   const [activeStep, setActiveStep] = useState(0);
-  
-  
+
+
   const syncBusinessData = async (businessData, founderData, teamData, advisorData) => {
     const businessId = localStorage.getItem("businessId");
-    console.log(businessData.marketOpportunity)
 
     // Map data to backend schema
     const payload = {
@@ -67,7 +66,7 @@ const ProfileStep = () => {
           role: founder.role,
           background: founder.professionalBackground,
           linkedin_profile: founder.linkedinProfile,
-          education:founder.education,
+          education: founder.education,
           // image:founder.profileImage,
         })),
         team_details: teamData.map(member => ({
@@ -75,7 +74,7 @@ const ProfileStep = () => {
           role: member.role,
           background: member.professionalBackground,
           linkedin_profile: member.linkedinProfile,
-          education:member.education,
+          education: member.education,
           // image:member.profileImage,
         })),
         board_member_advisor__detail: advisorData.map(advisor => ({
@@ -83,11 +82,11 @@ const ProfileStep = () => {
           role: advisor.role,
           background: advisor.professionalBackground,
           linkedin_profile: advisor.linkedinProfile,
-          education:advisor.education,
+          education: advisor.education,
           // image:advisor.profileImage,
         })),
         market_opportunity_size: businessData.marketOpportunity,
-        competitor_analysis:businessData.competitorAnalysis,
+        competitor_analysis: businessData.competitorAnalysis,
         global_market_share: businessData.competitiveAnalysis.globalMarketSize.map((item) => ({
           country: item.country,
           currency: item.currency,
@@ -105,19 +104,28 @@ const ProfileStep = () => {
           current_status: item.lender,
           amount: item.amount,
         })),
-        total_fundraised:businessData.fundraisingStatus.totalFundsRaised,
+        total_fundraised: businessData.fundraisingStatus.totalFundsRaised,
         fundraise_business_details: {
           investor_role: businessData.investorRole,
           type_of_funding: businessData.typeOfFunding,
-          valuation:businessData.valuation,
-          funds_allocation:businessData.fundsAllocation,
-        },    
+          valuation: businessData.valuation,
+          funds_allocation: businessData.fundsAllocation,
+        },
         sale_business_details: {
-          valuation:businessData.saleValuation,
+          valuation: businessData.saleValuation,
           ownership_stake_offered: businessData.ownershipStake,
           sale_price: businessData.salePrice,
-          reason_for_sale:businessData.reasonForSale,
-        },        
+          reason_for_sale: businessData.reasonForSale,
+        },
+        financial_model_details: businessData.yearData.map((item) => ({
+          year: item.year,
+          total_revenue: item.totalRevenue,
+          total_profit_loss: item.totalProfitLoss,
+          quarter_details: item.quarters.map((quarter) => ({
+            revenue: parseInt(quarter.revenue) || 0,
+            profit_loss: parseInt(quarter.profitLoss) || 0,
+          }))
+        })),
       }
     };
 
