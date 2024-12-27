@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
+import { Minus, Plus } from "lucide-react";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -9,8 +10,8 @@ const QuarterlyDataForm = () => {
     const [yearData, setYearData] = useState([]);
     const [currentYear, setCurrentYear] = useState("");
     const [activeYearIndex, setActiveYearIndex] = useState(null);
+    const [selectedCurrency, setSelectedCurrency] = useState("USD");
 
-    // Add new year with empty quarterly data
     const addYear = () => {
         if (currentYear && !yearData.some((data) => data.year === currentYear) && yearData.length < 5) {
             const newData = {
@@ -26,21 +27,21 @@ const QuarterlyDataForm = () => {
             };
 
             setYearData((prev) => {
-                const updatedData = [...prev, newData];
-                return updatedData.sort((a, b) => a.year - b.year); // Sort by year in ascending order
+                const updatedData = [...prev, newData].sort((a, b) => a.year - b.year);
+                const newIndex = updatedData.findIndex((data) => data.year === currentYear);
+                setActiveYearIndex(newIndex); // Automatically set the new year as active
+                return updatedData;
             });
 
             setCurrentYear("");
         }
     };
 
-    // Update quarterly data
     const updateQuarter = (yearIndex, quarterIndex, field, value) => {
         const updatedData = [...yearData];
         const quarter = updatedData[yearIndex].quarters[quarterIndex];
         quarter[field] = value;
 
-        // Recalculate totals
         const totals = updatedData[yearIndex].quarters.reduce(
             (acc, q) => ({
                 totalRevenue: acc.totalRevenue + (parseFloat(q.revenue) || 0),
@@ -54,16 +55,14 @@ const QuarterlyDataForm = () => {
         setYearData(updatedData);
     };
 
-    // Remove a year from the list
     const removeYear = (yearIndex) => {
         const updatedData = yearData.filter((_, index) => index !== yearIndex);
         setYearData(updatedData);
         if (activeYearIndex === yearIndex) {
-            setActiveYearIndex(null); // Reset active year if removed
+            setActiveYearIndex(null);
         }
     };
 
-    // Bar chart data
     const chartData = {
         labels: yearData.map((data) => data.year),
         datasets: [
@@ -90,105 +89,134 @@ const QuarterlyDataForm = () => {
     };
 
     return (
-        <div className="flex space-x-48 mx-40 pl-4 space-y-6">
+        <div className="flex flex-col lg:flex-row justify-between gap-12 py-6 lg:py-12 mx-48">
             {/* Left Section */}
-            <div className="w-full md:w-1/3 space-y-4">
-                <div>
-                    <h2 className="xl:text-[48px] whitespace-nowrap flex justify-center 2xl:justify-start font-semibold text-[#0A66C2] mb-4">Financial</h2>
-                    <p className="text-[12px] xl:text-[15px] whitespace-nowrap font-normal flex justify-center 2xl:justify-start text-[#181818CC] mb-6">Make it easy for people</p>
+            <div className="lg:w-[40%] ml-12 space-y-6">
+                <div className="">
+                    <h2 className="text-[32px] xl:text-[48px] whitespace-nowrap flex justify-center 2xl:justify-start font-semibold text-[#0A66C2] mb-2">Financial Overview</h2>
+                    <p className="text-[12px] xl:text-[15px] whitespace-nowrap font-normal flex justify-center 2xl:justify-start text-[#181818CC] mb-6">
+                        Track and manage your financial performance.
+                    </p>
                 </div>
 
-                {/* Year Input */}
-                <div className="flex items-center gap-4">
+                {/* Year Input with Currency Dropdown */}
+                <div className="flex items-center justify-between gap-3 pb-2">
+                    {/* Year Input */}
                     <input
                         type="text"
                         value={currentYear}
                         onChange={(e) => setCurrentYear(e.target.value)}
                         placeholder="Enter Year"
-                        className="border rounded-lg p-2 w-1/3"
+                        className="border rounded-lg p-3 w-1/2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
+
+                    {/* Currency Dropdown */}
+                    <select
+                        value={selectedCurrency}
+                        onChange={(e) => setSelectedCurrency(e.target.value)}
+                        className="border rounded-lg p-3 w-1/4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="USD">USD</option>
+                        <option value="INR">INR</option>
+                        {/* Add more options as needed */}
+                    </select>
+
+                    {/* Add Button with Icon */}
                     <button
                         type="button"
                         onClick={addYear}
-                        disabled={currentYear === '' || yearData.length >= 5}
-                        className={`px-4 py-2 ${yearData.length >= 5 || currentYear === '' ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500'} text-white rounded-lg`}
+                        disabled={currentYear === "" || yearData.length >= 5}
+                        className={`flex items-center justify-center px-3 py-2 text-white font-semibold rounded-lg shadow-sm ${yearData.length >= 5 || currentYear === ""
+                            ? "bg-gray-300 cursor-not-allowed"
+                            : "bg-blue-500 hover:bg-blue-600"
+                            }`}
                     >
-                        +
+                        <Plus className="w-5 h-5" /> {/* Add Icon */}
                     </button>
                 </div>
 
-                {/* Table for Selected Year */}
-                {activeYearIndex !== null && (
-                    <table className="table-auto w-full border-collapse border border-gray-300 mt-4">
-                        <thead>
-                            <tr>
-                                <th className="border p-2">Quarter</th>
-                                <th className="border p-2">Revenue</th>
-                                <th className="border p-2">Profit/Loss</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {yearData[activeYearIndex].quarters.map((quarter, quarterIndex) => (
-                                <tr key={quarterIndex}>
-                                    <td className="border p-2 text-center">Q{quarterIndex + 1}</td>
-                                    <td className="border p-2">
-                                        <input
-                                            type="number"
-                                            value={quarter.revenue}
-                                            onChange={(e) =>
-                                                updateQuarter(activeYearIndex, quarterIndex, "revenue", e.target.value)
-                                            }
-                                            className="w-full p-1 border rounded"
-                                        />
-                                    </td>
-                                    <td className="border p-2">
-                                        <input
-                                            type="number"
-                                            value={quarter.profitLoss}
-                                            onChange={(e) =>
-                                                updateQuarter(activeYearIndex, quarterIndex, "profitLoss", e.target.value)
-                                            }
-                                            className="w-full p-1 border rounded"
-                                        />
-                                    </td>
-                                </tr>
-                            ))}
-                            <tr>
-                                <td className="border p-2 font-bold text-center">Total</td>
-                                <td className="border p-2 font-bold text-center">{yearData[activeYearIndex].totalRevenue}</td>
-                                <td className="border p-2 font-bold text-center">{yearData[activeYearIndex].totalProfitLoss}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                )}
-
-                {/* Collapsible Bars */}
-                <div className="space-y-2">
+                {/* Year List */}
+                <div className="flex flex-wrap justify-evenly pb-2">
                     {yearData.map((data, yearIndex) => (
                         <div
                             key={data.year}
-                            className={`border rounded-lg p-3 cursor-pointer ${activeYearIndex === yearIndex ? "bg-blue-100" : "bg-gray-100"}`}
+                            className={`flex-grow basis-1/5 max-w-[17%] p-2 rounded-lg border cursor-pointer transition ${activeYearIndex === yearIndex ? "bg-blue-100 border-blue-300" : "bg-white border-gray-300"
+                                } hover:shadow-md`}
                             onClick={() => setActiveYearIndex(yearIndex)}
                         >
                             <div className="flex justify-between items-center">
-                                <span>Year: {data.year} - Revenue: {data.totalRevenue}, Profit/Loss: {data.totalProfitLoss}</span>
+                                {/* Year Display */}
+                                <span className="text-lg font-semibold text-gray-800">
+                                    {data.year}
+                                </span>
+
+                                {/* Remove Button */}
                                 <button
                                     onClick={(e) => {
-                                        e.stopPropagation(); // Prevent triggering the click event
+                                        e.stopPropagation(); // Prevent triggering the click event for the card
                                         removeYear(yearIndex);
                                     }}
-                                    className="text-red-500 font-bold"
+                                    className="p-1 rounded-full bg-red-100 text-red-600 hover:bg-red-200 focus:outline-none focus:ring focus:ring-red-300"
                                 >
-                                    Remove
+                                    <Minus />
                                 </button>
                             </div>
                         </div>
                     ))}
                 </div>
+
+
+
+                {/* Quarterly Data Table */}
+                {activeYearIndex !== null && (
+                    <div className="mt-6 overflow-auto">
+                        <table className="w-full border-collapse border border-gray-300">
+                            <thead>
+                                <tr className="bg-gray-100">
+                                    <th className="border p-3 text-left">Quarter</th>
+                                    <th className="border p-3 text-left">Revenue</th>
+                                    <th className="border p-3 text-left">Profit/Loss</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {yearData[activeYearIndex].quarters.map((quarter, quarterIndex) => (
+                                    <tr key={quarterIndex} className="hover:bg-gray-50">
+                                        <td className="border p-3">Q{quarterIndex + 1}</td>
+                                        <td className="border p-3">
+                                            <input
+                                                type="number"
+                                                value={quarter.revenue}
+                                                onChange={(e) =>
+                                                    updateQuarter(activeYearIndex, quarterIndex, "revenue", e.target.value)
+                                                }
+                                                className="w-full p-2 border rounded focus:ring-1 focus:ring-blue-500"
+                                            />
+                                        </td>
+                                        <td className="border p-3">
+                                            <input
+                                                type="number"
+                                                value={quarter.profitLoss}
+                                                onChange={(e) =>
+                                                    updateQuarter(activeYearIndex, quarterIndex, "profitLoss", e.target.value)
+                                                }
+                                                className="w-full p-2 border rounded focus:ring-1 focus:ring-blue-500"
+                                            />
+                                        </td>
+                                    </tr>
+                                ))}
+                                <tr className="bg-gray-100 font-bold">
+                                    <td className="border p-3">Total</td>
+                                    <td className="border p-3">{yearData[activeYearIndex].totalRevenue}</td>
+                                    <td className="border p-3">{yearData[activeYearIndex].totalProfitLoss}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                )}
             </div>
 
             {/* Right Section */}
-            <div className="w-full pt-32 md:w-[50%] h-full -mr-12">
+            <div className="lg:w-[50%] mt-32">
                 <Bar data={chartData} options={chartOptions} />
             </div>
         </div>
