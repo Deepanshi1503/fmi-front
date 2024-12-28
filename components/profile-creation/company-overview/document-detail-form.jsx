@@ -2,24 +2,16 @@ import React, { useState, useEffect } from "react";
 
 const DocumentForm = () => {
   const [formData, setFormData] = useState({
-    pitchDeck: null, // File for pitch deck
-    companyProfile: null, // File for company profile
-    youtubeUrl: "", // YouTube URL
+    pitchDeck: null,
+    companyProfile: null,
+    youtubeUrl: "",
   });
 
-  // Handle form data change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const documentId=localStorage.getItem("busiessId")
 
   useEffect(() => {
     const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
-    const mergedData = { ...formData, ...savedData };
-    setFormData(mergedData);
+    setFormData((prev) => ({ ...prev, ...savedData }));
   }, []);
 
   useEffect(() => {
@@ -28,19 +20,61 @@ const DocumentForm = () => {
     localStorage.setItem("combineInfo", JSON.stringify(updatedData));
   }, [formData]);
 
-  // Handle file uploads
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     if (files.length > 0) {
+      const file=files[0];
+      const backendFieldName = name === "pitchDeck" ? "pitch_deck" : "company_profile";
       setFormData((prev) => ({
         ...prev,
-        [name]: files[0], // Store the file object in state
+        [name]: file,
       }));
+      uploadFile(file,backendFieldName);
+    }
+  };
 
-      // Save the file name in localStorage (optional)
-      const savedFormData = JSON.parse(localStorage.getItem("combineInfo")) || {};
-      savedFormData[name] = files[0].name; // Store the file name
-      localStorage.setItem("combineInfo", JSON.stringify(savedFormData));
+  const uploadFile = async (file, fieldName) => {
+    const formDataToSend = new FormData();
+    formDataToSend.append(fieldName, file);
+
+    try {
+      let url = "http://localhost:1337/api/businesses";
+      let method = "POST";
+
+      if (documentId) {
+        url = `http://localhost:1337/api/businesses/${documentId}`;
+        method = "PUT";
+      }
+
+      const response = await fetch(url, {
+        method: method,
+        body: formDataToSend,
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log(`${fieldName} uploaded successfully:`, responseData);
+
+        // Save the ID if a new document was created
+        if (!documentId && responseData.data.id) {
+          const newId = responseData.data.id;
+          console.log(newId);
+          localStorage.setItem("busiessId", newId);
+        }
+      } else {
+        const errorResponse = await response.json();
+        console.error(`Error uploading ${fieldName}:`, errorResponse);
+      }
+    } catch (error) {
+      console.error(`Error uploading ${fieldName}:`, error);
     }
   };
 

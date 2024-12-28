@@ -1,13 +1,21 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sun, Menu, Search } from "lucide-react";
+import { usePathname } from "next/navigation"; // Import to get the current URL path
 
 export default function Header() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isInvestor, setIsInvestor] = useState(false); // State to toggle text
+  const pathname = usePathname(); // Get current URL path
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
+  };
+
+  // Toggle between Investor and Business
+  const toggleInvestorBusiness = () => {
+    setIsInvestor(!isInvestor);
   };
 
   return (
@@ -19,12 +27,11 @@ export default function Header() {
           <Image
             src="/images/logo2.png"
             alt="Logo"
-            className="block w-28 h-auto md:w-40 lg:w-48"
+            className="hidden lg:block w-28 h-auto md:w-40 lg:w-48"
             width={0} // Let Tailwind handle width
             height={0} // Let Tailwind handle height
             sizes="(max-width: 768px) 7rem, (max-width: 1024px) 10rem, 12rem"
           />
-
 
           {/* Hamburger Menu - visible on all screen sizes */}
           <button className="p-2 rounded-md hover:bg-[#094BA1]">
@@ -40,11 +47,20 @@ export default function Header() {
               className="hidden md:block bg-transparent text-white placeholder-white focus:outline-none text-sm"
             />
           </div>
-
         </div>
 
         {/* Right Section */}
-        <div className="flex items-center gap-3 md:gap-4 mr-6">
+        <div className="flex items-center gap-3 md:gap-x-8 lg:mr-6">
+          {/* Conditionally render toggle button on '/dashboard' path */}
+          {pathname === '/dashboard' && (
+            <button
+              onClick={toggleInvestorBusiness}
+              className="bg-white text-[#0A66C2] text-[14px] whitespace-nowrap hidden lg:block px-4 py-2.5 rounded-xl"
+            >
+              {isInvestor ? 'Switch to Business' : 'Switch to Investor'}
+            </button>
+          )}
+
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}

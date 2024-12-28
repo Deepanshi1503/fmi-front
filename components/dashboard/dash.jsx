@@ -2,13 +2,15 @@ import React from 'react';
 import { Box, Grid, Typography, Card, CardContent, CircularProgress, Button, IconButton } from '@mui/material';
 import { ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
+import Heading from "./heading"
+import StatCard from "./StatCard"
 
 const Dashboard = () => {
     const stats = [
-        { title: 'Total View', value: 40, percentage: '8.5% Up from yesterday', positive: true, icon: 'people' },
-        { title: 'Interested Investor', value: 10, percentage: '1.3% Up from past week', positive: true, icon: 'group' },
-        { title: 'Appearances in Search', value: 150, percentage: '4.3% Down from yesterday', positive: false, icon: 'search' },
-        { title: 'Messages Received', value: 12, percentage: '1.8% Up from yesterday', positive: true, icon: 'email' },
+        { title: 'Total View', value: 40, percentage: '8.5%', text:'Up from yesterday', positive: true, image: '/images/total-view.png' },
+        { title: 'Interested Investor', value: 10, percentage: '1.3%', text:'Up from past week', positive: true, image: '/images/interested-investor.png' },
+        { title: 'Appearances in Search', value: 150, percentage: '4.3%', text:'Down from yesterday', positive: false, image: '/images/appearance-search.png' },
+        { title: 'Messages Received', value: 12, percentage: '1.8%', text:'Up from yesterday', positive: true, image: '/images/messages.png' },
     ];
 
     const profiles = [
@@ -33,84 +35,26 @@ const Dashboard = () => {
     ];
 
     return (
-        <Box sx={{ p: 4 }}>
-            <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold' }}>
-                Find MY Investor Dashboard
-            </Typography>
+        <div className='mx-60'>
+            <Heading />
 
             {/* Stats Section */}
-            <Grid container spacing={3}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-12 mt-8">
                 {stats.map((stat, index) => (
-                    <Grid item xs={12} sm={6} md={3} key={index}>
-                        <Card sx={{ p: 2, textAlign: 'center' }}>
-                            <Typography variant="h6">{stat.title}</Typography>
-                            <Typography variant="h4">{stat.value}</Typography>
-                            <Typography
-                                variant="body2"
-                                sx={{ color: stat.positive ? 'green' : 'red', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                            >
-                                {stat.positive ? <ArrowUpward fontSize="small" /> : <ArrowDownward fontSize="small" />} {stat.percentage}
-                            </Typography>
-                        </Card>
-                    </Grid>
+                    <StatCard
+                        key={index}
+                        title={stat.title}
+                        value={stat.value}
+                        percentage={stat.percentage}
+                        text={stat.text}
+                        positive={stat.positive}
+                        image={stat.image}
+                    />
                 ))}
-            </Grid>
-
-            {/* Profiles Section */}
-            <Grid container spacing={3} sx={{ mt: 4 }}>
-                {profiles.map((profile, index) => (
-                    <Grid item xs={12} sm={6} key={index}>
-                        <Card>
-                            <CardContent>
-                                <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-                                    {profile.title}
-                                </Typography>
-                                <Box sx={{ position: 'relative', display: 'flex', justifyContent: 'center', mb: 2 }}>
-                                    <CircularProgress
-                                        variant="determinate"
-                                        value={profile.completion}
-                                        size={100}
-                                        sx={{ color: profile.completed ? 'green' : 'orange' }}
-                                    />
-                                    <Box
-                                        sx={{
-                                            position: 'absolute',
-                                            top: '50%',
-                                            left: '50%',
-                                            transform: 'translate(-50%, -50%)',
-                                        }}
-                                    >
-                                        <Typography variant="h6">{profile.completion}%</Typography>
-                                    </Box>
-                                </Box>
-                                <Typography
-                                    variant="body1"
-                                    sx={{ color: profile.completed ? 'green' : 'orange', textAlign: 'center' }}
-                                >
-                                    {profile.status}
-                                </Typography>
-
-                                {profile.sections && (
-                                    <Box sx={{ mt: 2 }}>
-                                        {profile.sections.map((section, idx) => (
-                                            <Typography
-                                                key={idx}
-                                                variant="body2"
-                                                sx={{ color: section.completed ? 'green' : 'red' }}
-                                            >
-                                                {section.completed ? '✔️' : '❌'} {section.label}
-                                            </Typography>
-                                        ))}
-                                    </Box>
-                                )}
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                ))}
-            </Grid>
+            </div>
 
             {/* Add Button */}
-            <IconButton
+            {/* <IconButton
                 sx={{
                     position: 'fixed',
                     bottom: 16,
@@ -124,8 +68,8 @@ const Dashboard = () => {
                 size="large"
             >
                 <AddIcon />
-            </IconButton>
-        </Box>
+            </IconButton> */}
+        </div>
     );
 };
 
