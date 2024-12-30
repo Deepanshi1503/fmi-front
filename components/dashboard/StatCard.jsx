@@ -2,7 +2,7 @@ import React from "react";
 
 const StatCard = ({ title, value, percentage, text, positive, image }) => {
     return (
-        <div className="bg-white shadow-md p-4 rounded-lg ">
+        <div className="bg-white shadow-md px-4 py-4 rounded-lg ">
             <div className="flex  justify-between">
                 {/* Left Section */}
                 <div>
@@ -28,7 +28,7 @@ const StatCard = ({ title, value, percentage, text, positive, image }) => {
                     <img
                         src={positive ? "/images/increasing-arrow.png" : "/images/decreasing-arrow.png"}
                         alt={positive ? "Up Arrow" : "Down Arrow"}
-                        className="w-4 h-4 mr-2"
+                        className="w-4 h-3 mr-2"
                     />
                     {percentage}
                 </span>
