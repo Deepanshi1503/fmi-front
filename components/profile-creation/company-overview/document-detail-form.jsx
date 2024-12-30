@@ -7,7 +7,7 @@ const DocumentForm = () => {
     youtubeUrl: "",
   });
 
-  const documentId=localStorage.getItem("busiessId")
+  const documentId = localStorage.getItem("busiessId")
 
   useEffect(() => {
     const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
@@ -28,59 +28,103 @@ const DocumentForm = () => {
     }));
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const { name, files } = e.target;
     if (files.length > 0) {
-      const file=files[0];
+      const file = files[0];
       const backendFieldName = name === "pitchDeck" ? "pitch_deck" : "company_profile";
-      setFormData((prev) => ({
-        ...prev,
-        [name]: file,
-      }));
-      uploadFile(file,backendFieldName);
+      const { fileId, fileUrl } = await uploadFile(file, backendFieldName);
+
+      if (fileId && fileUrl) {
+        const updatedData = { ...formData, [name]: { fileId, fileUrl } };
+        setFormData(updatedData);
+
+        // Update localStorage with fileId and fileUrl
+        const combinedInfo = JSON.parse(localStorage.getItem("combineInfo")) || {};
+        combinedInfo[name] = { fileId, fileUrl };
+        localStorage.setItem("combineInfo", JSON.stringify(combinedInfo));
+      }
     }
   };
 
   const uploadFile = async (file, fieldName) => {
     const formDataToSend = new FormData();
-    formDataToSend.append(fieldName, file);
+    formDataToSend.append("files", file);
 
     try {
-      let url = "http://localhost:1337/api/businesses";
-      let method = "POST";
-
-      if (documentId) {
-        url = `http://localhost:1337/api/businesses/${documentId}`;
-        method = "PUT";
-      }
-
-      const response = await fetch(url, {
-        method: method,
+      const response = await fetch("http://localhost:1337/api/upload", {
+        method: "POST",
         body: formDataToSend,
       });
 
       if (response.ok) {
         const responseData = await response.json();
-        console.log(`${fieldName} uploaded successfully:`, responseData);
+        const uploadedFile = responseData[0]; // Assuming the file upload returns an array with one file
+        console.log(`${fieldName} uploaded successfully:`, uploadedFile);
 
-        // Save the ID if a new document was created
-        if (!documentId && responseData.data.id) {
-          const newId = responseData.data.id;
-          console.log(newId);
-          localStorage.setItem("busiessId", newId);
-        }
+        // Extract the fileId and fileUrl
+        const fileId = uploadedFile.id;
+        const fileUrl = uploadedFile.url;
+
+        // Return the fileId and fileUrl
+        return { fileId, fileUrl };
       } else {
         const errorResponse = await response.json();
         console.error(`Error uploading ${fieldName}:`, errorResponse);
+        return { fileId: null, fileUrl: null };
       }
     } catch (error) {
       console.error(`Error uploading ${fieldName}:`, error);
+      return { fileId: null, fileUrl: null };
     }
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   const businessData = {
+  //     youtubeUrl: formData.youtubeUrl,
+  //     pitchDeck: formData.pitchDeck,
+  //     companyProfile: formData.companyProfile,
+  //   };
+
+  //   try {
+  //     let url = "http://localhost:1337/api/businesses";
+  //     let method = "POST";
+
+  //     if (documentId) {
+  //       url = `http://localhost:1337/api/businesses/${documentId}`;
+  //       method = "PUT";
+  //     }
+
+  //     const response = await fetch(url, {
+  //       method: method,
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(businessData),
+  //     });
+
+  //     if (response.ok) {
+  //       const responseData = await response.json();
+  //       console.log("Business data saved successfully:", responseData);
+
+  //       // If a new business was created, save the ID for future use
+  //       if (!documentId && responseData.data.id) {
+  //         const newId = responseData.data.id;
+  //         localStorage.setItem("busiessId", newId);
+  //       }
+  //     } else {
+  //       const errorResponse = await response.json();
+  //       console.error("Error saving business data:", errorResponse);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error submitting business data:", error);
+  //   }
+  // };
+
   return (
     <div className="form-container mx-auto px-4 w-full">
-
       <form className="space-y-4">
         {/* Pitch Deck */}
         <div className="form-group flex justify-between items-center mb-4">
@@ -96,6 +140,7 @@ const DocumentForm = () => {
             id="pitchDeck"
             accept=".pdf,.doc,.docx"
             onChange={handleFileChange}
+            // onSubmit={handleSubmit}
             className="w-[80%] p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
           />
         </div>
@@ -114,6 +159,7 @@ const DocumentForm = () => {
             id="companyProfile"
             accept=".pdf,.doc,.docx"
             onChange={handleFileChange}
+            // onSubmit={handleSubmit}
             className="w-[80%] p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
           />
         </div>

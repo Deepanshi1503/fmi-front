@@ -24,6 +24,37 @@ const stepsConfig = [
 const ProfileStep = () => {
   const [activeStep, setActiveStep] = useState(0);
 
+  const base64ToBlob = (base64) => {
+    const [metadata, base64String] = base64.split(",");
+    const mime = metadata.match(/:(.*?);/)[1];
+    const binary = atob(base64String);
+    const array = [];
+    for (let i = 0; i < binary.length; i++) {
+      array.push(binary.charCodeAt(i));
+    }
+    return new Blob([new Uint8Array(array)], { type: mime });
+  };
+
+  // Usage in uploadImage
+  const uploadImage = async (imageData) => {
+    const blob = base64ToBlob(imageData);
+    const formData = new FormData();
+    formData.append("files", blob, "profile-image.png"); // Provide a filename
+
+    try {
+      const response = await axios.post("http://localhost:1337/api/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      const imageUrl = response.data[0]?.id; // Get the URL of the uploaded image
+      return imageUrl
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      return null;
+    }
+  };
+
 
   const syncBusinessData = async (businessData, founderData, teamData, advisorData) => {
     const businessId = localStorage.getItem("businessId");
@@ -61,30 +92,53 @@ const ProfileStep = () => {
         current_status: businessData.currentStatus,
         preferred_timeframe_for_action: mapPreferredTimeframe(businessData.preferredTimeframe),
         workforce_range: mapNumberOfEmployees(businessData.numberOfEmployees),
-        founder_detail: founderData.map(founder => ({
-          name: founder.name,
-          role: founder.role,
-          background: founder.professionalBackground,
-          linkedin_profile: founder.linkedinProfile,
-          education: founder.education,
-          // image:founder.profileImage,
-        })),
-        team_details: teamData.map(member => ({
-          name: member.name,
-          role: member.role,
-          background: member.professionalBackground,
-          linkedin_profile: member.linkedinProfile,
-          education: member.education,
-          // image:member.profileImage,
-        })),
-        board_member_advisor__detail: advisorData.map(advisor => ({
-          name: advisor.name,
-          role: advisor.role,
-          background: advisor.professionalBackground,
-          linkedin_profile: advisor.linkedinProfile,
-          education: advisor.education,
-          // image:advisor.profileImage,
-        })),
+        pitch_deck: businessData.pitchDeck.fileId,  // Use the URL of the pitch deck
+        company_profile: businessData.companyProfile.fileId,
+        founder_detail: await Promise.all(
+          founderData.map(async (founder) => {
+            const profileImageUrl = founder.profileImage
+              ? await uploadImage(founder.profileImage) // Upload the image and get its URL
+              : null;
+            return {
+              name: founder.name,
+              role: founder.role,
+              background: founder.professionalBackground,
+              linkedin_profile: founder.linkedinProfile,
+              education: founder.education,
+              image: profileImageUrl, // Use the uploaded image URL
+            };
+          })
+        ),
+        team_details: await Promise.all(
+          teamData.map(async (member) => {
+            const profileImageUrl = member.profileImage
+              ? await uploadImage(member.profileImage) // Upload the image and get its URL
+              : null;
+            return {
+              name: member.name,
+              role: member.role,
+              background: member.professionalBackground,
+              linkedin_profile: member.linkedinProfile,
+              education: member.education,
+              image: profileImageUrl, // Use the uploaded image URL
+            };
+          })
+        ),
+        board_member_advisor__detail: await Promise.all(
+          advisorData.map(async (advisor) => {
+            const profileImageUrl = advisor.profileImage
+              ? await uploadImage(advisor.profileImage) // Upload the image and get its URL
+              : null;
+            return {
+              name: advisor.name,
+              role: advisor.role,
+              background: advisor.professionalBackground,
+              linkedin_profile: advisor.linkedinProfile,
+              education: advisor.education,
+              image: profileImageUrl, // Use the uploaded image URL
+            };
+          })
+        ),
         market_opportunity_size: businessData.marketOpportunity,
         competitor_analysis: businessData.competitorAnalysis,
         global_market_share: businessData.competitiveAnalysis.globalMarketSize.map((item) => ({
