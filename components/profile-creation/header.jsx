@@ -31,6 +31,7 @@ export default function Header() {
             width={0} // Let Tailwind handle width
             height={0} // Let Tailwind handle height
             sizes="(max-width: 768px) 7rem, (max-width: 1024px) 10rem, 12rem"
+            priority
           />
 
           {/* Hamburger Menu - visible on all screen sizes */}

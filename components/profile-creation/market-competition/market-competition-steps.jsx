@@ -14,6 +14,14 @@ const MarketCompetition = () => {
   const [isFormOpen, setIsFormOpen] = useState(Array(3).fill(false));
   const [visitedSteps, setVisitedSteps] = useState(Array(3).fill(false));
 
+  useEffect(() => {
+    setIsFormOpen((prevState) => {
+      const updatedState = [...prevState];
+      updatedState[0] = true; // Open the first form by default
+      return updatedState;
+    });
+  }, []);
+
   // Centralized state for all form data
   const [formData, setFormData] = useState({
     productServiceDetail: {},

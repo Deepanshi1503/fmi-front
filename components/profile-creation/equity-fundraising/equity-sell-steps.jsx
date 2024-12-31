@@ -13,6 +13,14 @@ const ProductServices = () => {
   const [isFormOpen, setIsFormOpen] = useState(Array(6).fill(false));
   const [visitedSteps, setVisitedSteps] = useState(Array(6).fill(false));
 
+  useEffect(() => {
+    setIsFormOpen((prevState) => {
+      const updatedState = [...prevState];
+      updatedState[0] = true; // Open the first form by default
+      return updatedState;
+    });
+  }, []);
+
   // State to track whether it's a Sale Listing or Fundraise Listing
   const [isSaleListing, setIsSaleListing] = useState(true); // Default to Fundraise Listing
 

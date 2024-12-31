@@ -17,6 +17,14 @@ const CompanyOverview = () => {
   const [isFormOpen, setIsFormOpen] = useState(Array(6).fill(false));
   const [visitedSteps, setVisitedSteps] = useState(Array(6).fill(false));
 
+  useEffect(() => {
+    setIsFormOpen((prevState) => {
+      const updatedState = [...prevState];
+      updatedState[0] = true; // Open the first form by default
+      return updatedState;
+    });
+  }, []);
+
   const stepsComponents = [
     {
       image: "/images/founder-details.png",

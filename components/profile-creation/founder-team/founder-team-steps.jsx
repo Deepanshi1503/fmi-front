@@ -12,6 +12,14 @@ const FounderTeam = () => {
   const [visitedSteps, setVisitedSteps] = useState(Array(3).fill(false));
 
   useEffect(() => {
+    setIsFormOpen((prevState) => {
+      const updatedState = [...prevState];
+      updatedState[0] = true; // Open the first form by default
+      return updatedState;
+    });
+  }, []);
+
+  useEffect(() => {
     localStorage.setItem("founders", JSON.stringify(founders));
     localStorage.setItem("teamMembers", JSON.stringify(teamMembers));
     localStorage.setItem("advisors", JSON.stringify(advisors));

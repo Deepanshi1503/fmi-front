@@ -1,4 +1,6 @@
 "use client";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
@@ -10,7 +12,7 @@ import MarketCompetition from "@/components/profile-creation/market-competition/
 import Financial from "@/components/profile-creation/financial/financial-form"
 import EquitySale from "@/components/profile-creation/equity-fundraising/equity-sell-steps"
 import { GlobalContextProvider } from "@/context/context";
-import { useGlobalContext } from "@/context/context";
+import Loader from "@/components/loader"
 
 const stepsConfig = [
   { id: "company-overview", label: "Company Overview", component: <CompanyOverview /> },
@@ -22,7 +24,47 @@ const stepsConfig = [
 ];
 
 const ProfileStep = () => {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(null); 
+  const [loading, setLoading] = useState(true);
+
+  // Load the active step from localStorage or sessionStorage
+  useEffect(() => {
+    const savedStep = localStorage.getItem("activeStep");
+    if (savedStep !== null) {
+      setActiveStep(parseInt(savedStep, 10));
+    } else {
+      setActiveStep(0);
+    }
+    setLoading(false);
+  }, []);
+
+  // Save the active step to localStorage whenever it changes
+  useEffect(() => {
+    if (activeStep !== null) { 
+      localStorage.setItem("activeStep", activeStep);
+    }
+  }, [activeStep]);
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  const validateMandatoryFields = () => {
+    const formData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+    const businessId = localStorage.getItem("businessId");
+
+    if (!businessId) {
+      if (!formData.companyName || !formData.professionalEmail || !formData.phoneNumber) {
+        toast.error("Please fill in the Company Name, Email, and Phone Number to proceed.", {
+          position: "top-center",
+        });
+        return false;
+      }
+    }
+
+    return true; // Continue if no validation errors
+  };
+
 
   const base64ToBlob = (base64) => {
     const [metadata, base64String] = base64.split(",");
@@ -39,7 +81,7 @@ const ProfileStep = () => {
   const uploadImage = async (imageData) => {
     const blob = base64ToBlob(imageData);
     const formData = new FormData();
-    formData.append("files", blob, "profile-image.png"); // Provide a filename
+    formData.append("files", blob, "profile-image.png"); 
 
     try {
       const response = await axios.post("http://localhost:1337/api/upload", formData, {
@@ -47,7 +89,7 @@ const ProfileStep = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      const imageUrl = response.data[0]?.id; // Get the URL of the uploaded image
+      const imageUrl = response.data[0]?.id;
       return imageUrl
     } catch (error) {
       console.error("Image upload failed:", error);
@@ -59,139 +101,140 @@ const ProfileStep = () => {
   const syncBusinessData = async (businessData, founderData, teamData, advisorData) => {
     const businessId = localStorage.getItem("businessId");
 
+    if (!businessId) {
+      if (!businessData.companyName || !businessData.professionalEmail || !businessData.phoneNumber) {
+        console.error("Missing required fields: Company Name, Email, or Phone Number");
+        return;
+      }
+    }
+
     // Map data to backend schema
     const payload = {
       data: {
-        title: businessData.companyName,
-        slug: businessData.companyName.toLowerCase().replace(/\s+/g, '-') + '-title',
-        purpose_of_listing_business: businessData.lookingFor,
-        reason_for_selling_fundraise: businessData.reason,
+        title: businessData.companyName || "",
+        slug: (businessData.companyName ? businessData.companyName.toLowerCase().replace(/\s+/g, '-') : '') + '-title',
+        purpose_of_listing_business: businessData.lookingFor || null,
+        reason_for_selling_fundraise: businessData.reason || null,
         company_name: businessData.companyName,
-        website_url: businessData.website,
-        stage_of_company: businessData.companyStage,
-        type_of_company: businessData.companyType,
-        description_about_company: businessData.description,
-        company_mission: businessData.mission,
-        company_vision: businessData.vision,
-        remote_onsite_workforce_ration: businessData.workforceRatio,
-        diversity_information: businessData.diversityInfo,
-        headquarters: businessData.headquarters,
-        country: businessData.country,
-        state: businessData.state,
-        geographical_presence: businessData.geographicalPresence,
-        current_geography: businessData.currentGeography,
-        parent_company: businessData.parentCompany,
-        professional_emailid: businessData.professionalEmail,
-        phone_number: businessData.phoneNumber,
-        linkedin_id: businessData.linkedInId,
+        website_url: businessData.website || null,
+        stage_of_company: businessData.companyStage || null,
+        type_of_company: businessData.companyType || null,
+        description_about_company: businessData.description || null,
+        company_mission: businessData.mission || null,
+        company_vision: businessData.vision || null,
+        remote_onsite_workforce_ration: businessData.workforceRatio || null,
+        diversity_information: businessData.diversityInfo || null,
+        headquarters: businessData.headquarters || null,
+        country: businessData.country || null,
+        state: businessData.state || null,
+        geographical_presence: businessData.geographicalPresence || null,
+        current_geography: businessData.currentGeography || null,
+        parent_company: businessData.parentCompany || null,
+        professional_emailid: businessData.professionalEmail || null,
+        phone_number: businessData.phoneNumber || null,
+        linkedin_id: businessData.linkedInId || null,
         year_of_incorporation: parseInt(businessData.yearOfIncorporation) || null,
-        youtube_url: businessData.youtubeUrl,
-        product_name: businessData.productName,
-        product_description: businessData.productDescription,
-        revenue_model: businessData.revenueModel,
-        current_status: businessData.currentStatus,
-        preferred_timeframe_for_action: mapPreferredTimeframe(businessData.preferredTimeframe),
-        workforce_range: mapNumberOfEmployees(businessData.numberOfEmployees),
-        pitch_deck: businessData.pitchDeck.fileId,  // Use the URL of the pitch deck
-        company_profile: businessData.companyProfile.fileId,
+        youtube_url: businessData.youtubeUrl || null,
+        product_name: businessData.productName || null,
+        product_description: businessData.productDescription || null,
+        revenue_model: businessData.revenueModel || null,
+        current_status: businessData.currentStatus || null,
+        preferred_timeframe_for_action: mapPreferredTimeframe(businessData.preferredTimeframe) || null,
+        workforce_range: mapNumberOfEmployees(businessData.numberOfEmployees) || null,
+        pitch_deck: businessData.pitchDeck?.fileId || null,  // Use the URL of the pitch deck
+        company_profile: businessData.companyProfile?.fileId || null,
         founder_detail: await Promise.all(
-          founderData.map(async (founder) => {
-            const profileImageUrl = founder.profileImage
-              ? await uploadImage(founder.profileImage) // Upload the image and get its URL
-              : null;
+          (founderData || [])?.map(async (founder) => {
             return {
-              name: founder.name,
-              role: founder.role,
-              background: founder.professionalBackground,
-              linkedin_profile: founder.linkedinProfile,
-              education: founder.education,
-              image: profileImageUrl, // Use the uploaded image URL
+              name: founder.name || null,
+              role: founder.role || null,
+              background: founder.professionalBackground || null,
+              linkedin_profile: founder.linkedinProfile || null,
+              education: founder.education || null,
+              image: founder.profileImage ? await uploadImage(founder.profileImage) : null,
             };
           })
         ),
         team_details: await Promise.all(
-          teamData.map(async (member) => {
-            const profileImageUrl = member.profileImage
-              ? await uploadImage(member.profileImage) // Upload the image and get its URL
-              : null;
+          (teamData || [])?.map(async (member) => {
             return {
-              name: member.name,
-              role: member.role,
-              background: member.professionalBackground,
-              linkedin_profile: member.linkedinProfile,
-              education: member.education,
-              image: profileImageUrl, // Use the uploaded image URL
+              name: member.name || null,
+              role: member.role || null,
+              background: member.professionalBackground || null,
+              linkedin_profile: member.linkedinProfile || null,
+              education: member.education || null,
+              image: member.profileImage ? await uploadImage(member.profileImage) : null,
             };
           })
         ),
         board_member_advisor__detail: await Promise.all(
-          advisorData.map(async (advisor) => {
-            const profileImageUrl = advisor.profileImage
-              ? await uploadImage(advisor.profileImage) // Upload the image and get its URL
-              : null;
+          (advisorData || [])?.map(async (advisor) => {
             return {
-              name: advisor.name,
-              role: advisor.role,
-              background: advisor.professionalBackground,
-              linkedin_profile: advisor.linkedinProfile,
-              education: advisor.education,
-              image: profileImageUrl, // Use the uploaded image URL
+              name: advisor.name || null,
+              role: advisor.role || null,
+              background: advisor.professionalBackground || null,
+              linkedin_profile: advisor.linkedinProfile || null,
+              education: advisor.education || null,
+              image: advisor.profileImage ? await uploadImage(advisor.profileImage) : null,
             };
           })
         ),
-        market_opportunity_size: businessData.marketOpportunity,
-        competitor_analysis: businessData.competitorAnalysis,
-        global_market_share: businessData.competitiveAnalysis.globalMarketSize.map((item) => ({
-          country: item.country,
-          currency: item.currency,
-          amount: item.amount,
-        })),
-        current_market_share: businessData.competitiveAnalysis.currentMarketShare.map((item) => ({
-          country: item.country,
-          share_percentage: item.share,
-          value: item.value,
-        })),
-        your_competitors: businessData.competitiveAnalysis.descriptions.competitors,
-        why_are_you_different: businessData.competitiveAnalysis.descriptions.whyDifferent,
-        why_you_why_now: businessData.competitiveAnalysis.descriptions.whyNow,
-        fundraising_status: businessData.fundraisingStatus.fundraisingStatus.map((item) => ({
-          current_status: item.lender,
-          amount: item.amount,
-        })),
-        total_fundraised: businessData.fundraisingStatus.totalFundsRaised,
-        fundraise_business_details: {
-          investor_role: businessData.investorRole,
-          type_of_funding: businessData.typeOfFunding,
-          valuation: businessData.valuation,
-          funds_allocation: businessData.fundsAllocation,
-        },
-        sale_business_details: {
-          valuation: businessData.saleValuation,
-          ownership_stake_offered: businessData.ownershipStake,
-          sale_price: businessData.salePrice,
-          reason_for_sale: businessData.reasonForSale,
-        },
-        financial_model_details: businessData.yearData.map((item) => ({
-          year: item.year,
-          total_revenue: item.totalRevenue,
-          total_profit_loss: item.totalProfitLoss,
+        market_opportunity_size: businessData.marketOpportunity || null,
+        competitor_analysis: businessData.competitorAnalysis || null,
+        global_market_share: (businessData.competitiveAnalysis?.globalMarketSize || []).map((item) => ({
+          country: item.country || null,
+          currency: item.currency || null,
+          amount: item.amount || null,
+        })) || [],
+        current_market_share: businessData.competitiveAnalysis?.currentMarketShare.map((item) => ({
+          country: item.country || null,
+          share_percentage: item.share || null,
+          value: item.value || null,
+        })) || [],
+        your_competitors: businessData.competitiveAnalysis?.descriptions.competitors || null,
+        why_are_you_different: businessData.competitiveAnalysis?.descriptions.whyDifferent || null,
+        why_you_why_now: businessData.competitiveAnalysis?.descriptions.whyNow || null,
+        fundraising_status: businessData.fundraisingStatus?.fundraisingStatus.map((item) => ({
+          current_status: item.lender || null,
+          amount: item.amount || null,
+        })) || [],
+        total_fundraised: businessData.fundraisingStatus?.totalFundsRaised || null,
+        fundraise_business_details: businessData.investorRole
+          ? {
+            investor_role: businessData.investorRole || null,
+            type_of_funding: businessData.typeOfFunding || null,
+            valuation: businessData.valuation || null,
+            funds_allocation: businessData.fundsAllocation || null,
+          }
+          : null,
+        sale_business_details: businessData.saleValuation
+          ? {
+            valuation: businessData.saleValuation || null,
+            ownership_stake_offered: businessData.ownershipStake || null,
+            sale_price: businessData.salePrice || null,
+            reason_for_sale: businessData.reasonForSale || null,
+          }
+          : null,
+        financial_model_details: (businessData.yearData || []).map((item) => ({
+          year: item.year || null,
+          total_revenue: item.totalRevenue || null,
+          total_profit_loss: item.totalProfitLoss || null,
           quarter_details: item.quarters.map((quarter) => ({
             revenue: parseInt(quarter.revenue) || 0,
             profit_loss: parseInt(quarter.profitLoss) || 0,
-          }))
-        })),
+          })) || [],
+        })) || [],
       }
     };
 
     const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    if (!isValidEmail(businessData.professionalEmail)) {
+    if (!isValidEmail(businessData.professionalEmail) && !businessId) {
       console.error("Invalid email format:", businessData.professionalEmail);
-      return; // Prevent sending the request
+      return;
     }
 
     try {
       if (businessId) {
-        // Update existing business
         await axios.put(`http://localhost:1337/api/businesses/${businessId}`, payload);
         console.log("Business updated successfully.");
       } else {
@@ -199,14 +242,15 @@ const ProfileStep = () => {
         const response = await fetch("http://localhost:1337/api/businesses", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",  // Set content type to JSON
+            "Content-Type": "application/json", 
           },
-          body: JSON.stringify(payload),  // Send the payload directly
+          body: JSON.stringify(payload), 
         });
-        const responseData = await response.json(); // Parse the response
-        if (responseData) {
+        const responseData = await response.json();
+        console.log(responseData);
+        if (responseData && responseData.data && responseData.data.id) {
           console.log("Business created successfully:", responseData.data.id);
-          localStorage.setItem("businessId", responseData.data.id); // Store the created business ID
+          localStorage.setItem("businessId", responseData.data.id);
         }
       }
     } catch (error) {
@@ -218,7 +262,7 @@ const ProfileStep = () => {
   const mapPreferredTimeframe = (timeframe) => {
     const timeframeMap = {
       "Immediate": "\"Immediate\"",
-      "1 - 3 months": "\"1 - 3 months\"", // Update based on actual allowed values
+      "1 - 3 months": "\"1 - 3 months\"",
       "3 - 6 months": "\"3 - 6 months\"",
       "6 - 12 months": "\"6 - 12 months\"",
     };
@@ -238,6 +282,11 @@ const ProfileStep = () => {
 
 
   const handleNext = async () => {
+    // Validate only for the first step
+    if (activeStep === 0 && !validateMandatoryFields()) {
+      return;
+    }
+
     // Simulate form data
     const formData = JSON.parse(localStorage.getItem("combineInfo"));
     const founderData = JSON.parse(localStorage.getItem("founders"));
@@ -247,10 +296,63 @@ const ProfileStep = () => {
     // Sync with backend before navigating
     await syncBusinessData(formData, founderData, teamData, advisorData);
 
-    // Navigate to the next step
+    // Clear the localStorage after sync
+    // localStorage.removeItem("combineInfo");
+    // localStorage.removeItem("founders");
+    // localStorage.removeItem("teamMembers");
+    // localStorage.removeItem("advisors");
+
+    // Fetch the active step data from the backend
+    // const businessId = localStorage.getItem("businessId");
+    // if (businessId) {
+    //   try {
+    //     const response = await axios.get(`http://localhost:1337/api/businesses/${businessId}`);
+    //     const businessData = response.data;
+
+    //     // Populate the form with fetched data for the current active step
+    //     // const stepData = getStepData(businessData, activeStep);
+    //     // if (stepData) {
+    //     //   // Populate the form with data from the backend
+    //     //   populateForm(stepData);
+    //     // }
+    //   } catch (error) {
+    //     console.error("Error fetching business data:", error);
+    //   }
+    // }
+
     if (activeStep < stepsConfig.length - 1) setActiveStep((prev) => prev + 1);
   };
 
+  // const getStepData = (businessData, stepIndex) => {
+  //   // Retrieve the corresponding data for the active step from the businessData
+  //   switch (stepIndex) {
+  //     case 0:
+  //       return businessData.companyOverview; // Example, adjust based on your data structure
+  //     case 1:
+  //       return businessData.productsServices;
+  //     case 2:
+  //       return businessData.founderTeam;
+  //     case 3:
+  //       return businessData.marketCompetition;
+  //     case 4:
+  //       return businessData.financial;
+  //     case 5:
+  //       return businessData.equityFundraising;
+  //     default:
+  //       return null;
+  //   }
+  // };
+
+  // const populateForm = (data) => {
+  //   // Populate the form fields based on the data retrieved from the backend
+  //   if (data) {
+  //     // Example of setting form fields dynamically based on the data
+  //     // You will need to set the data in the form's state or pass it down as props
+  //     // Update form states here based on the received data
+  //     // Example: setCompanyName(data.companyName);
+  //     console.log("Populating form with data:", data);
+  //   }
+  // };
 
   const handleBack = () => {
     if (activeStep > 0) setActiveStep((prev) => prev - 1);
@@ -260,18 +362,10 @@ const ProfileStep = () => {
     setActiveStep(0);
   };
 
-  // const renderLabelWithLineBreaks = (label) => {
-  //   return label.split("/n").map((line, index) => (
-  //     <React.Fragment key={index}>
-  //       {line}
-  //       <br />
-  //     </React.Fragment>
-  //   ));
-  // };
-
   return (
     <GlobalContextProvider>
       <div className="w-full relative">
+        <ToastContainer />
         {/* Stepper Container */}
         <div className="flex items-center justify-evenly relative 2xl:ml-20 2xl:mr-2 2xl:px-[100px] 2xl:py-3 overflow-x-auto">
           {stepsConfig.map((step, index) => (
