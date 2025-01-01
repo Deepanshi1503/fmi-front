@@ -4,7 +4,7 @@ import Select from "react-select";
 import Flag from "react-world-flags";
 import { Country, State } from "country-state-city"; // A utility for getting country and state info
 
-const GeographicsForm = ({ data, setData, title }) => {
+const GeographicsForm = ({ onCompletion }) => {
   const [countryOptions, setCountryOptions] = useState([]); // Country options for select
   const [stateOptions, setStateOptions] = useState([]); // State options based on selected country
   const [formData, setFormData] = useState({
@@ -15,7 +15,18 @@ const GeographicsForm = ({ data, setData, title }) => {
     currentGeography: "",
     parentCompany: "",
   });
-  
+
+  useEffect(() => {
+    const isCompleted =
+      formData.headquarters &&
+      formData.country &&
+      formData.state &&
+      formData.geographicalPresence &&
+      formData.currentGeography &&
+      formData.parentCompany;
+    onCompletion(isCompleted);
+  }, [formData]);
+
   // Handle form data change
   const handleChange = (e) => {
     const { name, value } = e.target;

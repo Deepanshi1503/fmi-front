@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useGlobalContext } from "@/context/context";
 import axios from "axios";
 
-const CompanyDetailForm = () => {
+const CompanyDetailForm = ({ onCompletion }) => {
     const [companyTypeOptions, setCompanyTypeOptions] = useState([]); // Options for 'Type of Company'
     const [companyStageOptions, setCompanyStageOptions] = useState([]); // Options for 'Stage of the Company'
     const [industryOptions, setIndustryOptions] = useState([]); // Options for Industry
@@ -19,6 +19,21 @@ const CompanyDetailForm = () => {
         mission: "",
         vision: "",
     });
+
+    useEffect(() => {
+        const isCompleted =
+            formData.companyName &&
+            formData.website &&
+            formData.yearOfIncorporation &&
+            formData.companyStage &&
+            formData.companyType &&
+            formData.industry &&
+            formData.subIndustry &&
+            formData.description.trim() !== "" &&
+            formData.mission.trim() !== "" &&
+            formData.vision.trim() !== "";
+        onCompletion(isCompleted);
+    }, [formData]);
 
     // Handle form data change
     const handleChange = (e) => {
@@ -56,8 +71,9 @@ const CompanyDetailForm = () => {
 
     useEffect(() => {
         const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
-        const updatedData = { ...savedData, ...formData };
-        localStorage.setItem("combineInfo", JSON.stringify(updatedData));
+        if (JSON.stringify(savedData) !== JSON.stringify(formData)) {
+            localStorage.setItem("combineInfo", JSON.stringify(formData));
+        }
     }, [formData]);
 
     const [error, setError] = useState("");

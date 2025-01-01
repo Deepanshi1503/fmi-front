@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const ListingForm = ({ data, setData, title }) => {
+const ListingForm = ({ onCompletion }) => {
   const [lookingForOptions, setLookingForOptions] = useState([]);
   const [timeFrameOptions, setTimeFrameOptions] = useState([]);
   const [formData, setFormData] = useState({
@@ -9,6 +9,14 @@ const ListingForm = ({ data, setData, title }) => {
     reason: "",
     preferredTimeframe: "",
   });
+
+  useEffect(() => {
+    const isCompleted =
+      formData.lookingFor &&
+      formData.reason.trim() !== "" &&
+      formData.preferredTimeframe;
+    onCompletion(isCompleted);
+  }, [formData]);
 
   // Handle form data change
   const handleChange = (e) => {
@@ -21,14 +29,16 @@ const ListingForm = ({ data, setData, title }) => {
 
   useEffect(() => {
     const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
-    const mergedData = { ...formData, ...savedData };
-    setFormData(mergedData);
+    // const mergedData = { ...formData, ...savedData };
+    // setFormData(mergedData);
+    setFormData((prev) => ({ ...prev, ...savedData })); 
   }, []);
 
   useEffect(() => {
     const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
-    const updatedData = { ...savedData, ...formData };
-    localStorage.setItem("combineInfo", JSON.stringify(updatedData));
+    if (JSON.stringify(savedData) !== JSON.stringify(formData)) {
+      localStorage.setItem("combineInfo", JSON.stringify(formData));
+    }  
   }, [formData]);
 
   const [error, setError] = useState("");

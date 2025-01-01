@@ -2,12 +2,20 @@ import React, { useState, useEffect } from "react";
 import { useGlobalContext } from "@/context/context";
 import axios from "axios";
 
-const ContactForm = ({ data, setData, title }) => {
+const ContactForm = ({ onCompletion }) => {
   const [formData, setFormData] = useState({
     professionalEmail: "",
     phoneNumber: "",
     linkedInId: "",
   });
+
+  useEffect(() => {
+    const isCompleted =
+      formData.professionalEmail &&
+      formData.phoneNumber &&
+      formData.linkedInId;
+    onCompletion(isCompleted);
+  }, [formData]);
 
   const [errors, setErrors] = useState({});
 

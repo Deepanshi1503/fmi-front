@@ -2,12 +2,20 @@ import React, { useState, useEffect } from "react";
 import { useGlobalContext } from "@/context/context";
 import axios from "axios";
 
-const WorkforceDetailForm = ({ data, setData, title }) => {
+const WorkforceDetailForm = ({ onCompletion }) => {
   const [formData, setFormData] = useState({
     numberOfEmployees: "",
     workforceRatio: "",
     diversityInfo: "",
   });
+
+  useEffect(() => {
+    const isCompleted =
+        formData.numberOfEmployees &&
+        formData.workforceRatio &&
+        formData.diversityInfo;
+    onCompletion(isCompleted);
+}, [formData]);
 
   const [workforceRangeOptions, setWorkforceRangeOptions] = useState([]);
   const [error, setError] = useState("");

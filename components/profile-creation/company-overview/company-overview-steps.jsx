@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { ChevronDown, ChevronUp, Check, AlertCircle } from "lucide-react";
 import axios from "axios";
 import ListingForm from "@/components/profile-creation/company-overview/listing-info-form"
@@ -16,6 +15,29 @@ const CompanyOverview = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(6).fill(false));
   const [visitedSteps, setVisitedSteps] = useState(Array(6).fill(false));
+  const totalSteps = 6; // Total number of forms
+  const [completionStatus, setCompletionStatus] = useState(
+    JSON.parse(localStorage.getItem("completionStatus")) || Array(totalSteps).fill(false)
+  );
+  const [progress, setProgress] = useState(
+    JSON.parse(localStorage.getItem("progress")) || 0
+  );
+
+  // Update local storage whenever completion status changes
+  useEffect(() => {
+    const completedSteps = completionStatus.filter(Boolean).length;
+    const progressPercentage = Math.floor((completedSteps / totalSteps) * 100);
+
+    setProgress(progressPercentage);
+    localStorage.setItem("completionStatus", JSON.stringify(completionStatus));
+    localStorage.setItem("progress", JSON.stringify(progressPercentage));
+  }, [completionStatus]);
+
+  const updateFormCompletion = useCallback((index, isCompleted) => {
+    setCompletionStatus((prev) =>
+      prev.map((status, i) => (i === index ? isCompleted : status))
+    );
+  }, []);
 
   useEffect(() => {
     setIsFormOpen((prevState) => {
@@ -25,14 +47,14 @@ const CompanyOverview = () => {
     });
   }, []);
 
-  const stepsComponents = [
+  const stepsComponents = useMemo(()=>[
     {
       image: "/images/founder-details.png",
       name: "Listing Details",
       description:
         "Introduce yourself and your team with a concise description of your expertise.",
       formComponent: () => (
-        <ListingForm />
+        <ListingForm onCompletion={(isCompleted) => updateFormCompletion(0, isCompleted)}/>
       ),
     },
     {
@@ -40,7 +62,7 @@ const CompanyOverview = () => {
       name: "Company Overview",
       description: "Provide details about your team members, their roles, and key contributions to the company.",
       formComponent: () => (
-        <CompanyDetailForm />
+        <CompanyDetailForm onCompletion={(isCompleted) => updateFormCompletion(1, isCompleted)}/>
       ),
     },
     {
@@ -48,7 +70,7 @@ const CompanyOverview = () => {
       name: "Workforce",
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
-        <WorkforceDetailForm />
+        <WorkforceDetailForm onCompletion={(isCompleted) => updateFormCompletion(2, isCompleted)}/>
       ),
     },
     {
@@ -56,7 +78,7 @@ const CompanyOverview = () => {
       name: "Geographics",
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
-        <GeographicalDetailForm />
+        <GeographicalDetailForm onCompletion={(isCompleted) => updateFormCompletion(3, isCompleted)}/>
       ),
     },
     {
@@ -64,7 +86,7 @@ const CompanyOverview = () => {
       name: "Contact Details",
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
-        <ContactForm />
+        <ContactForm onCompletion={(isCompleted) => updateFormCompletion(4, isCompleted)}/>
       ),
     },
     {
@@ -72,20 +94,18 @@ const CompanyOverview = () => {
       name: "Documents",
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
-        <DocumentForm />
+        <DocumentForm onCompletion={(isCompleted) => updateFormCompletion(5, isCompleted)}/>
       ),
     },
-  ];
+  ], [updateFormCompletion]);
 
-  const handleToggleForm = (index) => {
+  const handleToggleForm = useCallback((index) => {
     setIsFormOpen((prevState) =>
       prevState.map((isOpen, i) => (i === index ? !isOpen : false))
     );
     setActiveStep(index);
-
-    // Mark the step as visited
     setVisitedSteps((prev) => prev.map((visited, i) => (i === index ? true : visited)));
-  };
+  }, []);
 
   return (
     <div className="flex flex-col xl:flex-row mx-6 xl:mx-44 xl:pl-12">
@@ -104,6 +124,16 @@ const CompanyOverview = () => {
         <h4 className="text-[12px] xl:text-[15px] whitespace-nowrap font-normal flex justify-center 2xl:justify-start text-[#181818CC] mb-12">
           Make it easy for people
         </h4>
+
+        {/* progress track */}
+        <div className="w-full bg-gray-200 rounded-full h-4">
+          <div
+            className="bg-blue-600 h-4 rounded-full"
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
+        <p className="mt-2 text-gray-700 text-sm">{progress}% Completed</p>
+        {/* progress track finished */}
 
         <div>
           {stepsComponents.map((step, index) => (

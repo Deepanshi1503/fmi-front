@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from "react";
 
-const DocumentForm = () => {
+const DocumentForm = ({onCompletion}) => {
   const [formData, setFormData] = useState({
     pitchDeck: null,
     companyProfile: null,
     youtubeUrl: "",
   });
+
+  useEffect(() => {
+    const isCompleted =
+      formData.pitchDeck &&
+      formData.companyProfile &&
+      formData.youtubeUrl;
+    onCompletion(isCompleted);
+  }, [formData]);
 
   const documentId = localStorage.getItem("busiessId")
 
