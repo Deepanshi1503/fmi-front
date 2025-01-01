@@ -1,11 +1,18 @@
 "use client"
 import React, { useState,useEffect } from "react";
 
-const ProductServiceForm = ({ data, setData }) => {
+const ProductServiceForm = ({ onCompletion }) => {
   const [formData, setFormData] = useState({
     productName: "",
     productDescription: "",
   });
+
+  useEffect(() => {
+    const isCompleted =
+      formData.productName &&
+      formData.productDescription;
+    onCompletion(isCompleted);
+  }, [formData]);
 
   // Handle form data change
   const handleChange = (e) => {

@@ -2,10 +2,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const CurrentStatusForm = ({ data, setData }) => {
+const CurrentStatusForm = ({ onCompletion }) => {
   const [formData, setFormData] = useState({
     currentStatus: "",
   });
+
+  useEffect(() => {
+    const isCompleted =
+      formData.currentStatus ;
+    onCompletion(isCompleted);
+  }, [formData]);
 
   const [statusOptions, setStatusOptions] = useState([]);
 

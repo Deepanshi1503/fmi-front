@@ -2,10 +2,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const RevenueModel = ({ data, setData }) => {
+const RevenueModel = ({ onCompletion }) => {
   const [formData, setFormData] = useState({
     revenueModel: "",
   });
+
+  useEffect(() => {
+    const isCompleted =
+      formData.revenueModel ;
+    onCompletion(isCompleted);
+  }, [formData]);
 
   const [revenueOptions, setRevenueOptions] = useState([]);
 

@@ -15,12 +15,14 @@ const CompanyOverview = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(6).fill(false));
   const [visitedSteps, setVisitedSteps] = useState(Array(6).fill(false));
-  const totalSteps = 6; // Total number of forms
+  const totalSteps = 6;
+  const sectionKey = "companyOverview";
   const [completionStatus, setCompletionStatus] = useState(
-    JSON.parse(localStorage.getItem("completionStatus")) || Array(totalSteps).fill(false)
+    JSON.parse(localStorage.getItem("profileProgress"))?.[sectionKey]?.completionStatus || Array(totalSteps).fill(false)
   );
+
   const [progress, setProgress] = useState(
-    JSON.parse(localStorage.getItem("progress")) || 0
+    JSON.parse(localStorage.getItem("profileProgress"))?.[sectionKey]?.progress || 0
   );
 
   // Update local storage whenever completion status changes
@@ -29,8 +31,14 @@ const CompanyOverview = () => {
     const progressPercentage = Math.floor((completedSteps / totalSteps) * 100);
 
     setProgress(progressPercentage);
-    localStorage.setItem("completionStatus", JSON.stringify(completionStatus));
-    localStorage.setItem("progress", JSON.stringify(progressPercentage));
+
+    const profileProgress = JSON.parse(localStorage.getItem("profileProgress")) || {};
+    profileProgress[sectionKey] = {
+      completionStatus,
+      progress: progressPercentage
+    };
+
+    localStorage.setItem("profileProgress", JSON.stringify(profileProgress));
   }, [completionStatus]);
 
   const updateFormCompletion = useCallback((index, isCompleted) => {
@@ -47,14 +55,14 @@ const CompanyOverview = () => {
     });
   }, []);
 
-  const stepsComponents = useMemo(()=>[
+  const stepsComponents = useMemo(() => [
     {
       image: "/images/founder-details.png",
       name: "Listing Details",
       description:
         "Introduce yourself and your team with a concise description of your expertise.",
       formComponent: () => (
-        <ListingForm onCompletion={(isCompleted) => updateFormCompletion(0, isCompleted)}/>
+        <ListingForm onCompletion={(isCompleted) => updateFormCompletion(0, isCompleted)} />
       ),
     },
     {
@@ -62,7 +70,7 @@ const CompanyOverview = () => {
       name: "Company Overview",
       description: "Provide details about your team members, their roles, and key contributions to the company.",
       formComponent: () => (
-        <CompanyDetailForm onCompletion={(isCompleted) => updateFormCompletion(1, isCompleted)}/>
+        <CompanyDetailForm onCompletion={(isCompleted) => updateFormCompletion(1, isCompleted)} />
       ),
     },
     {
@@ -70,7 +78,7 @@ const CompanyOverview = () => {
       name: "Workforce",
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
-        <WorkforceDetailForm onCompletion={(isCompleted) => updateFormCompletion(2, isCompleted)}/>
+        <WorkforceDetailForm onCompletion={(isCompleted) => updateFormCompletion(2, isCompleted)} />
       ),
     },
     {
@@ -78,7 +86,7 @@ const CompanyOverview = () => {
       name: "Geographics",
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
-        <GeographicalDetailForm onCompletion={(isCompleted) => updateFormCompletion(3, isCompleted)}/>
+        <GeographicalDetailForm onCompletion={(isCompleted) => updateFormCompletion(3, isCompleted)} />
       ),
     },
     {
@@ -86,7 +94,7 @@ const CompanyOverview = () => {
       name: "Contact Details",
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
-        <ContactForm onCompletion={(isCompleted) => updateFormCompletion(4, isCompleted)}/>
+        <ContactForm onCompletion={(isCompleted) => updateFormCompletion(4, isCompleted)} />
       ),
     },
     {
@@ -94,7 +102,7 @@ const CompanyOverview = () => {
       name: "Documents",
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
-        <DocumentForm onCompletion={(isCompleted) => updateFormCompletion(5, isCompleted)}/>
+        <DocumentForm onCompletion={(isCompleted) => updateFormCompletion(5, isCompleted)} />
       ),
     },
   ], [updateFormCompletion]);
@@ -126,13 +134,13 @@ const CompanyOverview = () => {
         </h4>
 
         {/* progress track */}
-        <div className="w-full bg-gray-200 rounded-full h-4">
+        {/* <div className="w-full bg-gray-200 rounded-full h-4">
           <div
             className="bg-blue-600 h-4 rounded-full"
             style={{ width: `${progress}%` }}
           ></div>
         </div>
-        <p className="mt-2 text-gray-700 text-sm">{progress}% Completed</p>
+        <p className="mt-2 text-gray-700 text-sm">{progress}% Completed</p> */}
         {/* progress track finished */}
 
         <div>
