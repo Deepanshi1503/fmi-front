@@ -6,10 +6,27 @@ import FounderForm from "@/components/profile-creation/founder-team/founder-info
 import { useGlobalContext } from "@/context/context";
 
 const FounderTeam = () => {
-  const { founders, setFounders, teamMembers, setTeamMembers, advisors, setAdvisors } = useGlobalContext(); // Accessing global context
+  // const { founders, setFounders, teamMembers, setTeamMembers, advisors, setAdvisors } = useGlobalContext(); // Accessing global context
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(3).fill(false));
   const [visitedSteps, setVisitedSteps] = useState(Array(3).fill(false));
+  const [founders, setFounders] = useState([]);
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [advisors, setAdvisors] = useState([]);
+
+  useEffect(() => {
+    // Load data from localStorage
+    const savedData = {
+      founders: JSON.parse(localStorage.getItem("founders")) || [],
+      teamMembers: JSON.parse(localStorage.getItem("teamMembers")) || [],
+      advisors: JSON.parse(localStorage.getItem("advisors")) || [],
+      formState: JSON.parse(localStorage.getItem("formState")) || Array(3).fill(false),
+    };
+    setFounders(savedData.founders);
+    setTeamMembers(savedData.teamMembers);
+    setAdvisors(savedData.advisors);
+    setIsFormOpen(savedData.formState);
+  }, []);
 
   useEffect(() => {
     setIsFormOpen((prevState) => {
@@ -104,15 +121,15 @@ const FounderTeam = () => {
                     ? "bg-[#FF6347]" // Visited step with no data - red background
                     // : hasData[index]
                     //   ? "bg-[#0A66C2]" // Completed step with data - blue background
-                      : "border-2 border-[#D4D4D4]" // Unvisited step - grey border
+                    : "border-2 border-[#D4D4D4]" // Unvisited step - grey border
                   }`}
               >
                 {index === activeStep ? (
                   <div className="w-3 h-3 bg-[#0A66C2] rounded-full"></div> // Blue dot for active step
                 ) : visitedSteps[index] ? (
                   <AlertCircle className="w-5 h-5 text-white" /> // Alert icon for visited steps with no data
-                // ) : hasData[index] ? (
-                //   <Check className="w-5 h-5 text-white" /> // Checkmark icon for steps with data
+                  // ) : hasData[index] ? (
+                  //   <Check className="w-5 h-5 text-white" /> // Checkmark icon for steps with data
                 ) : null}
               </div>
 
