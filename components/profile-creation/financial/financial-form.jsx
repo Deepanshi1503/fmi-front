@@ -11,12 +11,17 @@ const QuarterlyDataForm = () => {
     const [currentYear, setCurrentYear] = useState("");
     const [activeYearIndex, setActiveYearIndex] = useState(null);
     const [selectedCurrency, setSelectedCurrency] = useState("USD");
+    const [completionStatus, setCompletionStatus] = useState([]);
+    const [progress, setProgress] = useState(0);
 
     // Load data from localStorage on component mount
     useEffect(() => {
         const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
         const savedYearData = savedData.yearData || [];
+        const savedCompletionStatus = savedData.completionStatus || [];
+
         setYearData(savedYearData);
+        setCompletionStatus(savedCompletionStatus);
     }, []);
 
     // Save data to localStorage when yearData or selectedCurrency changes
@@ -27,8 +32,42 @@ const QuarterlyDataForm = () => {
             yearData: yearData,
             selectedCurrency: selectedCurrency,
         };
+        // Calculate progress
+        const totalYears = yearData.length;
+        const completedYears = completionStatus.filter(Boolean).length;
+        const progressPercentage = Math.floor((completedYears / totalYears) * 100);
+        
+        // Store the progress and completionStatus
+        const financial = {
+            completionStatus: completionStatus,
+            progress: progressPercentage,
+        };
+        const previousProfileProgress = JSON.parse(localStorage.getItem("profileProgress")) || {};
+        const updatedProfileProgress = {
+            ...previousProfileProgress,
+            financial: financial, // Adding the new financial data
+        };
+        localStorage.setItem("profileProgress", JSON.stringify(updatedProfileProgress));
+        
         localStorage.setItem("combineInfo", JSON.stringify(updatedData));
-    }, [yearData, selectedCurrency]);
+    }, [yearData, completionStatus, selectedCurrency]);
+
+    const isYearCompleted = (yearIndex) => {
+        return yearData[yearIndex].quarters.every(
+            (quarter) => quarter.revenue && quarter.profitLoss
+        );
+    };
+
+    // Function to update completion status and progress
+    useEffect(() => {
+        const updatedCompletionStatus = yearData.map((_, index) => isYearCompleted(index));
+        setCompletionStatus(updatedCompletionStatus);
+
+        // Calculate progress as percentage of completed years
+        const completedYears = updatedCompletionStatus.filter(Boolean).length;
+        const progressPercentage = Math.floor((completedYears / yearData.length) * 100);
+        setProgress(progressPercentage);
+    }, [yearData]);
 
     const addYear = () => {
         if (currentYear && !yearData.some((data) => data.year === currentYear) && yearData.length < 5) {

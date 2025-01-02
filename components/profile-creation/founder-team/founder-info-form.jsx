@@ -3,7 +3,7 @@ import {useGlobalContext} from "@/context/context"
 import FounderFormModal from "./founder-form-modal";
 import FounderList from "./founder-list";
 
-const FounderForm = ({data, setData, title}) => {
+const FounderForm = ({data, setData, title, onCompletion}) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false); // Popup visibility state
   const [editingItem, setEditingItem] = useState(null); // Founder being edited
 
@@ -20,6 +20,7 @@ const FounderForm = ({data, setData, title}) => {
       setData([...data, formData]);
     }
     setIsPopupOpen(false);
+    onCompletion(true);
   };
 
   const handleEdit = (index) => {
@@ -30,6 +31,7 @@ const FounderForm = ({data, setData, title}) => {
   const handleDelete = (index) => {
     const updatedFounders = data.filter((_, i) => i !== index);
     setData(updatedFounders);
+    onCompletion(updatedFounders.length > 0);
   };
 
   return (

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 
-const FundraisingStatusForm = () => {
+const FundraisingStatusForm = ({onCompletion}) => {
     const [fundraisingStatus, setFundraisingStatus] = useState([{ lender: "", amount: "" }]);
     const [totalFundsRaised, setTotalFundsRaised] = useState(0);
 
@@ -50,6 +50,20 @@ const FundraisingStatusForm = () => {
         const total = fundraisingStatus.reduce((acc, row) => acc + (parseFloat(row.amount) || 0), 0);
         setTotalFundsRaised(total);
     }, [fundraisingStatus]);
+
+    // Check if form is complete
+  const checkCompletion = () => {
+    const isComplete = fundraisingStatus.every(
+      (row) => row.lender.trim() !== "" && row.amount > 0
+    ) && totalFundsRaised > 0;
+
+    onCompletion(isComplete);
+  };
+
+  // Call onCompletion on every change
+  useEffect(() => {
+    checkCompletion();
+  }, [fundraisingStatus, totalFundsRaised]);
 
     return (
         <div className="form-container mx-auto px-4 w-full">

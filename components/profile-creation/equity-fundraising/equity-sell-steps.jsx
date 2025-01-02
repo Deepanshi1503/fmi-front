@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { ChevronDown, ChevronUp, Check, AlertCircle, Lock } from "lucide-react"; // Added Lock icon for restricted state
 import axios from "axios";
 import { useGlobalContext } from "@/context/context";
@@ -12,6 +12,16 @@ const ProductServices = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(6).fill(false));
   const [visitedSteps, setVisitedSteps] = useState(Array(6).fill(false));
+  const totalSteps = 2;
+  const sectionKey = "equitySell";
+
+  const [completionStatus, setCompletionStatus] = useState(
+    JSON.parse(localStorage.getItem("profileProgress"))?.[sectionKey]?.completionStatus || Array(totalSteps).fill(false)
+  );
+
+  const [progress, setProgress] = useState(
+    JSON.parse(localStorage.getItem("profileProgress"))?.[sectionKey]?.progress || 0
+  );
 
   useEffect(() => {
     setIsFormOpen((prevState) => {
@@ -32,7 +42,7 @@ const ProductServices = () => {
   });
 
   // Check if a step has data
-  const stepsComponents = [
+  const stepsComponents = useMemo(()=>[
     {
       image: "/images/founder-details.png",
       name: "Current fundraising status",
@@ -42,6 +52,7 @@ const ProductServices = () => {
         <FundraisingStatus
           data={formData.productServiceDetail}
           setData={(data) => updateFormData("productServiceDetail", data)}
+          onCompletion={(isCompleted) => updateFormCompletion(0, isCompleted)}
         />
       ),
     },
@@ -54,6 +65,7 @@ const ProductServices = () => {
           <InvestmentDetails
             data={formData.revenueModel}
             setData={(data) => updateFormData("revenueModel", data)}
+            onCompletion={(isCompleted) => updateFormCompletion(1, isCompleted)}
           />
         ) : null, // Conditionally render based on the listing type
     },
@@ -66,10 +78,33 @@ const ProductServices = () => {
           <SaleDetails
             data={formData.revenueModel}
             setData={(data) => updateFormData("revenueModel", data)}
+            onCompletion={(isCompleted) => updateFormCompletion(1, isCompleted)}
           />
         ) : null, // Conditionally render based on the listing type
     },
-  ];
+  ],[formData,isSaleListing]);
+
+  const updateFormCompletion = useCallback((index, isCompleted) => {
+    setCompletionStatus((prev) =>
+      prev.map((status, i) => (i === index ? isCompleted : status))
+    );
+  }, []);
+
+  // Update local storage whenever completion status changes
+  useEffect(() => {
+    const completedSteps = completionStatus.filter(Boolean).length;
+    const progressPercentage = Math.floor((completedSteps / totalSteps) * 100);
+
+    setProgress(progressPercentage);
+
+    const profileProgress = JSON.parse(localStorage.getItem("profileProgress")) || {};
+    profileProgress[sectionKey] = {
+      completionStatus,
+      progress: progressPercentage
+    };
+
+    localStorage.setItem("profileProgress", JSON.stringify(profileProgress));
+  }, [completionStatus]);
 
   const handleToggleForm = (index) => {
     if (!isSaleListing && index === 2) return; // Prevent toggling the SaleOffer form if it's not a Sale Listing

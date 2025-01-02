@@ -2,14 +2,23 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const SaleForm = ({ data, setData }) => {
+const SaleForm = ({ onCompletion }) => {
     const [formData, setFormData] = useState({
         saleValuation: "",
         ownershipStake: "",
         salePrice: "",
         reasonForSale: "",
     });
-
+    
+    useEffect(() => {
+        const isCompleted =
+            formData.saleValuation &&
+            formData.ownershipStake &&
+            formData.salePrice &&
+            formData.reasonForSale;
+        onCompletion(isCompleted);
+    }, [formData]);
+    
     const [reasonOptions, setReasonOptions] = useState([]);
 
     // Handle form data change

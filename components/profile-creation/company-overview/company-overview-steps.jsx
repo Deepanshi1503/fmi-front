@@ -133,16 +133,6 @@ const CompanyOverview = () => {
           Make it easy for people
         </h4>
 
-        {/* progress track */}
-        {/* <div className="w-full bg-gray-200 rounded-full h-4">
-          <div
-            className="bg-blue-600 h-4 rounded-full"
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
-        <p className="mt-2 text-gray-700 text-sm">{progress}% Completed</p> */}
-        {/* progress track finished */}
-
         <div>
           {stepsComponents.map((step, index) => (
             <div key={index} className="relative flex items-start mb-6">

@@ -1,18 +1,49 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { ChevronDown, ChevronUp, Check, AlertCircle } from "lucide-react";
 import FounderForm from "@/components/profile-creation/founder-team/founder-info-form";
 import { useGlobalContext } from "@/context/context";
 
 const FounderTeam = () => {
-  // const { founders, setFounders, teamMembers, setTeamMembers, advisors, setAdvisors } = useGlobalContext(); // Accessing global context
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(3).fill(false));
   const [visitedSteps, setVisitedSteps] = useState(Array(3).fill(false));
   const [founders, setFounders] = useState([]);
   const [teamMembers, setTeamMembers] = useState([]);
   const [advisors, setAdvisors] = useState([]);
+  const totalSteps = 3;
+  const sectionKey = "founderTeam";
+
+  const [completionStatus, setCompletionStatus] = useState(
+    JSON.parse(localStorage.getItem("profileProgress"))?.[sectionKey]?.completionStatus || Array(totalSteps).fill(false)
+  );
+
+  const [progress, setProgress] = useState(
+    JSON.parse(localStorage.getItem("profileProgress"))?.[sectionKey]?.progress || 0
+  );
+
+  // Update local storage whenever completion status changes
+  useEffect(() => {
+    const completedSteps = completionStatus.filter(Boolean).length;
+    const progressPercentage = Math.floor((completedSteps / totalSteps) * 100);
+
+    setProgress(progressPercentage);
+
+    const profileProgress = JSON.parse(localStorage.getItem("profileProgress")) || {};
+    profileProgress[sectionKey] = {
+      completionStatus,
+      progress: progressPercentage
+    };
+
+    localStorage.setItem("profileProgress", JSON.stringify(profileProgress));
+  }, [completionStatus]);
+
+  const updateFormCompletion = useCallback((index, isCompleted) => {
+    setCompletionStatus((prev) =>
+      prev.map((status, i) => (i === index ? isCompleted : status))
+    );
+  }, []);
 
   useEffect(() => {
     // Load data from localStorage
@@ -53,6 +84,7 @@ const FounderTeam = () => {
           data={founders}
           setData={setFounders}
           title="Co-Founder"
+          onCompletion={(isCompleted) => updateFormCompletion(0, isCompleted)}
         />
       ),
     },
@@ -65,6 +97,7 @@ const FounderTeam = () => {
           data={teamMembers}
           setData={setTeamMembers}
           title="Team Member"
+          onCompletion={(isCompleted) => updateFormCompletion(1, isCompleted)}
         />
       ),
     },
@@ -77,6 +110,7 @@ const FounderTeam = () => {
           data={advisors}
           setData={setAdvisors}
           title="Advisor or Board Member"
+          onCompletion={(isCompleted) => updateFormCompletion(2, isCompleted)}
         />
       ),
     },

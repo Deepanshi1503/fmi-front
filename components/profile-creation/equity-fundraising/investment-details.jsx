@@ -2,13 +2,22 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const InvestmentRequired = ({ data, setData }) => {
+const InvestmentRequired = ({ onCompletion }) => {
   const [formData, setFormData] = useState({
     investorRole: "",
     typeOfFunding: "",
     valuation: "",
     fundsAllocation: "",
   });
+
+  useEffect(() => {
+    const isCompleted =
+        formData.investorRole &&
+        formData.typeOfFunding &&
+        formData.valuation &&
+        formData.fundsAllocation;
+    onCompletion(isCompleted);
+}, [formData]);
 
   const [investorRoleOptions, setInvestorRoleOptions] = useState([]);
   const [fundingTypeOptions, setFundingTypeOptions] = useState([]);
