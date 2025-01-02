@@ -24,7 +24,7 @@ const stepsConfig = [
 ];
 
 const ProfileStep = () => {
-  const [activeStep, setActiveStep] = useState(null); 
+  const [activeStep, setActiveStep] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // Load the active step from localStorage or sessionStorage
@@ -40,7 +40,7 @@ const ProfileStep = () => {
 
   // Save the active step to localStorage whenever it changes
   useEffect(() => {
-    if (activeStep !== null) { 
+    if (activeStep !== null) {
       localStorage.setItem("activeStep", activeStep);
     }
   }, [activeStep]);
@@ -81,7 +81,7 @@ const ProfileStep = () => {
   const uploadImage = async (imageData) => {
     const blob = base64ToBlob(imageData);
     const formData = new FormData();
-    formData.append("files", blob, "profile-image.png"); 
+    formData.append("files", blob, "profile-image.png");
 
     try {
       const response = await axios.post("http://localhost:1337/api/upload", formData, {
@@ -98,7 +98,7 @@ const ProfileStep = () => {
   };
 
 
-  const syncBusinessData = async (businessData, founderData, teamData, advisorData) => {
+  const syncBusinessData = async (businessData, founderData, teamData, advisorData, profileProgress) => {
     const businessId = localStorage.getItem("businessId");
 
     if (!businessId) {
@@ -224,6 +224,16 @@ const ProfileStep = () => {
             profit_loss: parseInt(quarter.profitLoss) || 0,
           })) || [],
         })) || [],
+        step_progress: profileProgress
+          ? {
+            company_overview_progress: profileProgress.companyOverview.progress || 0,
+            product_services_progress: profileProgress.productServices.progress || 0,
+            founder_team_progress: profileProgress.founderTeam.progress || 0,
+            market_competition_progress: profileProgress.marketCompetition.progress || 0,
+            financial_progress: profileProgress.financial.progress || 0,
+            equity_fundraising_progress: profileProgress.equitySell.progress || 0,
+          }
+          : null,
       }
     };
 
@@ -242,9 +252,9 @@ const ProfileStep = () => {
         const response = await fetch("http://localhost:1337/api/businesses", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json", 
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(payload), 
+          body: JSON.stringify(payload),
         });
         const responseData = await response.json();
         console.log(responseData);
@@ -292,9 +302,10 @@ const ProfileStep = () => {
     const founderData = JSON.parse(localStorage.getItem("founders"));
     const teamData = JSON.parse(localStorage.getItem("teamMembers"));
     const advisorData = JSON.parse(localStorage.getItem("advisors"));
+    const progress = JSON.parse(localStorage.getItem("profileProgress"))
 
     // Sync with backend before navigating
-    await syncBusinessData(formData, founderData, teamData, advisorData);
+    await syncBusinessData(formData, founderData, teamData, advisorData, progress);
 
     // Clear the localStorage after sync
     // localStorage.removeItem("combineInfo");
