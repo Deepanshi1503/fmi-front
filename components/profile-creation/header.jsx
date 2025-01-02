@@ -77,7 +77,7 @@ export default function Header() {
           </button>
 
           {/* Mail */}
-          <div className="relative hidden md:block">
+          {/* <div className="relative hidden md:block">
             <Image
               src="/images/mail-open.png"
               alt="Mail"
@@ -85,7 +85,7 @@ export default function Header() {
               height={30}
               className=""
             />
-          </div>
+          </div> */}
 
           {/* Profile */}
           <div className="relative w-6 h-6 md:w-8 md:h-8">

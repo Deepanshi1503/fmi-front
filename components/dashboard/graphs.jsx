@@ -2,25 +2,40 @@ import React, { useState, useEffect } from 'react';
 
 const ProfileCard = ({ profile }) => {
     const [animatedCompletion, setAnimatedCompletion] = useState(0);
+    console.log(profile.attributes)
+
+    const calculateCompletion = () => {
+        const stepProgress = profile.attributes.step_progress || {};
+        const totalSteps = 6
+        const totalCompletion = Object.values(stepProgress).reduce(
+            (sum, progress) => sum + progress,
+            0
+        );
+        return totalSteps > 0 ? totalCompletion / totalSteps : 0; // Average completion
+    };
+
+    const completion = calculateCompletion();
+    // Set profile status based on completion
+    const status = completion >= 100 ? "Profile completed" : "Draft";
 
     useEffect(() => {
         let start = 0;
-        const increment = profile.completion / 100; // Determines the step size
+        const increment = completion / 100; // Determines the step size
         const animation = setInterval(() => {
             start += increment;
-            if (start >= profile.completion) {
+            if (start >= completion) {
                 clearInterval(animation);
-                start = profile.completion; // Ensure it stops exactly at the target
+                start = completion; // Ensure it stops exactly at the target
             }
             setAnimatedCompletion(start);
         }, 10); // Updates every 10ms for smooth animation
-    }, [profile.completion]);
+    }, [completion]);
 
     return (
         <div className="bg-white shadow rounded-lg p-6">
             <div className="flex justify-between items-center">
                 <h3 className="text-[24px] font-medium text-[#181818]">
-                    {profile.title}
+                    {profile.attributes.company_name}
                 </h3>
                 <button className="bg-[#E8F4FF] text-[#0966C3] text-[16px] px-8 py-2 rounded-full">
                     Profile
@@ -29,7 +44,7 @@ const ProfileCard = ({ profile }) => {
 
             {/* Conditional Layout */}
             <div
-                className={`${profile.completed ? "flex justify-center" : "flex justify-between mx-14"
+                className={`${completion >= 100 ? "flex justify-center" : "flex justify-between mx-14"
                     } items-center my-6`}
             >
                 {/* Circular Progress Bar */}
@@ -37,7 +52,7 @@ const ProfileCard = ({ profile }) => {
                     <div
                         className="w-60 h-60 rounded-full"
                         style={{
-                            background: `conic-gradient(${profile.completed ? "#5A57FF" : "#4AD991"
+                            background: `conic-gradient(${completion >= 100 ? "#5A57FF" : "#4AD991"
                                 } ${animatedCompletion}%, #e5e7eb ${animatedCompletion}%)`,
                         }}
                     ></div>
@@ -47,32 +62,59 @@ const ProfileCard = ({ profile }) => {
                 </div>
 
                 {/* Profile Sections (Visible Only if Incomplete) */}
-                {!profile.completed && (
-                    <div>
-                        {profile.sections.map((section, idx) => (
-                            <p key={idx} className="text-[12px] font-medium text-[#00000099]">
-                                <span
-                                    className={`${section.completed ? "text-green-600" : "text-red-600"
-                                        }`}
-                                >
-                                    {section.completed ? "✔️" : "❌"}
-                                </span>{" "}
-                                {section.label}
-                            </p>
-                        ))}
+                {completion < 100 && (
+                    <div className='space-y-4'>
+                        {Object.entries(profile.attributes.step_progress).map(([step, progress], idx) => {
+                            // Skip the 'id' field
+                            if (step === "id") return null;
+
+                            // Map the step name to a custom label
+                            const stepNameMap = {
+                                company_overview_progress: "Company Overview",
+                                product_services_progress: "Product & Services",
+                                founder_team_progress: "Founder & Team",
+                                market_competition_progress: "Market & Competition",
+                                financial_progress: "Financials",
+                                equity_fundraising_progress: "Equity Fundraising"
+                            };
+
+                            // Get the custom name from the map, or fallback to a formatted version of the step key
+                            const customStepName = stepNameMap[step] || step.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+
+                            return (
+                                <div key={idx} className="flex items-center text-[12px] font-medium text-[#00000099]">
+                                    <span>
+                                        {progress === 100 ? (
+                                            <img src="/images/tick.png" alt="Tick" className="mr-2 h-3 w-3" />
+                                        ) : (
+                                            <img src="/images/cross.png" alt="Cross" className="mr-2 h-3 w-3" />
+                                        )}
+                                    </span>
+                                    <span>{customStepName}</span>
+                                </div>
+                            );
+                        })}
                     </div>
                 )}
+
+
             </div>
 
             {/* Status Message */}
-            <h6
-                className={`text-center text-[18px] font-normal ${profile.completed ? "text-[#00B69B]" : "text-[#FBC035]"
-                    }`}
-            >
-                {profile.status}
+            <h6 className="text-center text-[18px] font-normal">
+                {status === "Profile completed" ? (
+                    <span className="flex items-center justify-center text-[#00B69B]">
+                        <img src="/images/tick.png" alt="Tick" className="mr-2 h-4 w-4" />
+                        Profile completed
+                    </span>
+                ) : (
+                    <span className="flex items-center justify-center text-[#FBC035]">
+                        Draft
+                    </span>
+                )}
             </h6>
             <h6 className="text-center text-[18px] font-normal text-[#282D32]">
-                Your profile is {profile.completion}% completed
+                Your profile is {Math.round(Math.min(completion, 100))}% completed
             </h6>
         </div>
     );

@@ -226,12 +226,12 @@ const ProfileStep = () => {
         })) || [],
         step_progress: profileProgress
           ? {
-            company_overview_progress: profileProgress.companyOverview.progress || 0,
-            product_services_progress: profileProgress.productServices.progress || 0,
-            founder_team_progress: profileProgress.founderTeam.progress || 0,
-            market_competition_progress: profileProgress.marketCompetition.progress || 0,
-            financial_progress: profileProgress.financial.progress || 0,
-            equity_fundraising_progress: profileProgress.equitySell.progress || 0,
+            company_overview_progress: profileProgress?.companyOverview?.progress || 0,
+            product_services_progress: profileProgress?.productServices?.progress || 0,
+            founder_team_progress: profileProgress?.founderTeam?.progress || 0,
+            market_competition_progress: profileProgress?.marketCompetition?.progress || 0,
+            financial_progress: profileProgress?.financial?.progress || 0,
+            equity_fundraising_progress: profileProgress?.equitySell?.progress || 0,
           }
           : null,
       }
