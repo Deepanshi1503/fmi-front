@@ -1,10 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
-const MarketOpportunityForm = ({ data, setData }) => {
+const MarketOpportunityForm = ({ onCompletion }) => {
   const [formData, setFormData] = useState({
     marketOpportunity: "",
   });
+
+  const isFormComplete = () => {
+    return formData.marketOpportunity.trim() !== "";
+  };
 
   // Handle form data change
   const handleChange = (e) => {
@@ -25,6 +29,14 @@ const MarketOpportunityForm = ({ data, setData }) => {
     const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
     const updatedData = { ...savedData, ...formData };
     localStorage.setItem("combineInfo", JSON.stringify(updatedData));
+  }, [formData]);
+
+  useEffect(() => {
+    if (isFormComplete()) {
+      onCompletion && onCompletion(true);
+    } else {
+      onCompletion && onCompletion(false);
+    }
   }, [formData]);
 
   return (

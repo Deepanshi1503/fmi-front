@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import { ChevronDown, ChevronUp, Check, AlertCircle } from "lucide-react";
 import axios from "axios";
@@ -13,6 +13,38 @@ const MarketCompetition = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(3).fill(false));
   const [visitedSteps, setVisitedSteps] = useState(Array(3).fill(false));
+  const totalSteps = 3;
+  const sectionKey = "marketCompetition";
+
+  const [completionStatus, setCompletionStatus] = useState(
+    JSON.parse(localStorage.getItem("profileProgress"))?.[sectionKey]?.completionStatus || Array(totalSteps).fill(false)
+  );
+
+  const [progress, setProgress] = useState(
+    JSON.parse(localStorage.getItem("profileProgress"))?.[sectionKey]?.progress || 0
+  );
+
+  // Update local storage whenever completion status changes
+  useEffect(() => {
+    const completedSteps = completionStatus.filter(Boolean).length;
+    const progressPercentage = Math.floor((completedSteps / totalSteps) * 100);
+
+    setProgress(progressPercentage);
+
+    const profileProgress = JSON.parse(localStorage.getItem("profileProgress")) || {};
+    profileProgress[sectionKey] = {
+      completionStatus,
+      progress: progressPercentage,
+    };
+
+    localStorage.setItem("profileProgress", JSON.stringify(profileProgress));
+  }, [completionStatus]);
+
+  const updateFormCompletion = useCallback((index, isCompleted) => {
+    setCompletionStatus((prev) =>
+      prev.map((status, i) => (i === index ? isCompleted : status))
+    );
+  }, []);
 
   useEffect(() => {
     setIsFormOpen((prevState) => {
@@ -26,12 +58,12 @@ const MarketCompetition = () => {
   const [formData, setFormData] = useState({
     productServiceDetail: {},
     revenueModel: {},
-    currentStatus:{}
+    currentStatus: {}
   });
 
   // Check if a step has data
 
-  const stepsComponents = [
+  const stepsComponents =useMemo(() => [
     {
       image: "/images/founder-details.png",
       name: "Market Opportunity & Size",
@@ -39,8 +71,7 @@ const MarketCompetition = () => {
         "Introduce yourself and your team with a concise description of your expertise.",
       formComponent: () => (
         <OpportunitySizeForm
-          data={formData.productServiceDetail}
-          setData={(data) => updateFormData("productServiceDetail", data)}
+          onCompletion={(isCompleted) => updateFormCompletion(0, isCompleted)}
         />
       ),
     },
@@ -50,8 +81,7 @@ const MarketCompetition = () => {
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
         <CompetitorAnalysisForm
-          data={formData.revenueModel}
-          setData={(data) => updateFormData("revenueModel", data)}
+          onCompletion={(isCompleted) => updateFormCompletion(1, isCompleted)}
         />
       ),
     },
@@ -61,12 +91,11 @@ const MarketCompetition = () => {
       description: "List your key advisors and board members with their roles and expertise.",
       formComponent: () => (
         <CompetetiveAdvantagesForm
-          data={formData.revenueModel}
-          setData={(data) => updateFormData("revenueModel", data)}
+          onCompletion={(isCompleted) => updateFormCompletion(2, isCompleted)}
         />
       ),
     },
-  ];
+  ], [updateFormCompletion]);
 
   const handleToggleForm = (index) => {
     setIsFormOpen((prevState) =>

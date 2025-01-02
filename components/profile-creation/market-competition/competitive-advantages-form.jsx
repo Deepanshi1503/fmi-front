@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import countries from "world-countries";
 
-const CompetitiveAnalysisForm = () => {
+const CompetitiveAnalysisForm = ({onCompletion}) => {
     const [globalMarketSize, setGlobalMarketSize] = useState(() => {
         const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
         return savedData.competitiveAnalysis?.globalMarketSize || [{ country: "", currency: "", amount: "" }];
@@ -94,6 +94,24 @@ const CompetitiveAnalysisForm = () => {
         };
 
         localStorage.setItem("combineInfo", JSON.stringify(updatedData));
+    }, [globalMarketSize, currentMarketShare, descriptions]);
+
+    // Check if the form is complete
+    const isFormComplete = () => {
+        const hasGlobalMarketSize = globalMarketSize.every(row => row.country && row.currency && row.amount);
+        const hasMarketShare = currentMarketShare.every(row => row.country && row.share && row.value);
+        const hasDescriptions = descriptions.competitors && descriptions.whyDifferent && descriptions.whyNow;
+
+        return hasGlobalMarketSize && hasMarketShare && hasDescriptions;
+    };
+
+    // Notify on completion when the form is complete
+    useEffect(() => {
+        if (isFormComplete()) {
+            onCompletion && onCompletion(true);
+        } else {
+            onCompletion && onCompletion(false);
+        }
     }, [globalMarketSize, currentMarketShare, descriptions]);
 
 
