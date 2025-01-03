@@ -120,8 +120,9 @@ const ProfileCard = ({ profile }) => {
 };
 
 const ProfilesSection = ({ profiles }) => {
+    // const gridClasses = profiles.length === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2 gap-10";
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 mt-8 mb-10">
+        <div className={`grid grid-cols-1 sm:grid-cols-2 gap-10 mt-8 mb-10`}>
             {profiles.map((profile, index) => (
                 <ProfileCard key={index} profile={profile} />
             ))}

@@ -1,13 +1,30 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 
 const StatCard = ({ title, value, percentage, text, positive, image }) => {
+    const [animatedValue, setAnimatedValue] = useState(0);
+
+    useEffect(() => {
+        let startValue = 0;
+        const increment = value / 100; // Determines the step size
+        const interval = setInterval(() => {
+            startValue += increment;
+            if (startValue >= value) {
+                clearInterval(interval);
+                startValue = value; // Ensure it stops exactly at the target
+            }
+            setAnimatedValue(Math.round(startValue));
+        }, 60); // Updates every 10ms for smooth animation
+
+        return () => clearInterval(interval); // Cleanup on component unmount
+    }, [value]);
+
     return (
         <div className="bg-white shadow-md px-4 py-4 rounded-lg ">
             <div className="flex  justify-between">
                 {/* Left Section */}
                 <div>
                     <h3 className="text-[16px] text-[#202224] font-normal mb-6">{title}</h3>
-                    <p className="text-[28px] font-semibold text-[#202224]">{value}</p>
+                    <p className="text-[28px] font-semibold text-[#202224]">{animatedValue}</p>
                 </div>
 
                 {/* Right Section */}

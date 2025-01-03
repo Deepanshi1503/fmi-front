@@ -1,13 +1,12 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { ChevronDown } from "lucide-react";
-import axios from "axios";
+import { useGlobalContext } from "@/context/context";
 
-export default function Heading() {
+export default function Heading({profiles}) {
+  const { selectedBusiness, setSelectedBusiness, businesses } = useGlobalContext();
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [businesses, setBusinesses] = useState([]);
-  const [selectedBusiness, setSelectedBusiness] = useState("All listings");
-
   const dropdownRef = useRef(null);
 
   // Function to toggle dropdown visibility
@@ -15,31 +14,10 @@ export default function Heading() {
     setDropdownOpen(!dropdownOpen);
   };
 
-  // Fetch business data from backend
-  useEffect(() => {
-    const fetchBusinesses = async () => {
-      try {
-        const userId = JSON.parse(localStorage.getItem("userId"));
-        if (!userId) return;
-
-        const response = await axios.get(
-          `http://localhost:1337/api/businesses?filters[user][id][$eq]=${userId}`
-        );
-        setBusinesses(response.data.data);
-      } catch (error) {
-        console.error("Error fetching businesses:", error);
-      }
-    };
-
-    fetchBusinesses();
-  }, []);
-
   // Handle dropdown selection
   const handleSelect = (business) => {
-    console.log(business)
-    setSelectedBusiness(business ? business.attributes.company_name : "All listings");
+    setSelectedBusiness(business||null);
     setDropdownOpen(false);
-    // onFilter(business); // Notify parent to filter content
   };
 
    // Close the dropdown if a click happens outside of it
@@ -49,9 +27,7 @@ export default function Heading() {
         setDropdownOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -66,9 +42,9 @@ export default function Heading() {
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={toggleDropdown}
-          className="flex items-center space-x-2 bg-gray-200 px-4 py-2 rounded-lg shadow-md hover:bg-gray-300 transition-colors duration-300"
+          className="flex items-center justify-between space-x-2 bg-gray-200 px-4 py-2 rounded-lg shadow-md hover:bg-gray-300 transition-colors duration-300 w-48"
         >
-          <span className="text-sm font-medium">{selectedBusiness}</span>
+          <span className="text-sm font-medium">{selectedBusiness?.attributes?.company_name || "All listings"}</span>
           <ChevronDown className="w-4 h-4" />
         </button>
 
@@ -82,13 +58,13 @@ export default function Heading() {
               >
                 All listings
               </li>
-              {businesses.map((business) => (
+              {profiles.map((profile) => (
                 <li
-                  key={business.id}
+                  key={profile.id}
                   className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleSelect(business)}
+                  onClick={() => handleSelect(profile)}
                 >
-                  {business.attributes.company_name}
+                  {profile.attributes.company_name}
                 </li>
               ))}
             </ul>
