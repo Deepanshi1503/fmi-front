@@ -16,7 +16,7 @@ const CompetitiveAnalysisForm = ({onCompletion}) => {
 
     const [descriptions, setDescriptions] = useState(() => {
         const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
-        return savedData.competitiveAnalysis?.descriptions || { competitors: "", whyDifferent: "", whyNow: "" };
+        return savedData.competitiveAnalysis?.descriptions || { whyDifferent: "", whyNow: "" };
     });
 
     // Prepare countries for react-select
@@ -75,7 +75,7 @@ const CompetitiveAnalysisForm = ({onCompletion}) => {
 
         setGlobalMarketSize(mergedData.competitiveAnalysis?.globalMarketSize || [{ country: "", currency: "", amount: "" }]);
         setCurrentMarketShare(mergedData.competitiveAnalysis?.currentMarketShare || [{ country: "", share: "", value: "" }]);
-        setDescriptions(mergedData.competitiveAnalysis?.descriptions || { competitors: "", whyDifferent: "", whyNow: "" });
+        setDescriptions(mergedData.competitiveAnalysis?.descriptions || { whyDifferent: "", whyNow: "" });
     }, []);
 
     // Update localStorage when data changes
@@ -100,7 +100,7 @@ const CompetitiveAnalysisForm = ({onCompletion}) => {
     const isFormComplete = () => {
         const hasGlobalMarketSize = globalMarketSize.every(row => row.country && row.currency && row.amount);
         const hasMarketShare = currentMarketShare.every(row => row.country && row.share && row.value);
-        const hasDescriptions = descriptions.competitors && descriptions.whyDifferent && descriptions.whyNow;
+        const hasDescriptions = descriptions.whyDifferent && descriptions.whyNow;
 
         return hasGlobalMarketSize && hasMarketShare && hasDescriptions;
     };
@@ -234,7 +234,7 @@ const CompetitiveAnalysisForm = ({onCompletion}) => {
 
                 {/* Description Fields */}
                 <div className="space-y-6 text-left">
-                    <div>
+                    {/* <div>
                         <label className="block mb-2 font-medium" htmlFor="competitors">
                             Your Competitors
                         </label>
@@ -247,7 +247,7 @@ const CompetitiveAnalysisForm = ({onCompletion}) => {
                             className="w-full p-3 border rounded-lg"
                             placeholder="Write about your competitors"
                         ></textarea>
-                    </div>
+                    </div> */}
                     <div>
                         <label className="block mb-2 font-medium" htmlFor="whyDifferent">
                             Why Are You Different?

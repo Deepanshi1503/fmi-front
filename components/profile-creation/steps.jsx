@@ -135,10 +135,16 @@ const ProfileStep = () => {
         linkedin_id: businessData.linkedInId || null,
         year_of_incorporation: parseInt(businessData.yearOfIncorporation) || null,
         youtube_url: businessData.youtubeUrl || null,
-        product_name: businessData.productName || null,
-        product_description: businessData.productDescription || null,
-        revenue_model: businessData.revenueModel || null,
-        current_status: businessData.currentStatus || null,
+        product_services_detail: await Promise.all(
+          (businessData.productServiceData || [])?.map(async (product) => {
+            return {
+              product_name: product.productName || null,
+              product_description: product.productDescription || null,
+              revenue_model: product.revenueModel || null,
+              current_status: product.currentStatus || null,
+            };
+          })
+        ),
         preferred_timeframe_for_action: mapPreferredTimeframe(businessData.preferredTimeframe) || null,
         workforce_range: mapNumberOfEmployees(businessData.numberOfEmployees) || null,
         pitch_deck: businessData.pitchDeck?.fileId || null,  // Use the URL of the pitch deck
@@ -191,7 +197,6 @@ const ProfileStep = () => {
           share_percentage: item.share || null,
           value: item.value || null,
         })) || [],
-        your_competitors: businessData.competitiveAnalysis?.descriptions.competitors || null,
         why_are_you_different: businessData.competitiveAnalysis?.descriptions.whyDifferent || null,
         why_you_why_now: businessData.competitiveAnalysis?.descriptions.whyNow || null,
         fundraising_status: businessData.fundraisingStatus?.fundraisingStatus.map((item) => ({
