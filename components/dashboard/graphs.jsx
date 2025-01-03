@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 const ProfileCard = ({ profile }) => {
     const [animatedCompletion, setAnimatedCompletion] = useState(0);
-    console.log(profile.attributes)
 
     const calculateCompletion = () => {
         const stepProgress = profile.attributes.step_progress || {};
