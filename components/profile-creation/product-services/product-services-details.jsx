@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 
-const ProductServiceForm = () => {
+const ProductServiceForm = ({onCompletion}) => {
   const [items, setItems] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
   const [formData, setFormData] = useState({
@@ -31,6 +31,9 @@ const ProductServiceForm = () => {
     const combineInfo = JSON.parse(localStorage.getItem("combineInfo")) || {};
     combineInfo.productServiceData = items; // Update only productServiceData
     localStorage.setItem("combineInfo", JSON.stringify(combineInfo));
+    if (onCompletion) {
+      onCompletion(items.length > 0);
+    }
   }, [items]);
 
   // Fetch the options from the backend when the component mounts

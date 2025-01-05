@@ -13,7 +13,7 @@ const StatCard = ({ title, value, percentage, text, positive, image }) => {
                 startValue = value; // Ensure it stops exactly at the target
             }
             setAnimatedValue(Math.round(startValue));
-        }, 60); // Updates every 10ms for smooth animation
+        }, 10); // Updates every 10ms for smooth animation
 
         return () => clearInterval(interval); // Cleanup on component unmount
     }, [value]);

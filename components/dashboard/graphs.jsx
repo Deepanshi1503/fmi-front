@@ -120,7 +120,16 @@ const ProfileCard = ({ profile }) => {
 };
 
 const ProfilesSection = ({ profiles }) => {
-    // const gridClasses = profiles.length === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2 gap-10";
+    if (!profiles || profiles.length === 0) {
+        return (
+            <div className="text-center mt-40 mb-36">
+                <h3 className="text-[18px] font-medium text-gray-600">
+                    No profiles created yet. Please create a profile to get started.
+                </h3>
+            </div>
+        );
+    }
+
     return (
         <div className={`grid grid-cols-1 sm:grid-cols-2 gap-10 mt-8 mb-10`}>
             {profiles.map((profile, index) => (
