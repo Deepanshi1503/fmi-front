@@ -61,7 +61,7 @@ const Filter = ({ onFilter }) => {
 
                 {/* Revenue */}
                 <div>
-                    <label className="text-[24px] font-medium text-gray-700">Revenue</label>
+                    <label className="text-[20px] font-semibold">Revenue</label>
                     <div className="flex items-center gap-2 mt-1">
                         <input
                             type="number"
@@ -85,7 +85,7 @@ const Filter = ({ onFilter }) => {
 
                 {/* Profit */}
                 <div>
-                    <label className="text-sm font-medium text-gray-700">Profit</label>
+                    <label className="text-[20px] font-semibold">Profit</label>
                     <div className="flex items-center gap-2 mt-1">
                         <input
                             type="number"
@@ -107,11 +107,12 @@ const Filter = ({ onFilter }) => {
                     </div>
                 </div>
                 
+                <div className="border-b-[1px] border-[#18181833]"></div>
 
                 {/* Industry */}
                 <div>
-                    <label className="text-sm font-medium text-gray-700">Industry</label>
-                    <div className="mt-2 space-y-1">
+                    <label className="text-[20px] font-semibold">Industry</label>
+                    <div className="mt-2 space-y-1 flex flex-col gap-y-2">
                         <label className="flex items-center space-x-2 text-sm">
                             <input
                                 type="checkbox"
@@ -119,9 +120,9 @@ const Filter = ({ onFilter }) => {
                                 value="B2B"
                                 checked={filters.industry === "B2B"}
                                 onChange={(e) => handleInputChange(e)}
-                                className="form-checkbox h-4 w-4 text-blue-600"
+                                className="form-checkbox h-[20px] w-[20px] text-[#181818]"
                             />
-                            <span>B2B</span>
+                            <span className="text-[18px]">B2B</span>
                         </label>
                         <label className="flex items-center space-x-2 text-sm">
                             <input
@@ -130,17 +131,20 @@ const Filter = ({ onFilter }) => {
                                 value="Education"
                                 checked={filters.industry === "Education"}
                                 onChange={(e) => handleInputChange(e)}
-                                className="form-checkbox h-4 w-4 text-blue-600"
+                                className="form-checkbox h-5 w-5 text-[#0966C3]"
                             />
-                            <span>Education</span>
+                            <span className="text-[18px]">Education</span>
                         </label>
                         {/* Add more industries as needed */}
                     </div>
+                    <p className="text-[#0966C3] text-[18px] mt-3">See all options</p>
                 </div>
+
+                <div className="border-b-[1px] border-[#18181833]"></div>
 
                 {/* Employee Size */}
                 <div>
-                    <label className="text-sm font-medium text-gray-700">Employee Size</label>
+                    <label className="text-[20px] font-semibold">Employee Size</label>
                     <div className="mt-2">
                         <input
                             type="range"
@@ -157,7 +161,7 @@ const Filter = ({ onFilter }) => {
 
                 {/* Region */}
                 <div>
-                    <label className="text-sm font-medium text-gray-700">Region</label>
+                    <label className="text-[20px] font-semibold">Region</label>
                     <select
                         name="region"
                         value={filters.region}
@@ -172,12 +176,12 @@ const Filter = ({ onFilter }) => {
                 </div>
             </div>
 
-            <button
+            {/* <button
                 onClick={applyFilters}
                 className="w-full mt-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none"
             >
                 Apply Filters
-            </button>
+            </button> */}
         </div>
     );
 };
