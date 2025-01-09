@@ -20,8 +20,6 @@ const BusinessCard = ({ business }) => {
         financial_model_details,
     } = business.attributes || {};
 
-    console.log(financial_model_details);
-
     const metrics = [
         { key: "Revenue", value: "$20 Million" },
         { key: "Valuation", value: "$100 Million" },
@@ -49,23 +47,23 @@ const BusinessCard = ({ business }) => {
         })) || [];
 
     return (
-        <div className="flex rounded-lg border-[1px] border-[#18181833]">
+        <div className="flex rounded-[16px] border-[1px] border-[#18181833]">
             <div className="w-[70%] flex flex-col">
                 <div className="flex relative w-full border-b-[1px] border-[#18181833] border-r-[1px] p-4">
-                    <div className="flex-shrink-0">
+                    <div className="flex-shrink-0 ">
                         <img
                             src={
-                                // business_image?.data?.attributes?.url
-                                // ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${business_image.data.attributes.url}`
-                                // : 
+                                business_image?.data?.attributes?.url
+                                ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${business_image.data.attributes.url}`
+                                : 
                                 "/images/fallback-image.png"}
                             alt="Company Logo"
-                            className="w-[176px] h-[176px] rounded-[16px] object-cover"
+                            className="w-[176px] h-[176px] rounded-[16px] object-contain"
                         />
                     </div>
                     <div className="ml-4 flex-1 h-[180px] pb-4" >
                         <p className="text-[35px] font-medium">{company_name}</p>
-                        <div className="flex space-x-12">
+                        <div className="flex justify-between">
                             <div className="flex flex-col gap-y-2">
                                 <div className="flex gap-x-1">
                                     <MapPin size={18} color="#0A66C2" />
@@ -76,7 +74,7 @@ const BusinessCard = ({ business }) => {
                                 </h6>
                                 <Link href="#" className="ml-1 text-[#0966C3] text-[16px] -mt-2">Read more...</Link>
                                 <div className="inline-block text-[16px] text-[#181818CC] ml-1 mt-2">
-                                    {"Software Development"}
+                                    Industry : <span className="font-semibold">{"Software Development"}</span>
                                 </div>
                             </div>
                             <div className="text-end">
@@ -85,7 +83,6 @@ const BusinessCard = ({ business }) => {
                             </div>
                         </div>
                     </div>
-                    {/* <div className="absolute bottom-0 right-0 w-[1000%] border-b-[1px] border-[#18181833]" /> */}
                 </div>
                 <div className="flex w-full py-4 px-4 border-r-[1px] border-[#18181833] justify-between ">
                     {metrics.map((metric, index) => (

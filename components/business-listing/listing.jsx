@@ -12,34 +12,49 @@ export default function Listing() {
     const [businesses, setBusinesses] = useState([]);
     const [filters, setFilters] = useState({});
     const [sortOption, setSortOption] = useState("");
+    const [sortValue, setSortValue]=useState("");
+    console.log("sortOption",sortOption );
+    
 
     useEffect(() => {
         const fetchData = async () => {
-            const data = await fetchBusinesses(filters);
+            const data = await fetchBusinesses(filters, sortOption);
             setBusinesses(Array.isArray(data.data) ? data.data : []);
         };
 
         fetchData();
-    }, [filters]);
+    }, [filters, sortOption]);
 
     const handleFilter = (newFilters) => {
         setFilters(newFilters);
     };
 
     const handleSortChange = (event) => {
-        setSortOption(event.target.value);
-        // Add sorting logic here if needed
+        const option = event.target.value;
+        const sortMapping = {
+            profit: "financial_model_details.profit:desc",
+            loss: "financial_model_details.profit:asc",
+            revenue: "financial_model_details.revenue:desc",
+            year: "year_of_incorporation:asc",
+        };
+
+        setSortOption(sortMapping[option] || "");
+        setSortValue(event.target.value);
     };
 
     return (
         <>
             <Header2 />
             <HeadingBox />
-            <div className="flex justify-between mx-24 mt-12">
-                <div className="w-[23%] p-4">
+            <div className="flex justify-between mx-24 mt-10">
+                <div className="w-[23%] px-4 py-2" style={{
+                    position: "sticky",
+                    top: "0", // Sticks the left panel to the top
+                    alignSelf: "flex-start", // Maintains left panel position
+                }}>
                     <Filter onFilter={handleFilter} />
                 </div>
-                <div className="w-[75%] p-4 gap-6">
+                <div className="w-[75%] mb-8">
                     {/* Results header section */}
                     <div className="flex justify-between items-center mb-4">
                         <div className="text-[16px] text-[#181818CC] font-semibold mt-2">
@@ -52,9 +67,9 @@ export default function Listing() {
                             <div className="relative">
                                 <select
                                     id="sort"
-                                    value={sortOption}
+                                    value={sortValue}
                                     onChange={handleSortChange}
-                                    className="appearance-none px-3 py-2 border rounded-lg text-[16px] text-[#495057] focus:outline-none focus:ring-1 focus:ring-[#CED4DA] bg-transparent"
+                                    className="appearance-none px-4 py-2 border rounded-lg text-[16px] text-[#495057] focus:outline-none focus:ring-1 focus:ring-[#CED4DA] bg-transparent"
                                 >
                                     <option value="">Select</option>
                                     <option value="profit">Profit</option>
@@ -63,7 +78,7 @@ export default function Listing() {
                                     <option value="year">Year of Incorporation</option>
                                 </select>
                                 {/* Custom arrow */}
-                                <span className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
+                                <span className="absolute inset-y-0 right-1 flex items-center pointer-events-none">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="16"
@@ -79,12 +94,14 @@ export default function Listing() {
                         </div>
                     </div>
                     {/* Business cards */}
-                    {businesses.map((business) => (
-                        <BusinessCard
-                            key={business.id}
-                            business={business}
-                        />
-                    ))}
+                    <div className="flex flex-col gap-y-8">
+                        {businesses.map((business) => (
+                            <BusinessCard
+                                key={business.id}
+                                business={business}
+                            />
+                        ))}
+                    </div>
                 </div>
             </div>
             <Footer />

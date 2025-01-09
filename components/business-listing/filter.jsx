@@ -1,48 +1,125 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { fetchFundingTypeOptions, fetchIndustryOptions } from "@/utils/api";
+import { Country } from "country-state-city";
+import { ChevronDown, ChevronUp } from "lucide-react";
+
+const CollapsibleSection = ({ title, isCollapsed, toggleSection, children }) => (
+    <div>
+        <div
+            className="flex justify-between items-center cursor-pointer mb-3"
+            onClick={toggleSection}
+        >
+            <span className="text-[20px] font-medium">{title}</span>
+            <span className="mb-1">{isCollapsed ? <ChevronDown /> : <ChevronUp />}</span>
+        </div>
+        {!isCollapsed && <div>{children}</div>}
+    </div>
+);
 
 const Filter = ({ onFilter }) => {
-    const [filters, setFilters] = useState({
-        search: "",
-        monthlyRevenue: { min: "", max: "" },
-        monthlyProfit: { min: "", max: "" },
-        priceRange: { min: "", max: "" },
-        industry: "",
-        employeeSize: 0,
-        region: "",
+    const [showAllIndustries, setShowAllIndustries] = useState(false);
+    const [showAllFunding, setShowAllFunding] = useState(false);
+
+    const [industryOptions, setIndustryOptions] = useState([]);
+    const [fundingOptions, setFundingOptions] = useState([]);
+    const [countryOptions, setCountryOptions] = useState([]);
+
+    const [collapsedSections, setCollapsedSections] = useState({
+        financialMetrics: false,
+        funding: true,
+        industry: true,
+        employeeSize: true,
+        region: true,
     });
 
-    const handleInputChange = (e, field) => {
-        const { name, value } = e.target;
-        if (field) {
-            setFilters({
-                ...filters,
-                [field]: { ...filters[field], [name]: value },
-            });
-        } else {
-            setFilters({ ...filters, [name]: value });
-        }
-    };
+    const [filters, setFilters] = useState({
+        search: "",
+        revenue: { min: "", max: "" },
+        profit: { min: "", max: "" },
+        valuation: { min: "", max: "" },
+        funding: [],
+        industry: [],
+        employeeSize: 0,
+        region: [],
+    });
 
-    const applyFilters = () => {
-        onFilter(filters);
+    // Fetch options on mount
+    useEffect(() => {
+        const fetchData = async () => {
+            setFundingOptions(await fetchFundingTypeOptions());
+            setIndustryOptions(await fetchIndustryOptions());
+            setCountryOptions(
+                Country.getAllCountries().map((country) => ({
+                    value: country.isoCode,
+                    label: country.name,
+                }))
+            );
+        };
+        fetchData();
+    }, []);
+
+    const handleInputChange = (e, field) => {
+        const { name, value, checked } = e.target;
+
+        setFilters((prev) => {
+            // Handle multi-select fields (arrays)
+            if (Array.isArray(prev[field])) {
+                const updatedField = checked
+                    ? [...prev[field], value]
+                    : prev[field].filter((item) => item !== value);
+                return {
+                    ...prev,
+                    [field]: updatedField,
+                };
+            }
+
+            // Handle nested objects (e.g., revenue, profit)
+            if (typeof prev[field] === "object" && name) {
+                return {
+                    ...prev,
+                    [field]: {
+                        ...prev[field],
+                        [name]: value, // Update the specific key (min or max)
+                    },
+                };
+            }
+
+            // Default fallback for simple fields
+            return {
+                ...prev,
+                [field]: value,
+            };
+        });
+
+        // Call onFilter to apply the updated filters immediately
+    };
+    onFilter(filters);
+
+    const toggleSection = (section) => {
+        setCollapsedSections((prev) => ({
+            ...prev,
+            [section]: !prev[section],
+        }));
     };
 
     const resetFilters = () => {
         setFilters({
-            search:"",
-            monthlyRevenue: { min: "", max: "" },
-            monthlyProfit: { min: "", max: "" },
-            priceRange: { min: "", max: "" },
-            industry: "",
+            search: "",
+            revenue: { min: "", max: "" },
+            profit: { min: "", max: "" },
+            valuation: { min: "", max: "" },
+            funding: [],
+            industry: [],
             employeeSize: 0,
-            region: "",
+            region: [],
         });
+        onFilter({});
     };
 
     return (
         <div className="w-full">
             <div className="flex justify-between items-center mb-2">
-                <h3 className="text-[25px] font-semibold">Filter</h3>
+                <h3 className="text-[25px] font-medium">Filter</h3>
                 <button onClick={resetFilters} className="text-[16px] text-[#0A66C2] focus:outline-none">
                     Clear
                 </button>
@@ -54,135 +131,162 @@ const Filter = ({ onFilter }) => {
                     name="search"
                     placeholder="Search Companies..."
                     value={filters.search}
-                    onChange={(e) => handleInputChange(e)}
+                    onChange={(e) => handleInputChange(e, "search")}
                     className="w-full px-3 py-2 border rounded-[100px] focus:outline-none focus:ring-1 focus:ring-blue-600 text-sm"
                 />
+
                 <div className="border-b-[1px] border-[#18181833]"></div>
 
-                {/* Revenue */}
-                <div>
-                    <label className="text-[20px] font-semibold">Revenue</label>
-                    <div className="flex items-center gap-2 mt-1">
-                        <input
-                            type="number"
-                            name="min"
-                            placeholder="$Min"
-                            value={filters.monthlyRevenue.min}
-                            onChange={(e) => handleInputChange(e, "monthlyRevenue")}
-                            className="w-1/2 px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600 text-sm"
-                        />
-                        <h6 className="text-[#363638] mt-2">-</h6>
-                        <input
-                            type="number"
-                            name="max"
-                            placeholder="$Max"
-                            value={filters.monthlyRevenue.max}
-                            onChange={(e) => handleInputChange(e, "monthlyRevenue")}
-                            className="w-1/2 px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600 text-sm"
-                        />
-                    </div>
-                </div>
+                {/* Financial Metrics */}
+                <CollapsibleSection
+                    title="Financial Metrics"
+                    isCollapsed={collapsedSections.financialMetrics}
+                    toggleSection={() => toggleSection("financialMetrics")}
+                >
+                    {["revenue", "profit", "valuation"].map((key) => (
+                        <div key={key} className="mb-3">
+                            <label className="text-[20px] font-medium capitalize">{key}</label>
+                            <div className="flex items-center gap-2 mt-1">
+                                <input
+                                    type="number"
+                                    name="min"
+                                    placeholder="$Min"
+                                    value={filters[key].min}
+                                    onChange={(e) => handleInputChange(e, key)}
+                                    className="w-1/2 px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600 text-sm"
+                                />
+                                <span className="text-[#363638] mt-2">-</span>
+                                <input
+                                    type="number"
+                                    name="max"
+                                    placeholder="$Max"
+                                    value={filters[key].max}
+                                    onChange={(e) => handleInputChange(e, key)}
+                                    className="w-1/2 px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600 text-sm"
+                                />
+                            </div>
+                        </div>
+                    ))}
+                </CollapsibleSection>
 
-                {/* Profit */}
-                <div>
-                    <label className="text-[20px] font-semibold">Profit</label>
-                    <div className="flex items-center gap-2 mt-1">
-                        <input
-                            type="number"
-                            name="min"
-                            placeholder="$Min"
-                            value={filters.monthlyProfit.min}
-                            onChange={(e) => handleInputChange(e, "monthlyProfit")}
-                            className="w-1/2 px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600 text-sm"
-                        />
-                        <h6 className="text-[#363638] mt-2">-</h6>
-                        <input
-                            type="number"
-                            name="max"
-                            placeholder="$Max"
-                            value={filters.monthlyProfit.max}
-                            onChange={(e) => handleInputChange(e, "monthlyProfit")}
-                            className="w-1/2 px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600 text-sm"
-                        />
+                <div className="border-b-[1px] border-[#18181833]"></div>
+
+                {/* Funding */}
+                <CollapsibleSection
+                    title="Type of Funding"
+                    isCollapsed={collapsedSections.funding}
+                    toggleSection={() => toggleSection("funding")}
+                >
+                    <div className="mt-2 flex flex-col gap-y-3">
+                        {fundingOptions.slice(0, showAllFunding ? fundingOptions.length : 2).map((option, index) => (
+                            <label key={index} className="flex items-center space-x-2 text-sm">
+                                <input
+                                    type="checkbox"
+                                    name="funding"
+                                    value={option}
+                                    checked={filters.funding.includes(option)}
+                                    onChange={(e) => handleInputChange(e, "funding")}
+                                    className="form-checkbox h-[20px] w-[20px] text-[#181818]"
+                                />
+                                <span className="text-[18px]">{option}</span>
+                            </label>
+                        ))}
                     </div>
-                </div>
-                
+                    {fundingOptions.length > 2 && (
+                        <p
+                            onClick={() => setShowAllFunding((prev) => !prev)}
+                            className="text-[#0966C3] text-[18px] mt-2 cursor-pointer"
+                        >
+                            {showAllFunding ? "See less options" : "See all options"}
+                        </p>
+                    )}
+                </CollapsibleSection>
+
                 <div className="border-b-[1px] border-[#18181833]"></div>
 
                 {/* Industry */}
-                <div>
-                    <label className="text-[20px] font-semibold">Industry</label>
-                    <div className="mt-2 space-y-1 flex flex-col gap-y-2">
-                        <label className="flex items-center space-x-2 text-sm">
-                            <input
-                                type="checkbox"
-                                name="industry"
-                                value="B2B"
-                                checked={filters.industry === "B2B"}
-                                onChange={(e) => handleInputChange(e)}
-                                className="form-checkbox h-[20px] w-[20px] text-[#181818]"
-                            />
-                            <span className="text-[18px]">B2B</span>
-                        </label>
-                        <label className="flex items-center space-x-2 text-sm">
-                            <input
-                                type="checkbox"
-                                name="industry"
-                                value="Education"
-                                checked={filters.industry === "Education"}
-                                onChange={(e) => handleInputChange(e)}
-                                className="form-checkbox h-5 w-5 text-[#0966C3]"
-                            />
-                            <span className="text-[18px]">Education</span>
-                        </label>
-                        {/* Add more industries as needed */}
+                <CollapsibleSection
+                    title="Industry"
+                    isCollapsed={collapsedSections.industry}
+                    toggleSection={() => toggleSection("industry")}
+                >
+                    <div className="mt-2 flex flex-col gap-y-3">
+                        {industryOptions.slice(0, showAllIndustries ? industryOptions.length : 2).map((option, index) => (
+                            <label key={index} className="flex items-center space-x-2 text-sm">
+                                <input
+                                    type="checkbox"
+                                    name="industry"
+                                    value={option}
+                                    checked={filters.industry.includes(option)}
+                                    onChange={(e) => handleInputChange(e, "industry")}
+                                    className="form-checkbox h-[20px] w-[20px] text-[#181818]"
+                                />
+                                <span className="text-[18px]">{option}</span>
+                            </label>
+                        ))}
                     </div>
-                    <p className="text-[#0966C3] text-[18px] mt-3">See all options</p>
-                </div>
+                    {industryOptions.length > 2 && (
+                        <p
+                            onClick={() => setShowAllIndustries((prev) => !prev)}
+                            className="text-[#0966C3] text-[18px] mt-2 cursor-pointer"
+                        >
+                            {showAllIndustries ? "See less options" : "See all options"}
+                        </p>
+                    )}
+                </CollapsibleSection>
 
                 <div className="border-b-[1px] border-[#18181833]"></div>
 
                 {/* Employee Size */}
-                <div>
-                    <label className="text-[20px] font-semibold">Employee Size</label>
-                    <div className="mt-2">
-                        <input
-                            type="range"
-                            name="employeeSize"
-                            min="1"
-                            max="1000"
-                            value={filters.employeeSize}
-                            onChange={(e) => handleInputChange(e)}
-                            className="w-full"
-                        />
-                        <div className="text-sm text-gray-600">{filters.employeeSize}+</div>
+                <CollapsibleSection
+                    title="Employee Size"
+                    isCollapsed={collapsedSections.employeeSize}
+                    toggleSection={() => toggleSection("employeeSize")}
+                >
+                    <div>
+                        <div className="mt-2">
+                            <input
+                                type="range"
+                                name="employeeSize"
+                                min="1"
+                                max="1000"
+                                value={filters.employeeSize}
+                                onChange={(e) => handleInputChange(e)}
+                                className="w-full"
+                            />
+                            <div className="text-sm text-gray-600">{filters.employeeSize}+</div>
+                        </div>
                     </div>
-                </div>
+                </CollapsibleSection>
+
+                <div className="border-b-[1px] border-[#18181833]"></div>
 
                 {/* Region */}
-                <div>
-                    <label className="text-[20px] font-semibold">Region</label>
-                    <select
-                        name="region"
-                        value={filters.region}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600 text-sm"
-                    >
-                        <option value="">Select Region</option>
-                        <option value="North America">North America</option>
-                        <option value="Europe">Europe</option>
-                        <option value="Asia">Asia</option>
-                    </select>
-                </div>
-            </div>
+                <CollapsibleSection
+                    title="Region"
+                    isCollapsed={collapsedSections.region}
+                    toggleSection={() => toggleSection("region")}
+                >
+                    <div className="mt-2 flex flex-col gap-y-3 overflow-y-scroll max-h-[200px]">
+                        {countryOptions.map((option, index) => (
+                            <label key={index} className="flex items-center space-x-2 text-sm">
+                                <input
+                                    type="checkbox"
+                                    name="region"
+                                    value={option.value}
+                                    checked={filters.region.includes(option.value)}
+                                    onChange={(e) => handleInputChange(e, "region")}
+                                    className="form-checkbox h-[20px] w-[20px] text-[#181818]"
+                                />
+                                <span className="text-[18px]">{option.label}</span>
+                            </label>
+                        ))}
+                    </div>
+                </CollapsibleSection>
 
-            {/* <button
-                onClick={applyFilters}
-                className="w-full mt-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none"
-            >
-                Apply Filters
-            </button> */}
-        </div>
+                <div className="border-b-[1px] border-[#18181833]"></div>
+            </div >
+        </div >
     );
 };
 

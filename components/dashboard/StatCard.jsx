@@ -47,7 +47,7 @@ const StatCard = ({ title, value, percentage, text, positive, image }) => {
                         alt={positive ? "Up Arrow" : "Down Arrow"}
                         className="w-4 h-3 mr-2"
                     />
-                    {percentage}
+                    {percentage}%
                 </span>
                 <span className="ml-2 text-[16px] text-gray-500">{text}</span>
             </div>

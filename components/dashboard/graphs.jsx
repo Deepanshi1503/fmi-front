@@ -61,7 +61,7 @@ const ProfileCard = ({ profile }) => {
                 </div>
 
                 {/* Profile Sections (Visible Only if Incomplete) */}
-                {completion < 100 && (
+                {completion < 100 && profile?.attributes?.step_progress && (
                     <div className='space-y-4'>
                         {Object.entries(profile.attributes.step_progress).map(([step, progress], idx) => {
                             // Skip the 'id' field

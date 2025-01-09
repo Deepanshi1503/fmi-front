@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import ContactForm from '@/components/contact-us/ContactForm'
+import ContactForm from './contactForm'
 export default function ContactFormBlock() {
     return (
         <div>
