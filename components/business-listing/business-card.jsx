@@ -6,9 +6,11 @@ import Link from "next/link";
 const BusinessCard = ({ business }) => {
     const {
         company_name,
-        location,
+        headquarters,
         description_about_company,
         business_image,
+        currency,
+        year_of_incorporation,
         // funding_ask,
         // valuation,
         // revenue,
@@ -16,17 +18,25 @@ const BusinessCard = ({ business }) => {
         // loss,
         // year_of_incorporation,
         // funding_type,
-        // industry,
+        overall_revenue,
+        overall_profile_loss,
+        industry,
         financial_model_details,
+        fundraise_business_details
     } = business.attributes || {};
+    console.log(currency)
+
+    const industryName = industry?.data?.attributes?.name; 
+    const funding = fundraise_business_details.funding_ask;
+    const valuation = fundraise_business_details.valuation;
+    const funding_type= fundraise_business_details.type_of_funding;
 
     const metrics = [
-        { key: "Revenue", value: "$20 Million" },
-        { key: "Valuation", value: "$100 Million" },
-        { key: "Founded", value: "2024" },
-        { key: "Funding type", value: "Debt" },
-        { key: "Profit", value: "$5 Million" },
-        { key: "Loss", value: "$5 Million" },
+        { key: "Revenue", value: `$ ${overall_revenue} Million` },
+        { key: "Valuation", value: `$ ${valuation} Million` },
+        { key: "Founded", value: `${year_of_incorporation}` },
+        { key: "Funding type", value: `${funding_type}` },
+        { key: "Profit / Loss", value: `$ ${overall_profile_loss} Million` },
     ];
 
     // Get the latest year's financial data
@@ -54,9 +64,9 @@ const BusinessCard = ({ business }) => {
                         <img
                             src={
                                 business_image?.data?.attributes?.url
-                                ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${business_image.data.attributes.url}`
-                                : 
-                                "/images/fallback-image.png"}
+                                    ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${business_image.data.attributes.url}`
+                                    :
+                                    "/images/fallback-image.png"}
                             alt="Company Logo"
                             className="w-[176px] h-[176px] rounded-[16px] object-contain"
                         />
@@ -67,19 +77,19 @@ const BusinessCard = ({ business }) => {
                             <div className="flex flex-col gap-y-2">
                                 <div className="flex gap-x-1">
                                     <MapPin size={18} color="#0A66C2" />
-                                    <h6 className="text-[16px] font-medium -mt-1">{location || "Location not available"}</h6>
+                                    <h6 className="text-[16px] font-medium -mt-1">{headquarters || "Location not available"}</h6>
                                 </div>
                                 <h6 className="ml-1 text-[16px] text-[#18181899] overflow-hidden text-ellipsis whitespace-nowrap w-[350px]">
                                     {description_about_company || "No description available"}{" "}
                                 </h6>
-                                <Link href="#" className="ml-1 text-[#0966C3] text-[16px] -mt-2">Read more...</Link>
+                                <Link href={`/business-detail/${business.id}`} className="ml-1 text-[#0966C3] text-[16px] -mt-2">Read more...</Link>
                                 <div className="inline-block text-[16px] text-[#181818CC] ml-1 mt-2">
-                                    Industry : <span className="font-semibold">{"Software Development"}</span>
+                                    Industry : <span className="font-semibold">{industryName || "All Rounder"}</span>
                                 </div>
                             </div>
                             <div className="text-end">
                                 <h6 className="text-[#0966C3] text-[16px] font-medium -mt-1">Funding ask</h6>
-                                <h6 className="text-[22px] font-semibold"> USD $20 Million</h6>
+                                <h6 className="text-[22px] font-semibold"> {currency || "$"} {funding || 20} Million</h6>
                             </div>
                         </div>
                     </div>
@@ -132,7 +142,7 @@ const BusinessCard = ({ business }) => {
                     <p>No data available</p>
                 )}
                 {/* Add the button here */}
-                <button className="mt-2 ml-4 py-2 w-full bg-[#0A66C2] text-white text-[16px] font-medium rounded-xl flex items-center justify-center gap-x-2">
+                <Link href={`/business-detail/${business.id}`} className="mt-2 ml-4 py-2 w-full bg-[#0A66C2] text-white text-[16px] font-medium rounded-xl flex items-center justify-center gap-x-2">
                     View Listing
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -144,7 +154,7 @@ const BusinessCard = ({ business }) => {
                     >
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
-                </button>
+                </Link>
             </div>
         </div>
     );

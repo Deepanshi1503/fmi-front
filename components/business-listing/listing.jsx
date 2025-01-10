@@ -13,8 +13,6 @@ export default function Listing() {
     const [filters, setFilters] = useState({});
     const [sortOption, setSortOption] = useState("");
     const [sortValue, setSortValue]=useState("");
-    console.log("sortOption",sortOption );
-    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,10 +30,10 @@ export default function Listing() {
     const handleSortChange = (event) => {
         const option = event.target.value;
         const sortMapping = {
-            profit: "financial_model_details.profit:desc",
-            loss: "financial_model_details.profit:asc",
-            revenue: "financial_model_details.revenue:desc",
+            profitLoss: "overall_profile_loss:desc",
+            revenue: "overall_revenue:desc",
             year: "year_of_incorporation:asc",
+            funding: "fundraise_business_details.funding_ask:asc"
         };
 
         setSortOption(sortMapping[option] || "");
@@ -72,9 +70,9 @@ export default function Listing() {
                                     className="appearance-none px-4 py-2 border rounded-lg text-[16px] text-[#495057] focus:outline-none focus:ring-1 focus:ring-[#CED4DA] bg-transparent"
                                 >
                                     <option value="">Select</option>
-                                    <option value="profit">Profit</option>
-                                    <option value="loss">Loss</option>
+                                    <option value="profitLoss">Profit/Loss</option>
                                     <option value="revenue">Revenue</option>
+                                    <option value="funding">Funding Ask</option>
                                     <option value="year">Year of Incorporation</option>
                                 </select>
                                 {/* Custom arrow */}

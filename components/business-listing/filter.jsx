@@ -39,7 +39,7 @@ const Filter = ({ onFilter }) => {
         valuation: { min: "", max: "" },
         funding: [],
         industry: [],
-        employeeSize: 0,
+        // employeeSize: 0,
         region: [],
     });
 
@@ -110,7 +110,7 @@ const Filter = ({ onFilter }) => {
             valuation: { min: "", max: "" },
             funding: [],
             industry: [],
-            employeeSize: 0,
+            // employeeSize: 0,
             region: [],
         });
         onFilter({});
@@ -238,28 +238,28 @@ const Filter = ({ onFilter }) => {
                 <div className="border-b-[1px] border-[#18181833]"></div>
 
                 {/* Employee Size */}
-                <CollapsibleSection
+                {/* <CollapsibleSection
                     title="Employee Size"
                     isCollapsed={collapsedSections.employeeSize}
                     toggleSection={() => toggleSection("employeeSize")}
                 >
-                    <div>
-                        <div className="mt-2">
-                            <input
-                                type="range"
-                                name="employeeSize"
-                                min="1"
-                                max="1000"
-                                value={filters.employeeSize}
-                                onChange={(e) => handleInputChange(e)}
-                                className="w-full"
-                            />
-                            <div className="text-sm text-gray-600">{filters.employeeSize}+</div>
-                        </div>
+                    <div className="mt-2">
+                        <input
+                            type="range"
+                            name="employeeSize"
+                            min="1"
+                            max="1000"
+                            value={filters.employeeSize}
+                            onChange={(e) => handleInputChange(e)}  // When the slider is moved
+                            className="w-full"
+                            onMouseDown={() => setIsDragging(true)}  // When the user starts dragging
+                            onMouseUp={() => setIsDragging(false)}  // When the user stops dragging
+                        />
+                        <div className="text-sm text-gray-600">{filters.employeeSize}+</div>
                     </div>
-                </CollapsibleSection>
+                </CollapsibleSection> */}
 
-                <div className="border-b-[1px] border-[#18181833]"></div>
+                {/* <div className="border-b-[1px] border-[#18181833]"></div> */}
 
                 {/* Region */}
                 <CollapsibleSection

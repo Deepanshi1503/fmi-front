@@ -4,14 +4,22 @@ export const fetchBusinesses = async (filters = {}, sort = "") => {
         const queryParams = new URLSearchParams();
         // Apply filters dynamically
         if (filters.search) queryParams.append("filters[company_name][$containsi]", filters.search);
-        if (filters.revenue.min) queryParams.append("filters[financial_model_details.revenue][$gte]", filters.revenue.min);
-        if (filters.revenue.max) queryParams.append("filters[financial_model_details.revenue][$lte]", filters.revenue.max);
-        if (filters.profit.min) queryParams.append("filters[financial_model_details.profit][$gte]", filters.profit.min);
-        if (filters.profit.max) queryParams.append("filters[financial_model_details.profit][$lte]", filters.profit.max);
-        if (filters.valuation.min) queryParams.append("filters[financial_model_details.valuation][$gte]", filters.valuation.min);
-        if (filters.valuation.max) queryParams.append("filters[financial_model_details.valuation][$lte]", filters.valuation.max);
-        if (filters.funding.length) queryParams.append("filters[type_of_funding][$in]", filters.funding.join(","));
-        if (filters.industry.length) queryParams.append("filters[industry][$in]", filters.industry.join(","));
+        if (filters.revenue.min) queryParams.append("filters[overall_revenue][$gte]", filters.revenue.min);
+        if (filters.revenue.max) queryParams.append("filters[overall_revenue][$lte]", filters.revenue.max);
+        if (filters.profit.min) queryParams.append("filters[overall_profile_loss][$gte]", filters.profit.min);
+        if (filters.profit.max) queryParams.append("filters[overall_profile_loss][$lte]", filters.profit.max);
+        if (filters.valuation.min) queryParams.append("filters[fundraise_business_details][valuation][$gte]", filters.valuation.min);
+        if (filters.valuation.max) queryParams.append("filters[fundraise_business_details][valuation][$lte]", filters.valuation.max);
+        if (filters.funding.length) {
+            filters.funding.forEach(fundingType => {
+                queryParams.append("filters[fundraise_business_details][type_of_funding][$in]", fundingType);
+            });
+        }
+        if (filters.industry.length) {
+            filters.industry.forEach(industryName => {
+                queryParams.append("filters[industry][name][$in]", industryName);
+            });
+        }
         if (filters.region.length) queryParams.append("filters[country][$in]", filters.region.join(","));
         if (filters.employeeSize) queryParams.append("filters[workforce_range][$gte]", filters.employeeSize);
 
