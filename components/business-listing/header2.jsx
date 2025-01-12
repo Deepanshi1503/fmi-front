@@ -22,13 +22,13 @@ export default function Header2() {
 
                     <Link
                         href="#"
-                        className="text-[22px] text-white hover:text-gray-200 transition duration-300 mr-4 mt-2"
+                        className="text-[22px] text-white hover:text-gray-200 transition duration-300 mr-4"
                     >
                         Businesses
                     </Link>
                     <Link
                         href="#"
-                        className="text-[22px] text-white hover:text-gray-200 transition duration-300 mt-2"
+                        className="text-[22px] text-white hover:text-gray-200 transition duration-300"
                     >
                         Investors
                     </Link>
@@ -57,7 +57,7 @@ export default function Header2() {
                 </button>
 
                 {/* Navigation Links */}
-                <div className="hidden mt-2 lg:flex items-center space-x-6 mr-4">
+                <div className="hidden lg:flex items-center space-x-6 mr-4">
                     <Link
                         href="#"
                         className="text-[22px] text-white hover:text-gray-200 transition duration-300"

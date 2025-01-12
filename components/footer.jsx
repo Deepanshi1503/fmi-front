@@ -9,7 +9,7 @@ export default function Footer() {
                     <div className="row">
                         <div className="col-12 col-sm-12 col-md-3 col-lg-3 col-xl-3">
                             <div className="footer-logo-block">
-                                <Link href="#"><img src="images/logo.png" alt="footer logo" /></Link>
+                                <Link href="#"><img src="/images/logo.png" alt="footer logo" /></Link>
                                 <p>Connecting Enterpreneurs with local and Global Investor</p>
                                 <ul className='footer-social-links'>
                                     <li><Link href="#"><svg

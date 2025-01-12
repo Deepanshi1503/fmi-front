@@ -24,7 +24,6 @@ const BusinessCard = ({ business }) => {
         financial_model_details,
         fundraise_business_details
     } = business.attributes || {};
-    console.log(currency)
 
     const industryName = industry?.data?.attributes?.name; 
     const funding = fundraise_business_details.funding_ask;
@@ -89,7 +88,7 @@ const BusinessCard = ({ business }) => {
                             </div>
                             <div className="text-end">
                                 <h6 className="text-[#0966C3] text-[16px] font-medium -mt-1">Funding ask</h6>
-                                <h6 className="text-[22px] font-semibold"> {currency || "$"} {funding || 20} Million</h6>
+                                <h6 className="text-[22px] font-semibold"> {currency || "$"} {funding || "NA"} Million</h6>
                             </div>
                         </div>
                     </div>
