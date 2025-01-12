@@ -1,27 +1,65 @@
 "use client";
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { ChevronDown, ChevronUp, Check, AlertCircle, Lock } from "lucide-react"; // Added Lock icon for restricted state
-import axios from "axios";
+import { ChevronDown, ChevronUp, Check, AlertCircle, Lock } from "lucide-react";
 import { useGlobalContext } from "@/context/context";
 import FundraisingStatus from "@/components/profile-creation/equity-fundraising/current-fundraising-status-form";
 import InvestmentDetails from "@/components/profile-creation/equity-fundraising/investment-details";
 import SaleDetails from "@/components/profile-creation/equity-fundraising/sale-detail-form";
 
 const ProductServices = () => {
+  const { isSaleListing, setIsSaleListing } = useGlobalContext();
+
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(6).fill(false));
-  const [visitedSteps, setVisitedSteps] = useState(Array(6).fill(false));
   const totalSteps = 2;
   const sectionKey = "equitySell";
 
+  /* Profle Progress */
   const [completionStatus, setCompletionStatus] = useState(
     JSON.parse(localStorage.getItem("profileProgress"))?.[sectionKey]?.completionStatus || Array(totalSteps).fill(false)
   );
-
   const [progress, setProgress] = useState(
     JSON.parse(localStorage.getItem("profileProgress"))?.[sectionKey]?.progress || 0
   );
+  const updateFormCompletion = useCallback((index, isCompleted) => {
+    setCompletionStatus((prev) =>
+      prev.map((status, i) => (i === index ? isCompleted : status))
+    );
+  }, []);
+  // Update local storage whenever completion status changes
+  useEffect(() => {
+    const completedSteps = completionStatus.filter(Boolean).length;
+    const progressPercentage = Math.floor((completedSteps / totalSteps) * 100);
+
+    setProgress(progressPercentage);
+
+    const profileProgress = JSON.parse(localStorage.getItem("profileProgress")) || {};
+    profileProgress[sectionKey] = {
+      completionStatus,
+      progress: progressPercentage
+    };
+
+    localStorage.setItem("profileProgress", JSON.stringify(profileProgress));
+  }, [completionStatus]);
+
+  
+  // Update form data dynamically
+  const updateFormData = (key, data) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [key]: data,
+    }));
+  };
+
+  const handleToggleForm = (index) => {
+    if (!isSaleListing && index === 2) return; // Prevent toggling the SaleOffer form if it's not a Sale Listing
+
+    setIsFormOpen((prevState) =>
+      prevState.map((isOpen, i) => (i === index ? !isOpen : false))
+    );
+    setActiveStep(index);
+  };
 
   useEffect(() => {
     setIsFormOpen((prevState) => {
@@ -31,9 +69,6 @@ const ProductServices = () => {
     });
   }, []);
 
-  // State to track whether it's a Sale Listing or Fundraise Listing
-  const [isSaleListing, setIsSaleListing] = useState(true); // Default to Fundraise Listing
-
   // Centralized state for all form data
   const [formData, setFormData] = useState({
     currentFUndraisingStatus: {},
@@ -42,7 +77,7 @@ const ProductServices = () => {
   });
 
   // Check if a step has data
-  const stepsComponents = useMemo(()=>[
+  const stepsComponents = useMemo(() => [
     {
       image: "/images/founder-details.png",
       name: "Current fundraising status",
@@ -82,49 +117,7 @@ const ProductServices = () => {
           />
         ) : null, // Conditionally render based on the listing type
     },
-  ],[formData,isSaleListing]);
-
-  const updateFormCompletion = useCallback((index, isCompleted) => {
-    setCompletionStatus((prev) =>
-      prev.map((status, i) => (i === index ? isCompleted : status))
-    );
-  }, []);
-
-  // Update local storage whenever completion status changes
-  useEffect(() => {
-    const completedSteps = completionStatus.filter(Boolean).length;
-    const progressPercentage = Math.floor((completedSteps / totalSteps) * 100);
-
-    setProgress(progressPercentage);
-
-    const profileProgress = JSON.parse(localStorage.getItem("profileProgress")) || {};
-    profileProgress[sectionKey] = {
-      completionStatus,
-      progress: progressPercentage
-    };
-
-    localStorage.setItem("profileProgress", JSON.stringify(profileProgress));
-  }, [completionStatus]);
-
-  const handleToggleForm = (index) => {
-    if (!isSaleListing && index === 2) return; // Prevent toggling the SaleOffer form if it's not a Sale Listing
-
-    setIsFormOpen((prevState) =>
-      prevState.map((isOpen, i) => (i === index ? !isOpen : false))
-    );
-    setActiveStep(index);
-
-    // Mark the step as visited
-    setVisitedSteps((prev) => prev.map((visited, i) => (i === index ? true : visited)));
-  };
-
-  // Update form data dynamically
-  const updateFormData = (key, data) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      [key]: data,
-    }));
-  };
+  ], [formData, isSaleListing]);
 
   return (
     <div className="flex flex-col xl:flex-row mx-6 xl:mx-44 xl:pl-12">
@@ -156,10 +149,6 @@ const ProductServices = () => {
               >
                 {index === activeStep ? (
                   <div className="w-3 h-3 bg-[#0A66C2] rounded-full"></div> // Blue dot for active step
-                ) : visitedSteps[index] ? (
-                  <AlertCircle className="w-5 h-5 text-white" /> // Alert icon for visited steps with no data
-                ) : visitedSteps[index] ? (
-                  <Check className="w-5 h-5 text-white" /> // Checkmark icon for steps with data
                 ) : null}
               </div>
 

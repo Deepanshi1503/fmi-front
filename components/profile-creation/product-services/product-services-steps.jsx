@@ -8,16 +8,16 @@ import ProductServiceForm from "@/components/profile-creation/product-services/p
 const ProductServices = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(1).fill(false));
-  const [visitedSteps, setVisitedSteps] = useState(Array(1).fill(false));
   const totalSteps = 1;
   const sectionKey = "productServices";
+
+  /* Profle Progress */
   const [completionStatus, setCompletionStatus] = useState(
     JSON.parse(localStorage.getItem("profileProgress"))?.[sectionKey]?.completionStatus || Array(totalSteps).fill(false)
   );
   const [progress, setProgress] = useState(
     JSON.parse(localStorage.getItem("profileProgress"))?.[sectionKey]?.progress || 0
   );
-
   // Update local storage whenever completion status changes
   useEffect(() => {
     const completedSteps = completionStatus.filter(Boolean).length;
@@ -33,12 +33,12 @@ const ProductServices = () => {
 
     localStorage.setItem("profileProgress", JSON.stringify(profileProgress));
   }, [completionStatus]);
-
   const updateFormCompletion = useCallback((index, isCompleted) => {
     setCompletionStatus((prev) =>
       prev.map((status, i) => (i === index ? isCompleted : status))
     );
   }, []);
+  
 
   useEffect(() => {
     setIsFormOpen((prevState) => {
@@ -67,9 +67,6 @@ const ProductServices = () => {
       prevState.map((isOpen, i) => (i === index ? !isOpen : false))
     );
     setActiveStep(index);
-
-    // Mark the step as visited
-    setVisitedSteps((prev) => prev.map((visited, i) => (i === index ? true : visited)));
   };
 
   return (
@@ -102,11 +99,7 @@ const ProductServices = () => {
               >
                 {index === activeStep ? (
                   <div className="w-3 h-3 bg-[#0A66C2] rounded-full"></div> // Blue dot for active step
-                ) : visitedSteps[index] ? (
-                  <AlertCircle className="w-5 h-5 text-white" /> // Alert icon for visited steps with no data
-                ) : visitedSteps[index] ? (
-                  <Check className="w-5 h-5 text-white" /> // Checkmark icon for steps with data
-                ) : null}
+                )  : null}
               </div>
 
               {/* Step Line */}

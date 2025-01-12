@@ -11,6 +11,8 @@ const QuarterlyDataForm = () => {
     const [currentYear, setCurrentYear] = useState("");
     const [activeYearIndex, setActiveYearIndex] = useState(null);
     const [selectedCurrency, setSelectedCurrency] = useState("USD");
+
+    /* Profle Progress and local storage handling */
     const [completionStatus, setCompletionStatus] = useState([]);
     const [progress, setProgress] = useState(0);
 

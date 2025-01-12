@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useGlobalContext } from "@/context/context";
 import axios from "axios";
+import { fetchWorkforceRanges } from "@/utils/api";
 
 const WorkforceDetailForm = ({ onCompletion }) => {
   const [formData, setFormData] = useState({
@@ -11,11 +12,11 @@ const WorkforceDetailForm = ({ onCompletion }) => {
 
   useEffect(() => {
     const isCompleted =
-        formData.numberOfEmployees &&
-        formData.workforceRatio &&
-        formData.diversityInfo;
+      formData.numberOfEmployees &&
+      formData.workforceRatio &&
+      formData.diversityInfo;
     onCompletion(isCompleted);
-}, [formData]);
+  }, [formData]);
 
   const [workforceRangeOptions, setWorkforceRangeOptions] = useState([]);
   const [error, setError] = useState("");
@@ -43,24 +44,17 @@ const WorkforceDetailForm = ({ onCompletion }) => {
 
   // Fetch workforce range options from the backend
   useEffect(() => {
-    const fetchWorkforceRanges = async () => {
+    const fetchWorforceOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:1337/api/content-type-builder/content-types/api::business.business");
-        const schemaAttributes = response.data?.data?.schema?.attributes || {};
-
-        // Fetch 'Stage of Company' options
-        const workforceOptions =
-          schemaAttributes?.workforce_range?.enum.map((option) =>
-            option.replace(/^"|"$/g, "") // Removes double quotes
-          ) || [];
+        const workforceOptions = await fetchWorkforceRanges();
         setWorkforceRangeOptions(workforceOptions)
       } catch (err) {
-        console.error("Error fetching workforce range options:", err);
-        setError("Failed to load workforce range options.");
+        console.error(err);
+        setError("Failed to load options.");
       }
     };
 
-    fetchWorkforceRanges();
+    fetchWorforceOptions();
   }, []);
 
   return (

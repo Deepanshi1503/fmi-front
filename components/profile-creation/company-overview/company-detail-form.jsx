@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useGlobalContext } from "@/context/context";
 import axios from "axios";
+import { fetchIndustryOptions, fetchOptions } from "@/utils/api";
 
 const CompanyDetailForm = ({ onCompletion }) => {
     const [companyTypeOptions, setCompanyTypeOptions] = useState([]); // Options for 'Type of Company'
@@ -80,40 +81,20 @@ const CompanyDetailForm = ({ onCompletion }) => {
 
     // Fetch options from the backend
     useEffect(() => {
-        const fetchOptions = async () => {
+        const fetchData = async () => {
             try {
-                const response = await axios.get(
-                    "http://localhost:1337/api/content-type-builder/content-types/api::business.business"
-                );
-
-                const response2 = await axios.get(
-                    "http://localhost:1337/api/industries?populate=sub_industries"
-                );
-
-                const schemaAttributes = response.data?.data?.schema?.attributes || {};
-
-                // Fetch 'Type of Company' options
-                const typeOptions =
-                    schemaAttributes?.type_of_company?.enum.map((option) =>
-                        option.replace(/^"|"$/g, "") // Removes double quotes
-                    ) || [];
-
-                // Fetch 'Stage of Company' options
-                const stageOptions =
-                    schemaAttributes?.stage_of_company?.enum.map((option) =>
-                        option.replace(/^"|"$/g, "") // Removes double quotes
-                    ) || [];
-
+                const { typeOptions, stageOptions } = await fetchOptions();
                 setCompanyTypeOptions(typeOptions);
                 setCompanyStageOptions(stageOptions);
-                setIndustryOptions(response2.data.data || []);
+
+                const industryOptions = await fetchIndustryOptions();
+                setIndustryOptions(industryOptions);
             } catch (err) {
-                console.error("Error fetching company options:", err);
-                setError("Failed to load company options.");
+                setError("Failed to load options.");
             }
         };
 
-        fetchOptions();
+        fetchData();
     }, []);
 
     return (
@@ -241,8 +222,8 @@ const CompanyDetailForm = ({ onCompletion }) => {
                         >
                             <option value="">Select an Industry</option>
                             {industryOptions.map((industry) => (
-                                <option key={industry.id} value={industry.id}>
-                                    {industry.attributes.name}
+                                <option key={industry} value={industry}>
+                                    {industry}
                                 </option>
                             ))}
                         </select>

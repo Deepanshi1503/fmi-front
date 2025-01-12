@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { fetchEnumOptions } from "@/utils/api";
 
 const ListingForm = ({ onCompletion }) => {
   const [lookingForOptions, setLookingForOptions] = useState([]);
@@ -45,33 +46,18 @@ const ListingForm = ({ onCompletion }) => {
 
   // Fetch the enum options for 'purpose_of_listing_business'
   useEffect(() => {
-    const fetchEnumOptions = async () => {
+    const fetchOptions = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:1337/api/content-type-builder/content-types/api::business.business"
-        );
-
-        const enumOptions =
-          response.data?.data?.schema?.attributes || {};
-
-        const lookingForEnum =
-          enumOptions?.purpose_of_listing_business?.enum || [];
-        const timeframeEnum =
-          enumOptions?.preferred_timeframe_for_action?.enum.map((item) =>
-            item
-              .replace(/^"|"$/g, "") // Removes double quotes
-              .replace(/\s*-\s*/g, " - ") // Ensures proper formatting around dashes
-          ) || [];
-
+        const { lookingForEnum, timeframeEnum } = await fetchEnumOptions();
         setLookingForOptions(lookingForEnum);
         setTimeFrameOptions(timeframeEnum);
       } catch (err) {
-        console.error("Error fetching enum options:", err);
+        console.error(err);
         setError("Failed to load options.");
       }
     };
 
-    fetchEnumOptions();
+    fetchOptions();
   }, []);
 
   return (

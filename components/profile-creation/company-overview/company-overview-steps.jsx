@@ -1,8 +1,6 @@
 "use client";
-
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { ChevronDown, ChevronUp, Check, AlertCircle } from "lucide-react";
-import axios from "axios";
 import ListingForm from "@/components/profile-creation/company-overview/listing-info-form"
 import CompanyDetailForm from "@/components/profile-creation/company-overview/company-detail-form"
 import WorkforceDetailForm from "@/components/profile-creation/company-overview/workforce-detail-form";
@@ -14,17 +12,16 @@ import { useGlobalContext } from "@/context/context";
 const CompanyOverview = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(6).fill(false));
-  const [visitedSteps, setVisitedSteps] = useState(Array(6).fill(false));
   const totalSteps = 6;
   const sectionKey = "companyOverview";
+
+  /* Profle Progress */
   const [completionStatus, setCompletionStatus] = useState(
     JSON.parse(localStorage.getItem("profileProgress"))?.[sectionKey]?.completionStatus || Array(totalSteps).fill(false)
   );
-
   const [progress, setProgress] = useState(
     JSON.parse(localStorage.getItem("profileProgress"))?.[sectionKey]?.progress || 0
   );
-
   // Update local storage whenever completion status changes
   useEffect(() => {
     const completedSteps = completionStatus.filter(Boolean).length;
@@ -40,12 +37,12 @@ const CompanyOverview = () => {
 
     localStorage.setItem("profileProgress", JSON.stringify(profileProgress));
   }, [completionStatus]);
-
   const updateFormCompletion = useCallback((index, isCompleted) => {
     setCompletionStatus((prev) =>
       prev.map((status, i) => (i === index ? isCompleted : status))
     );
   }, []);
+
 
   useEffect(() => {
     setIsFormOpen((prevState) => {
@@ -112,7 +109,6 @@ const CompanyOverview = () => {
       prevState.map((isOpen, i) => (i === index ? !isOpen : false))
     );
     setActiveStep(index);
-    setVisitedSteps((prev) => prev.map((visited, i) => (i === index ? true : visited)));
   }, []);
 
   return (
@@ -122,8 +118,8 @@ const CompanyOverview = () => {
         className="w-1/3 p-6 xl:mr-20 hidden xl:block"
         style={{
           position: "sticky",
-          top: "0", // Sticks the left panel to the top
-          alignSelf: "flex-start", // Maintains left panel position
+          top: "0",
+          alignSelf: "flex-start",
         }}
       >
         <h2 className="text-[32px] xl:text-[48px] whitespace-nowrap flex justify-center 2xl:justify-start font-semibold text-[#0A66C2] mb-4">
@@ -145,10 +141,6 @@ const CompanyOverview = () => {
               >
                 {index === activeStep ? (
                   <div className="w-3 h-3 bg-[#0A66C2] rounded-full"></div> // Blue dot for active step
-                ) : visitedSteps[index] ? (
-                  <AlertCircle className="w-5 h-5 text-white" /> // Alert icon for visited steps with no data
-                ) : visitedSteps[index] ? (
-                  <Check className="w-5 h-5 text-white" /> // Checkmark icon for steps with data
                 ) : null}
               </div>
 

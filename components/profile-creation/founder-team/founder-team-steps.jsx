@@ -8,21 +8,21 @@ import { useGlobalContext } from "@/context/context";
 const FounderTeam = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(Array(3).fill(false));
-  const [visitedSteps, setVisitedSteps] = useState(Array(3).fill(false));
+
   const [founders, setFounders] = useState([]);
   const [teamMembers, setTeamMembers] = useState([]);
   const [advisors, setAdvisors] = useState([]);
+
   const totalSteps = 3;
   const sectionKey = "founderTeam";
 
+  /* Profle Progress */
   const [completionStatus, setCompletionStatus] = useState(
     JSON.parse(localStorage.getItem("profileProgress"))?.[sectionKey]?.completionStatus || Array(totalSteps).fill(false)
   );
-
   const [progress, setProgress] = useState(
     JSON.parse(localStorage.getItem("profileProgress"))?.[sectionKey]?.progress || 0
   );
-
   // Update local storage whenever completion status changes
   useEffect(() => {
     const completedSteps = completionStatus.filter(Boolean).length;
@@ -38,15 +38,15 @@ const FounderTeam = () => {
 
     localStorage.setItem("profileProgress", JSON.stringify(profileProgress));
   }, [completionStatus]);
-
   const updateFormCompletion = useCallback((index, isCompleted) => {
     setCompletionStatus((prev) =>
       prev.map((status, i) => (i === index ? isCompleted : status))
     );
   }, []);
 
+
+  /* Load and upload data from localStorage */
   useEffect(() => {
-    // Load data from localStorage
     const savedData = {
       founders: JSON.parse(localStorage.getItem("founders")) || [],
       teamMembers: JSON.parse(localStorage.getItem("teamMembers")) || [],
@@ -58,6 +58,12 @@ const FounderTeam = () => {
     setAdvisors(savedData.advisors);
     setIsFormOpen(savedData.formState);
   }, []);
+  useEffect(() => {
+    localStorage.setItem("founders", JSON.stringify(founders));
+    localStorage.setItem("teamMembers", JSON.stringify(teamMembers));
+    localStorage.setItem("advisors", JSON.stringify(advisors));
+  }, [founders, teamMembers, advisors]);
+
 
   useEffect(() => {
     setIsFormOpen((prevState) => {
@@ -67,11 +73,6 @@ const FounderTeam = () => {
     });
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("founders", JSON.stringify(founders));
-    localStorage.setItem("teamMembers", JSON.stringify(teamMembers));
-    localStorage.setItem("advisors", JSON.stringify(advisors));
-  }, [founders, teamMembers, advisors]);
 
   const stepsComponents = [
     {
@@ -121,9 +122,6 @@ const FounderTeam = () => {
       prevState.map((isOpen, i) => (i === index ? !isOpen : false))
     );
     setActiveStep(index);
-
-    // Mark the step as visited
-    setVisitedSteps((prev) => prev.map((visited, i) => (i === index ? true : visited)));
   };
 
   return (
@@ -151,11 +149,7 @@ const FounderTeam = () => {
               <div
                 className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full font-bold z-10 ${index === activeStep
                   ? "bg-transparent border-2 border-[#0A66C2]" // Active step - blue border
-                  : visitedSteps[index]
-                    ? "bg-[#FF6347]" // Visited step with no data - red background
-                    // : hasData[index]
-                    //   ? "bg-[#0A66C2]" // Completed step with data - blue background
-                    : "border-2 border-[#D4D4D4]" // Unvisited step - grey border
+                  : null
                   }`}
               >
                 {index === activeStep ? (
