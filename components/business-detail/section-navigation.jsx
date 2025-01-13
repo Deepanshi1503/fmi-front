@@ -1,3 +1,4 @@
+import { title } from "process";
 import React from "react";
 
 export default function SectionNavigation({ onNavigate }) {
@@ -5,7 +6,8 @@ export default function SectionNavigation({ onNavigate }) {
         { id: "overview", title: "Overview" },
         { id: "fundingRequirement", title: "Funding Requirement" },
         { id: "financials", title: "Financials" },
-        { id: "locations", title: "Locations" },
+        {id: "currentInvestment", title: "Current Investment"},
+        { id: "contactDetails", title: "Contact Details" },
         { id: "products", title: "Products & Services" },
         { id: "founders", title: "Founders & Team" },
         { id: "market", title: "Market & Competition" },
@@ -21,7 +23,7 @@ export default function SectionNavigation({ onNavigate }) {
                 {sections.map((section) => (
                     <li
                         key={section.id}
-                        className="cursor-pointer text-[18px] font-medium hover:underline"
+                        className="cursor-pointer text-[18px] font-medium"
                         onClick={() => onNavigate(section.id)}
                     >
                         {section.title}

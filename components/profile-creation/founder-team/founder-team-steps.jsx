@@ -154,11 +154,7 @@ const FounderTeam = () => {
               >
                 {index === activeStep ? (
                   <div className="w-3 h-3 bg-[#0A66C2] rounded-full"></div> // Blue dot for active step
-                ) : visitedSteps[index] ? (
-                  <AlertCircle className="w-5 h-5 text-white" /> // Alert icon for visited steps with no data
-                  // ) : hasData[index] ? (
-                  //   <Check className="w-5 h-5 text-white" /> // Checkmark icon for steps with data
-                ) : null}
+                )  : null}
               </div>
 
               {/* Step Line */}

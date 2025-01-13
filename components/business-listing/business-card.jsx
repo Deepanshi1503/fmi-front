@@ -11,13 +11,6 @@ const BusinessCard = ({ business }) => {
         business_image,
         currency,
         year_of_incorporation,
-        // funding_ask,
-        // valuation,
-        // revenue,
-        // profit,
-        // loss,
-        // year_of_incorporation,
-        // funding_type,
         overall_revenue,
         overall_profile_loss,
         industry,
@@ -26,9 +19,9 @@ const BusinessCard = ({ business }) => {
     } = business.attributes || {};
 
     const industryName = industry?.data?.attributes?.name; 
-    const funding = fundraise_business_details.funding_ask;
-    const valuation = fundraise_business_details.valuation;
-    const funding_type= fundraise_business_details.type_of_funding;
+    const funding = fundraise_business_details?.funding_ask;
+    const valuation = fundraise_business_details?.valuation;
+    const funding_type= fundraise_business_details?.type_of_funding;
 
     const metrics = [
         { key: "Revenue", value: `$ ${overall_revenue} Million` },

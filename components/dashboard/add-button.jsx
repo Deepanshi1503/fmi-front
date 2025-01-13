@@ -30,11 +30,13 @@ const AddButton = () => {
             }
 
             // Create a new business listing
-            const response = await axios.post('http://localhost:1337/api/businesses', {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/businesses`, {
                 data: {
                     user: userId, // Associate the business with the logged-in user
                     company_name: 'New Business', // Default values; user will edit these
                     title: 'Untitled Business',
+                    professional_emailid:'default@gmail.com',
+                    phone_number: 1234567890,
                 },
             });
 
