@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ReferenceLine } from "recharts";
 
 const OverviewSection = React.forwardRef(({ business }, ref) => {
-    console.log(business);
     const [selectedYear, setSelectedYear] = useState(business?.financial_model_details[0]?.year || 2024);
     const selectedFinancials = business?.financial_model_details.find(
         (item) => item.year === selectedYear
