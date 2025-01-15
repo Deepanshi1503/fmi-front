@@ -1,8 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useGlobalContext } from "@/context/context";
 
-export default function VerifyOtpForm({ phoneNumber }) {
+export default function VerifyOtpForm() {
+  const { phoneNumber } = useGlobalContext();
   const [otp, setOtp] = useState(["", "", "", "", ""]);
   const [resendTimer, setResendTimer] = useState(30);
   const [isResendDisabled, setIsResendDisabled] = useState(true);

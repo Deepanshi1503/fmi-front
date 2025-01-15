@@ -1,35 +1,28 @@
-"use client"
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { fetchBusinessById } from "@/utils/api";
-import { GlobalContextProvider } from '@/context/context';
+import { GlobalContextProvider } from "@/context/context";
 import Detail from "@/components/business-detail/detail";
 
-export default function BusinessDetail() {
-    const [business, setBusiness] = useState(null);
-    const { id } = useParams();
-
-    useEffect(() => {
-        if (id) {
-            const fetchData = async () => {
-                const data = await fetchBusinessById(id);
-                setBusiness(data);
-            };
-            fetchData();
-        }
-    }, [id]);
+export default async function BusinessDetail({ params }) {
+    const { id } = params;
 
     if (!id) {
-        return <div>Loading...</div>;
+        return <div>Invalid Business ID</div>;
     }
 
-    if (!business) {
-        return <div>Loading business data...</div>;
-    }
+    try {
+        const business = await fetchBusinessById(id);
 
-    return (
-        <GlobalContextProvider>
-            <Detail business={business.data.attributes} />
-        </GlobalContextProvider>
-    );
+        if (!business || !business.data) {
+            return <div>Business data not found.</div>;
+        }
+
+        return (
+            <GlobalContextProvider>
+                <Detail business={business.data.attributes} />
+            </GlobalContextProvider>
+        );
+    } catch (error) {
+        console.error("Error fetching business data:", error);
+        return <div>Failed to load business data. Please try again later.</div>;
+    }
 }

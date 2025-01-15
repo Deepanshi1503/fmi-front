@@ -16,6 +16,13 @@ const GlobalContext = createContext();
 
 export const GlobalContextProvider = ({ children }) => {
 
+    //****************** Login and signup auth *********************//
+    const [step, setStep] = useState("login"); // "login" or "verify-otp"
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [email, setEmail] = useState("");
+    const [name, setName] = useState("");
+
+
     //****************** Dashboard *********************//
     //fetch all the business
     const [selectedBusiness, setSelectedBusiness] = useState(null);
@@ -88,7 +95,15 @@ export const GlobalContextProvider = ({ children }) => {
                 loading,
                 setLoading,
                 isSaleListing,
-                setIsSaleListing
+                setIsSaleListing,
+                step,
+                setStep,
+                email,
+                setEmail,
+                phoneNumber,
+                setPhoneNumber,
+                name,
+                setName
             }}
         >
             {children}

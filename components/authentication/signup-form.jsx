@@ -2,11 +2,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useGlobalContext } from "@/context/context";
+import VerifyOtpForm from "./verify-otp";
 
-export default function SignupForm({ onNextStep }) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+export default function SignupForm() {
+  const { setPhoneNumber, setEmail, name, email, phoneNumber, setName, step, setStep } = useGlobalContext();
+
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -17,27 +18,13 @@ export default function SignupForm({ onNextStep }) {
       return;
     }
 
-    try {
-    //   const response = await fetch("/api/send-otp", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify({ name, email, phone_number: phoneNumber }),
-    //   });
-
-    //   const result = await response.json();
-
-    //   if (response.ok) {
-    //     alert(result.message);
-    //     onNextStep(phoneNumber);
-    //   } else {
-    //     alert(result.error);
-    //   }
-
-    onNextStep(phoneNumber);
-    } catch (err) {
-      console.error(err);
-    }
+    setStep("verify-otp");
+    console.log(step);
   };
+
+  if (step === "verify-otp") {
+    return <VerifyOtpForm />; // Render VerifyOtpForm if step is 'verify-otp'
+  }
 
   return (
     <div className="relative w-full lg:w-1/2 p-8 flex items-center justify-center overflow-hidden">

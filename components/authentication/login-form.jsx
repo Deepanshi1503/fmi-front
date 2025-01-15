@@ -1,42 +1,31 @@
 "use client";
-import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useGlobalContext } from "@/context/context";
+import VerifyOtpForm from "./verify-otp";
+import {useRouter} from "next/navigation";
 
-export default function LoginForm({ onNextStep }) {
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const router = useRouter();
+export default function LoginForm() {
+  const { setPhoneNumber, setEmail, setStep, email, phoneNumber, step } = useGlobalContext();
+    const router = useRouter();
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
+    const phone = e.target.phone.value;
+    const email = e.target.email.value;
 
     if (!email || !phoneNumber) {
       alert("Both email and phone number are required.");
       return;
     }
 
-    try {
-      // const response = await fetch("/api/send-otp", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ email, phone_number: phoneNumber }),
-      // });
-
-      // const result = await response.json();
-
-      // if (response.ok) {
-      //   alert(result.message);
-      //   setStep("verify-otp");  // Move to OTP step
-      // } else {
-      //   alert(result.error);
-      // }
-      onNextStep(phoneNumber, email);
-    } catch (err) {
-      console.error(err);
-      alert("Internal server error. Please try again.");
-    }
+    setPhoneNumber(phone);
+    setEmail(email);
+    setStep("verify-otp");
   };
+
+  if (step === "verify-otp") {
+    return <VerifyOtpForm />; // Render VerifyOtpForm if step is 'verify-otp'
+  }
 
   return (
     <div className="relative w-full lg:w-1/2 p-8 flex items-center justify-center overflow-hidden">
