@@ -13,7 +13,7 @@ export default function PrivacyPolicy() {
                 <div className="container">
                     {/* Introduction Section */}
                     <div className="bg-white rounded-lg">
-                        <h2 className="xl:text-[40px] mb-4">Introduction</h2>
+                        <h2 className="xl:text-[34px] mb-2">Introduction</h2>
                         <p className="mb-4">
                             Welcome to our Privacy Policy. Your privacy is critically important to us. We are committed to protecting the personal information you share with us. This page outlines how we collect, use, and protect your information while ensuring transparency.
                         </p>
@@ -23,9 +23,9 @@ export default function PrivacyPolicy() {
                     </div>
 
                     {/* Information We Collect Section */}
-                    <div className="bg-white rounded-lg mt-6">
-                        <h2 className="xl:text-[40px] mb-4">Information We Collect</h2>
-                        <h3 className="mb-2">When you sign up or contact us</h3>
+                    <div className="bg-white rounded-lg mt-8">
+                        <h2 className="xl:text-[34px] mb-2">Information We Collect</h2>
+                        <h3 className="xl:text-[24px] mb-2">When you sign up or contact us</h3>
                         <ul className="list-disc list-inside space-y-2">
                             <li>Personal data, such as name, email address, and phone number, when you register for our services.</li>
                             <li>Details provided through surveys or feedback forms.</li>
@@ -34,8 +34,8 @@ export default function PrivacyPolicy() {
                     </div>
 
                     {/* How We Use Your Information Section */}
-                    <div className="bg-white rounded-lg mt-6">
-                        <h2 className="xl:text-[40px] mb-4">How We Use Your Information</h2>
+                    <div className="bg-white rounded-lg mt-8">
+                        <h2 className="xl:text-[34px] mb-2">How We Use Your Information</h2>
                         <p className="mb-4">
                             The information we collect is used to provide and improve our services. This includes personalizing your experience, responding to your inquiries, and ensuring the security of our platform.
                         </p>
@@ -45,8 +45,8 @@ export default function PrivacyPolicy() {
                     </div>
 
                     {/* Data Retention Section */}
-                    <div className="bg-white rounded-lg mt-6">
-                        <h2 className="xl:text-[40px] mb-4">Data Retention</h2>
+                    <div className="bg-white rounded-lg mt-8">
+                        <h2 className="xl:text-[34px] mb-2">Data Retention</h2>
                         <p className="mb-4">
                             We retain your personal information only for as long as necessary to fulfill the purposes outlined in this policy. This includes complying with legal obligations, resolving disputes, and enforcing our agreements.
                         </p>
@@ -56,8 +56,8 @@ export default function PrivacyPolicy() {
                     </div>
 
                     {/* Your Rights Section */}
-                    <div className="bg-white rounded-lg mt-6">
-                        <h2 className="xl:text-[40px] mb-4">Your Rights</h2>
+                    <div className="bg-white rounded-lg mt-8">
+                        <h2 className="xl:text-[34px] mb-2">Your Rights</h2>
                         <p className="mb-4">
                             As a user, you have rights regarding your personal data. You can request access to your data, update inaccuracies, and even request the deletion of your data, subject to legal obligations.
                         </p>
