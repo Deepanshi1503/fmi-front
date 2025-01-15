@@ -32,7 +32,8 @@ const OverviewSection = React.forwardRef(({ business }, ref) => {
                     <span className="font-medium text-[16px]">Total Revenue</span>
                 </div>
                 <div className="flex items-center mr-10">
-                    <span className="inline-block w-10 h-3 mr-2" style={{ backgroundColor: "#FF6347" }}></span>
+                    <span className="inline-block w-5 h-3" style={{ backgroundColor: "#4CAF50" }}></span>
+                    <span className="inline-block w-5 h-3 mr-2" style={{ backgroundColor: "#FF6347" }}></span>
                     <span className="font-medium text-[16px]">Total Profit / Loss</span>
                 </div>
                 {/* Dropdown for Year Selection */}

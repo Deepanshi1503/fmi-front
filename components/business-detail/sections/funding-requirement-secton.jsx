@@ -1,5 +1,6 @@
 import React from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import Image from "next/image";
 
 const COLORS = ["#FF5A5A", "#13A8E3", "#FD68B5", "#7120FF"];
 
@@ -15,6 +16,8 @@ const OverviewSection = React.forwardRef(({ business }, ref) => {
     const renderFundraiseUI = () => {
         return (
             <div>
+                <p className="text-[28px] font-semibold mb-3">Funding Requirement</p>
+
                 <div className="grid grid-cols-2 gap-4 items-center">
                     {/* Left Section */}
                     <div className="w-[70%] mt-3">
@@ -30,7 +33,7 @@ const OverviewSection = React.forwardRef(({ business }, ref) => {
                         </div>
                         <div className="border border-[#1818181A] rounded-[16px] p-3">
                             <p className="text-[#202224] text-[16px] mb-2">Preferred Type of Funding</p>
-                            <p className="text-[22px] font-semibold mb-0">{fundraiseDetails.type_of_funding}</p>
+                            <p className="text-[22px] font-semibold mb-0">{fundraiseDetails?.type_of_funding}</p>
                         </div>
                     </div>
 
@@ -43,6 +46,7 @@ const OverviewSection = React.forwardRef(({ business }, ref) => {
                                     dataKey="percentage_allocated"
                                     nameKey="area_of_concern"
                                     outerRadius={160}
+                                    innerRadius={100}
                                     fill="#8884d8"
                                 >
                                     {fundsAllocation.map((entry, index) => (
@@ -78,18 +82,85 @@ const OverviewSection = React.forwardRef(({ business }, ref) => {
     };
 
     const renderSaleUI = () => {
+        const saleDetails = business.sale_business_details;
+
         return (
             <div>
-                <h3 className="text-lg font-bold">Sale Details</h3>
-                {/* Add sale-specific UI here */}
-                <p className="text-gray-700">Details coming soon...</p>
+                <p className="text-[28px] font-semibold mb-8">For Sale</p>
+
+                <div className="grid grid-cols-2 gap-y-10 items-center">
+                    {/* Selling Price */}
+                    <div className="flex items-start space-x-4">
+                        <Image
+                            loading="lazy"
+                            src="/images/salePrice.png"
+                            className="mt-2"
+                            alt="logo"
+                            width={50}
+                            height={77}
+                        />
+                        <div>
+                            <p className="text-[#18181899] text-[16px] mb-2">Selling Price</p>
+                            <p className="text-[24px] font-medium mb-0">USD ${saleDetails.sale_price} Million</p>
+                        </div>
+                    </div>
+
+                    {/* Ownership Stake Offer */}
+                    <div className="flex items-start space-x-4">
+                    <Image
+                            loading="lazy"
+                            src="/images/ownershipOffered.png"
+                            className="mt-2"
+                            alt="logo"
+                            width={50}
+                            height={77}
+                        />
+                        <div>
+                        <p className="text-[#202224] text-[16px] mb-2">Ownership Stake Offer</p>
+                        <p className="text-[24px] font-medium mb-0">{saleDetails.ownership_stake_offered}%</p>
+                        </div>
+                    </div>
+
+                    {/* Valuation */}
+                    <div className="flex items-start space-x-4">
+                    <Image
+                            loading="lazy"
+                            src="/images/valuation.png"
+                            className="mt-2"
+                            alt="logo"
+                            width={50}
+                            height={77}
+                        />
+                        <div>
+                        <p className="text-[#202224] text-[16px] mb-2">Valuation</p>
+                        <p className="text-[24px] font-medium mb-0">USD ${saleDetails.valuation} Million</p>
+                        </div>
+                    </div>
+
+                    {/* Reason for Sale */}
+                    <div className="flex items-start space-x-4">
+                    <Image
+                            loading="lazy"
+                            src="/images/reasonForSale.png"
+                            className="mt-2"
+                            alt="logo"
+                            width={50}
+                            height={77}
+                        />
+                        <div>
+                        <p className="text-[#202224] text-[16px] mb-2">Reason for Sale</p>
+                        <p className="text-[24px] font-medium mb-0">{saleDetails.reason_for_sale}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     };
 
+
     return (
         <section id="fundingRequirement" ref={ref} className="mb-12 p-4 border border-[#EFEFEF] rounded-[16px] bg-white">
-            <p className="text-[28px] font-semibold mb-3">Funding Requirement</p>
+            {/* <p className="text-[28px] font-semibold mb-3">Funding Requirement</p> */}
             {isFundraise && renderFundraiseUI()}
             {isSale && renderSaleUI()}
             {!isFundraise && !isSale && <p>No details available.</p>}

@@ -28,16 +28,15 @@ const OverviewSection = React.forwardRef(({ business }, ref) => {
             className="w-[275px] h-[244px] rounded-[16px] object-cover mr-4 flex-shrink-0"
           />
           <div className="flex flex-col justify-between mt-6">
-            <p className="text-[28px] font-semibold mb-0">{person.name}</p>
-            <p className="text-[#18181899] text-[16px] mt-3 mb-3">
-              {person.background}
-            </p>
+            <p className="text-[28px] font-semibold mb-2">{person.name}</p>
             <p className="text-[16px] text-[#18181899] mb-3">
-              <strong className="text-[#181818] font-semibold">Role:</strong>{" "}
               {person.role}
             </p>
+            <p className="text-[#18181899] text-[16px] mb-3">
+              {person.background}
+            </p>
             <p className="text-[16px] text-[#2196F3]">
-              <strong className="text-[#181818] font-semibold">LinkedIn:</strong>{" "}
+              <strong className="text-[#18181899] font-semibold">LinkedIn:</strong>{" "}
               <a
                 href={person.linkedin_profile}
                 target="_blank"

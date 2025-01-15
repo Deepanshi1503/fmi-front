@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 
 export default function SectionNavigation({ onNavigate }) {
     const sections = [
@@ -24,9 +24,9 @@ export default function SectionNavigation({ onNavigate }) {
         };
 
         const observer = new IntersectionObserver(handleObserver, {
-            root: null, // viewport
+            root: null,
             rootMargin: "0px",
-            threshold: 0.6, // 60% of the section must be visible to trigger
+            threshold: 0.5,
         });
 
         const sectionElements = sections.map((section) =>

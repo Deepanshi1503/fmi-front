@@ -1,5 +1,6 @@
 import React from "react";
 import { MdEmail, MdPhone, MdLocationOn, MdLanguage } from "react-icons/md";
+import Image from "next/image";
 
 const ContactSection = React.forwardRef(({ business }, ref) => {
     const { professional_emailid, phone_number, headquarters, website_url } = business;
@@ -11,8 +12,15 @@ const ContactSection = React.forwardRef(({ business }, ref) => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {/* Email Address */}
-                <div className="flex items-center space-x-4 p-4 border border-gray-300 rounded-lg bg-gray-50">
-                    <MdEmail className="text-blue-500 text-[24px]" />
+                <div className="flex items-start space-x-4">
+                    <Image
+                        loading="lazy"
+                        src="/images/bDetailsMail.png"
+                        className="mt-2"
+                        alt="logo"
+                        width={35}
+                        height={77}
+                    />
                     <div>
                         <p className="text-sm text-gray-500">Email Address</p>
                         <p className="text-[16px] font-medium">
@@ -22,8 +30,15 @@ const ContactSection = React.forwardRef(({ business }, ref) => {
                 </div>
 
                 {/* Phone Number */}
-                <div className="flex items-center space-x-4 p-4 border border-gray-300 rounded-lg bg-gray-50">
-                    <MdPhone className="text-green-500 text-[24px]" />
+                <div className="flex items-start space-x-4 ml-2">
+                    <Image
+                        loading="lazy"
+                        src="/images/bDetailsPhone.png"
+                        className="mt-2"
+                        alt="logo"
+                        width={25}
+                        height={77}
+                    />
                     <div>
                         <p className="text-sm text-gray-500">Phone Number</p>
                         <p className="text-[16px] font-medium">
@@ -33,8 +48,15 @@ const ContactSection = React.forwardRef(({ business }, ref) => {
                 </div>
 
                 {/* Headquarters */}
-                <div className="flex items-center space-x-4 p-4 border border-gray-300 rounded-lg bg-gray-50">
-                    <MdLocationOn className="text-red-500 text-[24px]" />
+                <div className="flex items-start space-x-4 ml-2">
+                    <Image
+                        loading="lazy"
+                        src="/images/bDetailsLocations.png"
+                        className="mt-2"
+                        alt="logo"
+                        width={25}
+                        height={77}
+                    />
                     <div>
                         <p className="text-sm text-gray-500">Headquarters</p>
                         <p className="text-[16px] font-medium">
@@ -44,8 +66,15 @@ const ContactSection = React.forwardRef(({ business }, ref) => {
                 </div>
 
                 {/* Website URL */}
-                <div className="flex items-center space-x-4 p-4 border border-gray-300 rounded-lg bg-gray-50">
-                    <MdLanguage className="text-purple-500 text-[24px]" />
+                <div className="flex items-center space-x-4 ml-1">
+                    <Image
+                        loading="lazy"
+                        src="/images/bDetailsWeb.png"
+                        className="mb-2"
+                        alt="logo"
+                        width={35}
+                        height={77}
+                    />
                     <div>
                         <p className="text-sm text-gray-500">Website</p>
                         {website_url ? (
@@ -55,7 +84,7 @@ const ContactSection = React.forwardRef(({ business }, ref) => {
                                 rel="noopener noreferrer"
                                 className="text-[16px] font-medium text-blue-600 hover:underline"
                             >
-                                Visit Website
+                                {website_url}
                             </a>
                         ) : (
                             <p className="text-[16px] font-medium">{website_url || "Not Available"}</p>

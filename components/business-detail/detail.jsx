@@ -11,7 +11,7 @@ export default function Detail({ business }) {
 
     const scrollToSection = (id) => {
         if (sections.current[id]) {
-            sections.current[id].scrollIntoView({ behavior: "smooth", block: "start" });
+            sections.current[id].scrollIntoView({ behavior: "smooth" });
         }
     };
 
@@ -23,7 +23,7 @@ export default function Detail({ business }) {
                 title={business.company_name}
                 location={business.headquarters}
                 company_type={business.industry.data.attributes.name}
-                funding_type={business.fundraise_business_details.type_of_funding}
+                funding_type={business.fundraise_business_details?.type_of_funding || "Sale"}
             />
             <div className="flex mx-72">
                 <SectionNavigation onNavigate={scrollToSection} />
