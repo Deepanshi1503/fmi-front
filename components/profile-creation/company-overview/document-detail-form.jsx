@@ -60,7 +60,7 @@ const DocumentForm = ({onCompletion}) => {
     formDataToSend.append("files", file);
 
     try {
-      const response = await fetch("http://localhost:1337/api/upload", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/upload`, {
         method: "POST",
         body: formDataToSend,
       });
@@ -86,50 +86,6 @@ const DocumentForm = ({onCompletion}) => {
       return { fileId: null, fileUrl: null };
     }
   };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   const businessData = {
-  //     youtubeUrl: formData.youtubeUrl,
-  //     pitchDeck: formData.pitchDeck,
-  //     companyProfile: formData.companyProfile,
-  //   };
-
-  //   try {
-  //     let url = "http://localhost:1337/api/businesses";
-  //     let method = "POST";
-
-  //     if (documentId) {
-  //       url = `http://localhost:1337/api/businesses/${documentId}`;
-  //       method = "PUT";
-  //     }
-
-  //     const response = await fetch(url, {
-  //       method: method,
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(businessData),
-  //     });
-
-  //     if (response.ok) {
-  //       const responseData = await response.json();
-  //       console.log("Business data saved successfully:", responseData);
-
-  //       // If a new business was created, save the ID for future use
-  //       if (!documentId && responseData.data.id) {
-  //         const newId = responseData.data.id;
-  //         localStorage.setItem("busiessId", newId);
-  //       }
-  //     } else {
-  //       const errorResponse = await response.json();
-  //       console.error("Error saving business data:", errorResponse);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error submitting business data:", error);
-  //   }
-  // };
 
   return (
     <div className="form-container mx-auto px-4 w-full">

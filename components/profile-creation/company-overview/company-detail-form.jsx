@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useGlobalContext } from "@/context/context";
-import axios from "axios";
 import { fetchIndustryOptions, fetchOptions } from "@/utils/api";
 
 const CompanyDetailForm = ({ onCompletion }) => {
@@ -9,6 +7,7 @@ const CompanyDetailForm = ({ onCompletion }) => {
     const [industryOptions, setIndustryOptions] = useState([]); // Options for Industry
     const [subIndustryOptions, setSubIndustryOptions] = useState([]); // Options for Sub-Industry
     const [formData, setFormData] = useState({
+        companyLogo: null,
         companyName: "",
         website: "",
         yearOfIncorporation: "",
@@ -23,6 +22,7 @@ const CompanyDetailForm = ({ onCompletion }) => {
 
     useEffect(() => {
         const isCompleted =
+            formData.companyLogo &&
             formData.companyName &&
             formData.website &&
             formData.yearOfIncorporation &&
@@ -55,6 +55,46 @@ const CompanyDetailForm = ({ onCompletion }) => {
                 ...prev,
                 [name]: value,
             }));
+        }
+    };
+
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const formDataToSend = new FormData();
+            formDataToSend.append("files", file);
+
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/upload`, {
+                    method: "POST",
+                    body: formDataToSend,
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    const uploadedFile = responseData[0]; // Assuming the API returns an array with one file
+                    console.log("Logo uploaded successfully:", uploadedFile);
+
+                    // Extract the file ID and URL
+                    const fileId = uploadedFile.id;
+                    const fileUrl = uploadedFile.url;
+
+                    // Update form data with the uploaded file information
+                    setFormData((prev) => ({
+                        ...prev,
+                        companyLogo: { fileId, fileUrl },
+                    }));
+
+                    // Update localStorage
+                    const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+                    savedData.companyLogo = { fileId, fileUrl };
+                    localStorage.setItem("combineInfo", JSON.stringify(savedData));
+                } else {
+                    console.error("Error uploading logo:", await response.json());
+                }
+            } catch (error) {
+                console.error("Error uploading logo:", error);
+            }
         }
     };
 
@@ -100,6 +140,33 @@ const CompanyDetailForm = ({ onCompletion }) => {
     return (
         <div className="form-container mx-auto px-4 w-full">
             <form className="space-y-4">
+                {/* Company Logo */}
+                <div className="form-group mb-4">
+                    <label htmlFor="companyLogo" className="block mb-3 text-[16px] text-left font-medium">
+                        Company Logo*
+                    </label>
+                    <div className="flex items-center">
+                        <input
+                            type="file"
+                            name="companyLogo"
+                            id="companyLogo"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
+                        />
+                        {formData.companyLogo && formData.companyLogo.fileUrl && (
+                            <span className="ml-2 text-green-500">&#10003;</span> // Green tick
+                        )}
+                    </div>
+                    {formData.companyLogo?.fileUrl && (
+                        <img
+                            src={formData.companyLogo.fileUrl}
+                            alt="Company Logo Preview"
+                            className="mt-3 w-24 h-24 object-cover rounded-lg border"
+                        />
+                    )}
+                </div>
+
                 {/* Company Name */}
                 <div className="form-group mb-4">
                     <label htmlFor="companyName" className="block mb-3 text-[16px] text-left font-medium">

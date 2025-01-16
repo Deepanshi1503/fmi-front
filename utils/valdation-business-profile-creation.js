@@ -85,6 +85,7 @@ export const syncBusinessData = async (businessData, founderData, teamData, advi
     // Map data to backend schema
     const payload = {
         data: {
+            business_image: businessData.companyLogo?.fileId || null,
             title: businessData.companyName || "",
             slug: (businessData.companyName ? businessData.companyName.toLowerCase().replace(/\s+/g, '-') : '') + '-title',
             purpose_of_listing_business: businessData.lookingFor || null,
@@ -121,7 +122,7 @@ export const syncBusinessData = async (businessData, founderData, teamData, advi
             ),
             preferred_timeframe_for_action: mapPreferredTimeframe(businessData.preferredTimeframe) || null,
             workforce_range: mapNumberOfEmployees(businessData.numberOfEmployees) || null,
-            pitch_deck: businessData.pitchDeck?.fileId || null,  // Use the URL of the pitch deck
+            pitch_deck: businessData.pitchDeck?.fileId || null,
             company_profile: businessData.companyProfile?.fileId || null,
             founder_detail: await Promise.all(
                 (founderData || [])?.map(async (founder) => {
@@ -176,6 +177,8 @@ export const syncBusinessData = async (businessData, founderData, teamData, advi
             fundraising_status: businessData.fundraisingStatus?.fundraisingStatus.map((item) => ({
                 current_status: item.lender || null,
                 amount: item.amount || null,
+                lead_investor: item.leadInvestor || false,
+                funding_round:item.fundingRound || null
             })) || [],
             total_fundraised: businessData.fundraisingStatus?.totalFundsRaised || null,
             fundraise_business_details: businessData.investorRole

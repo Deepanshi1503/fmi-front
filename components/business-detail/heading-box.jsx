@@ -2,6 +2,7 @@ import React from "react";
 import { MapPin, Check } from "lucide-react";
 
 export default function HeadingBox({ image, title, location, company_type, funding_type}) {
+  console.log(image);
   return (
     <div className="bg-[#F5F5F5] mx-12 rounded-b-xl mb-10 py-16">
       <div className="mx-64 flex">
