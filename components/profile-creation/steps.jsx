@@ -21,9 +21,6 @@ const ProfileStep = () => {
   const handleNext = async () => {
     // Simulate form data
     const formData = JSON.parse(localStorage.getItem("combineInfo"));
-    // const founderData = JSON.parse(localStorage.getItem("founders"));
-    // const teamData = JSON.parse(localStorage.getItem("teamMembers"));
-    // const advisorData = JSON.parse(localStorage.getItem("advisors"));
     const progress = JSON.parse(localStorage.getItem("profileProgress"));
 
     // Validate mandatory fields dynamically

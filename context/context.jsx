@@ -17,14 +17,13 @@ const GlobalContext = createContext();
 export const GlobalContextProvider = ({ children }) => {
 
     //****************** Login and signup auth *********************//
-    const [step, setStep] = useState("login"); // "login" or "verify-otp"
+    const [step, setStep] = useState("login");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
 
 
     //****************** Dashboard *********************//
-    //fetch all the business
     const [selectedBusiness, setSelectedBusiness] = useState(null);
     const [businesses, setBusinesses] = useState([]);
     useEffect(() => {
@@ -34,7 +33,7 @@ export const GlobalContextProvider = ({ children }) => {
                 if (!userId) return;
 
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/businesses?filters[user][id][$eq]=${userId}&populate=stats,step_progress`
+                    `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/businesses?filters[user][id][$eq]=${userId}&populate=stats,step_progress` //fetch all the business
                 );
                 setBusinesses(response.data.data);
             } catch (error) {
@@ -45,13 +44,12 @@ export const GlobalContextProvider = ({ children }) => {
         fetchBusinesses();
     }, []);
 
-    //filtered business based on the selected profile
     const [filteredProfiles, setFilteredProfiles] = useState([]);
     useEffect(() => {
         if (selectedBusiness) {
-            setFilteredProfiles(businesses.filter((profile) => profile.id === selectedBusiness.id));
+            setFilteredProfiles(businesses.filter((profile) => profile.id === selectedBusiness.id)); //filtered business based on the selected profile
         } else {
-            setFilteredProfiles(businesses); // Include all businesses when "All listings" is selected
+            setFilteredProfiles(businesses); //when "All listings" is selected
         }
     }, [selectedBusiness, businesses])
 
@@ -59,9 +57,9 @@ export const GlobalContextProvider = ({ children }) => {
     //****************** Step up form for business *********************//
     const [activeStep, setActiveStep] = useState(null);
     const [loading, setLoading] = useState(true);
-    // Load the active step from localStorage or sessionStorage
     useEffect(() => {
         const savedStep = localStorage.getItem("activeStep");
+        const savedInvestorStep = localStorage.getItem("investorActiveStep");
         if (savedStep !== null) {
             setActiveStep(parseInt(savedStep, 10));
         } else {
@@ -70,15 +68,34 @@ export const GlobalContextProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
-    // Save the active step to localStorage whenever it changes
     useEffect(() => {
         if (activeStep !== null) {
-            localStorage.setItem("activeStep", activeStep);
+            localStorage.setItem("activeStep", activeStep); // Save the active step to localStorage whenever it changes
         }
     }, [activeStep]);
 
 
-    //****************** Step up form for business 6th step quity and fundraising *********************//
+    //****************** Step up form for investor *********************//
+    const [investorActiveStep, setInvestorActiveStep] = useState(null);
+    useEffect(() => {
+        const savedInvestorStep = localStorage.getItem("investorActiveStep");
+        if (savedInvestorStep !== null) {
+            setInvestorActiveStep(parseInt(savedInvestorStep, 10));
+        } else {
+            setInvestorActiveStep(0);
+        }
+        setLoading(false);
+    }, []);
+
+    useEffect(() => {
+        if (investorActiveStep !== null) {
+            localStorage.setItem("investorActiveStep", investorActiveStep); // Save the active step to localStorage whenever it changes
+        }
+    }, [investorActiveStep]);
+
+
+
+    //****************** Step up form for business 6th step equity and fundraising *********************//
     const [isSaleListing, setIsSaleListing] = useState(true); // Default to Fundraise Listing
 
     return (
@@ -103,7 +120,9 @@ export const GlobalContextProvider = ({ children }) => {
                 phoneNumber,
                 setPhoneNumber,
                 name,
-                setName
+                setName,
+                investorActiveStep,
+                setInvestorActiveStep
             }}
         >
             {children}

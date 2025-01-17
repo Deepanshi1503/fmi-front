@@ -1,7 +1,5 @@
-"use client"
-import Image from 'next/image'
 import Header from '@/components/profile-creation/header'
-import ProfileStep from '@/components/profile-creation/steps'
+import ProfileStep from '@/components/investor-profile-creation/steps'
 import Footer from '@/components/profile-creation/footer'
 import { GlobalContextProvider } from '@/context/context'
 
