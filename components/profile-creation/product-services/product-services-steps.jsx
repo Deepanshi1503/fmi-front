@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { ChevronDown, ChevronUp, Check, AlertCircle } from "lucide-react";
-import { useGlobalContext } from "@/context/context";
+import { ChevronDown, ChevronUp } from "lucide-react";
+// import { useGlobalContext } from "@/context/context";
 import ProductServiceForm from "@/components/profile-creation/product-services/product-services-details"
 
 const ProductServices = () => {

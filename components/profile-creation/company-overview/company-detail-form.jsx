@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { fetchIndustryOptions, fetchOptions } from "@/utils/api";
+import { Check } from "lucide-react";
 
 const CompanyDetailForm = ({ onCompletion }) => {
     const [companyTypeOptions, setCompanyTypeOptions] = useState([]); // Options for 'Type of Company'
@@ -146,25 +147,38 @@ const CompanyDetailForm = ({ onCompletion }) => {
                         Company Logo*
                     </label>
                     <div className="flex items-center">
-                        <input
-                            type="file"
-                            name="companyLogo"
-                            id="companyLogo"
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                            className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
-                        />
-                        {formData.companyLogo && formData.companyLogo.fileUrl && (
-                            <span className="ml-2 text-green-500">&#10003;</span> // Green tick
-                        )}
+                        <div className="relative w-full">
+                            {/* Hidden input for file selection */}
+                            <input
+                                type="file"
+                                name="companyLogo"
+                                id="companyLogo"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            />
+                            {/* Custom display for file name */}
+                            <input
+                                type="text"
+                                readOnly
+                                value={
+                                    formData.companyLogo?.fileUrl
+                                        ? formData.companyLogo.fileUrl.split("/").pop() // Extract file name from the URL
+                                        : "No file chosen"
+                                }
+                                className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500 bg-white cursor-pointer"
+                            />
+                            {/* Green Tick Icon inside the input */}
+                            {formData.companyLogo?.fileUrl && (
+                                <span className="absolute px-1 py-1 right-3 top-1/2 bg-green-500 rounded-full transform -translate-y-1/2 text-white font-bold">
+                                    <Check size={20} strokeWidth={3}/> {/* Green check mark */}
+                                </span>
+                            )}
+                        </div>
+                        {/* {formData.companyLogo && formData.companyLogo.fileUrl && (
+                            <span className="ml-2 text-green-500">&#10003;</span> 
+                        )} */}
                     </div>
-                    {formData.companyLogo?.fileUrl && (
-                        <img
-                            src={formData.companyLogo.fileUrl}
-                            alt="Company Logo Preview"
-                            className="mt-3 w-24 h-24 object-cover rounded-lg border"
-                        />
-                    )}
                 </div>
 
                 {/* Company Name */}

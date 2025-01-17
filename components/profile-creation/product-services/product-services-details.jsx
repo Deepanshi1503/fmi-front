@@ -159,8 +159,8 @@ const ProductServiceForm = ({onCompletion}) => {
 
       {/* Modal for Form */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg w-1/3 relative">
+        <div className="fixed inset-0 mt-36 flex items-center justify-center bg-gray-500 bg-opacity-50">
+          <div className="bg-white p-6 rounded-[16px] w-1/3 z-20 relative">
             <form className="space-y-4" onSubmit={handleSubmit}>
               {/* Product/Service Name */}
               <div className="form-group mb-4">

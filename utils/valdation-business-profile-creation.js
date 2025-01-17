@@ -72,7 +72,7 @@ export const mapNumberOfEmployees = (employees) => {
 export const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 
-export const syncBusinessData = async (businessData, founderData, teamData, advisorData, profileProgress) => {
+export const syncBusinessData = async (businessData, profileProgress) => {
     const businessId = localStorage.getItem("businessId");
 
     if (!businessId) {
@@ -125,7 +125,7 @@ export const syncBusinessData = async (businessData, founderData, teamData, advi
             pitch_deck: businessData.pitchDeck?.fileId || null,
             company_profile: businessData.companyProfile?.fileId || null,
             founder_detail: await Promise.all(
-                (founderData || [])?.map(async (founder) => {
+                (businessData.founders || [])?.map(async (founder) => {
                     return {
                         name: founder.name || null,
                         role: founder.role || null,
@@ -137,7 +137,7 @@ export const syncBusinessData = async (businessData, founderData, teamData, advi
                 })
             ),
             team_details: await Promise.all(
-                (teamData || [])?.map(async (member) => {
+                (businessData.teamMembers || [])?.map(async (member) => {
                     return {
                         name: member.name || null,
                         role: member.role || null,
@@ -149,7 +149,7 @@ export const syncBusinessData = async (businessData, founderData, teamData, advi
                 })
             ),
             board_member_advisor__detail: await Promise.all(
-                (advisorData || [])?.map(async (advisor) => {
+                (businessData.advisors || [])?.map(async (advisor) => {
                     return {
                         name: advisor.name || null,
                         role: advisor.role || null,
@@ -186,7 +186,11 @@ export const syncBusinessData = async (businessData, founderData, teamData, advi
                     investor_role: businessData.investorRole || null,
                     type_of_funding: businessData.typeOfFunding || null,
                     valuation: businessData.valuation || null,
-                    funds_allocation: businessData.fundsAllocation || null,
+                    funding_ask: businessData.fundingAsk || null,
+                    funds_allocation: businessData.fundsAllocation.map((fund) => ({
+                        area_of_concern: fund.areaOfConcern || null,
+                        percentage_allocated: parseInt(fund.percentageAllocated) || 0,
+                    })) || [],
                 }
                 : null,
             sale_business_details: businessData.saleValuation

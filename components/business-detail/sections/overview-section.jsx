@@ -15,7 +15,7 @@ const OverviewSection = React.forwardRef(({ business }, ref) => {
         <section id="overview" ref={ref} className="mb-12 pt-4 border border-[#EFEFEF] rounded-[16px] bg-white">
             <div className="px-4">
             <p className="text-[28px] font-semibold mb-3">Overview</p>
-            <p className="text-[24px] font-medium mb-4">{business.company_name}</p>
+            <p className="text-[24px] font-medium mb-4 text-[#181818CC]">{business.company_name}</p>
             <div
                 className={`relative text-[16px] ${shouldApplyFade & !isExpanded ? "max-h-[150px] overflow-hidden fade-effect" : "mb-4"
                     }`}

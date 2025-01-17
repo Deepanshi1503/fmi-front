@@ -118,7 +118,7 @@ const CompanyOverview = () => {
         className="w-1/3 p-6 xl:mr-20 hidden xl:block"
         style={{
           position: "sticky",
-          top: "0",
+          top: "5rem",
           alignSelf: "flex-start",
         }}
       >
@@ -176,7 +176,7 @@ const CompanyOverview = () => {
         {stepsComponents.map((step, index) => (
           <div
             key={index}
-            className={`mb-12 bg-[#f9f9f9] rounded-[16px] ${isFormOpen[index] ? "" : ""
+            className={`mb-8 bg-[#f9f9f9] rounded-[16px] ${isFormOpen[index] ? "" : ""
               }`}
           >
             {/* Collapsible Header */}

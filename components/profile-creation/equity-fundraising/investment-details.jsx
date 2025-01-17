@@ -7,17 +7,24 @@ const InvestmentRequired = ({ onCompletion }) => {
     investorRole: "",
     typeOfFunding: "",
     valuation: "",
-    fundsAllocation: "",
+    fundingAsk: "",
+    fundsAllocation: [],
+  });
+
+  const [newFundAllocation, setNewFundAllocation] = useState({
+    areaOfConcern: "",
+    percentageAllocated: "",
   });
 
   useEffect(() => {
     const isCompleted =
-        formData.investorRole &&
-        formData.typeOfFunding &&
-        formData.valuation &&
-        formData.fundsAllocation;
+      formData.investorRole &&
+      formData.typeOfFunding &&
+      formData.valuation &&
+      formData.fundingAsk &&
+      formData.fundsAllocation.length > 0;
     onCompletion(isCompleted);
-}, [formData]);
+  }, [formData]);
 
   const [investorRoleOptions, setInvestorRoleOptions] = useState([]);
   const [fundingTypeOptions, setFundingTypeOptions] = useState([]);
@@ -28,6 +35,31 @@ const InvestmentRequired = ({ onCompletion }) => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+    }));
+  };
+
+  const handleNewFundAllocationChange = (e) => {
+    const { name, value } = e.target;
+    setNewFundAllocation((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleAddFundAllocation = () => {
+    if (newFundAllocation.areaOfConcern && newFundAllocation.percentageAllocated) {
+      setFormData((prev) => ({
+        ...prev,
+        fundsAllocation: [...prev.fundsAllocation, newFundAllocation],
+      }));
+      setNewFundAllocation({ areaOfConcern: "", percentageAllocated: "" });
+    }
+  };
+
+  const handleRemoveFundAllocation = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      fundsAllocation: prev.fundsAllocation.filter((_, i) => i !== index),
     }));
   };
 
@@ -47,7 +79,7 @@ const InvestmentRequired = ({ onCompletion }) => {
     const fetchOptions = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:1337/api/content-type-builder/components/form.investor-business-listing-detail"
+          `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/content-type-builder/components/form.investor-business-listing-detail`
         );
 
         const schemaAttributes = response.data?.data?.schema?.attributes || {};
@@ -141,21 +173,66 @@ const InvestmentRequired = ({ onCompletion }) => {
           />
         </div>
 
-        {/* Funds Allocation */}
+        {/* Funding Ask */}
         <div className="form-group mb-4">
-          <label htmlFor="fundsAllocation" className="block mb-3 text-[16px] text-left font-medium">
-            Funds Allocation*
+          <label htmlFor="fundingAsk" className="block mb-3 text-[16px] text-left font-medium">
+            Funding Ask*
           </label>
           <input
-            type="text"
-            name="fundsAllocation"
-            id="fundsAllocation"
-            value={formData.fundsAllocation}
+            type="number"
+            name="fundingAsk"
+            id="fundingAsk"
+            value={formData.fundingAsk}
             onChange={handleChange}
             required
             className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
-            placeholder="Enter Funds Allocation"
+            placeholder="Enter Funding Ask"
           />
+        </div>
+
+        {/* Funds Allocation */}
+        <div className="form-group mb-4">
+          <label className="block mb-3 text-[16px] text-left font-medium">
+            Funds Allocation*
+          </label>
+          {formData?.fundsAllocation?.map((allocation, index) => (
+            <div key={index} className="flex items-center mb-2">
+              <span className="flex-1">{allocation.areaOfConcern}</span>
+              <span className="flex-1">{allocation.percentageAllocated}%</span>
+              <button
+                type="button"
+                className="text-red-500 ml-4"
+                onClick={() => handleRemoveFundAllocation(index)}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+          <div className="flex items-center space-x-4 mt-2">
+            <input
+              type="text"
+              name="areaOfConcern"
+              value={newFundAllocation.areaOfConcern}
+              onChange={handleNewFundAllocationChange}
+              placeholder="Area of Concern"
+              className="w-1/2 p-3 border rounded-lg"
+            />
+            <input
+              type="number"
+              name="percentageAllocated"
+              value={newFundAllocation.percentageAllocated}
+              onChange={handleNewFundAllocationChange}
+              placeholder="Percentage Allocated"
+              className="w-1/2 p-3 border rounded-lg"
+            />
+            <button
+              type="button"
+              onClick={handleAddFundAllocation}
+              className="p-3 bg-blue-500 text-white rounded-lg"
+            >
+              Add
+            </button>
+          </div>
         </div>
       </form>
     </div>

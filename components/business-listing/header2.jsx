@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function Header2() {
     return (
-        <nav className="bg-[#0A66C2] mx-12 mt-10 rounded-t-2xl">
+        <nav className="bg-[#0A66C2] mx-12 mt-10 rounded-[16px]">
             <div className="container mx-auto px-12 flex items-center justify-between py-2">
                 {/* Logo */}
                 <div className="flex items-center justify-between">

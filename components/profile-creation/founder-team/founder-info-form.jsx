@@ -45,7 +45,7 @@ const FounderForm = ({data, setData, title, onCompletion}) => {
       <button
         type="button"
         onClick={() => setIsPopupOpen(true)}
-        className={`${data.length > 0 ? "mt-8" : ""} px-4 font-medium py-2 bg-[#0B66C3] text-white rounded-[16px] text-[12px] 2xl:text-[18px]`}
+        className={`${data?.length > 0 ? "mt-8" : ""} px-4 font-medium py-2 bg-[#0B66C3] text-white rounded-[16px] text-[12px] 2xl:text-[18px]`}
       >
         + Add a {title.toLowerCase()}
       </button>

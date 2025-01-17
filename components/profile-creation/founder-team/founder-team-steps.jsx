@@ -46,28 +46,52 @@ const FounderTeam = () => {
 
 
   /* Load and upload data from localStorage */
+  // useEffect(() => {
+  //   const savedData = {
+  //     founders: JSON.parse(localStorage.getItem("founders")) || [],
+  //     teamMembers: JSON.parse(localStorage.getItem("teamMembers")) || [],
+  //     advisors: JSON.parse(localStorage.getItem("advisors")) || [],
+  //     formState: JSON.parse(localStorage.getItem("formState")) || Array(3).fill(false),
+  //   };
+  //   setFounders(savedData.founders);
+  //   setTeamMembers(savedData.teamMembers);
+  //   setAdvisors(savedData.advisors);
+  //   setIsFormOpen(savedData.formState);
+  // }, []);
+  // useEffect(() => {
+  //   localStorage.setItem("founders", JSON.stringify(founders));
+  //   localStorage.setItem("teamMembers", JSON.stringify(teamMembers));
+  //   localStorage.setItem("advisors", JSON.stringify(advisors));
+  // }, [founders, teamMembers, advisors]);
+
   useEffect(() => {
-    const savedData = {
-      founders: JSON.parse(localStorage.getItem("founders")) || [],
-      teamMembers: JSON.parse(localStorage.getItem("teamMembers")) || [],
-      advisors: JSON.parse(localStorage.getItem("advisors")) || [],
-      formState: JSON.parse(localStorage.getItem("formState")) || Array(3).fill(false),
+    const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {
+      founders: [],
+      teamMembers: [],
+      advisors: [],
+      formState: Array(3).fill(false),
     };
+  
     setFounders(savedData.founders);
     setTeamMembers(savedData.teamMembers);
     setAdvisors(savedData.advisors);
     setIsFormOpen(savedData.formState);
   }, []);
+  
   useEffect(() => {
-    localStorage.setItem("founders", JSON.stringify(founders));
-    localStorage.setItem("teamMembers", JSON.stringify(teamMembers));
-    localStorage.setItem("advisors", JSON.stringify(advisors));
-  }, [founders, teamMembers, advisors]);
-
+    const existingData = JSON.parse(localStorage.getItem("combineInfo")) || {};
+  
+    // Append new data to existing data
+    existingData.founders=founders;
+    existingData.teamMembers=teamMembers;
+    existingData.advisors=advisors;
+  
+    localStorage.setItem("combineInfo", JSON.stringify(existingData));
+  }, [founders, teamMembers, advisors, isFormOpen]);
 
   useEffect(() => {
     setIsFormOpen((prevState) => {
-      const updatedState = [...prevState];
+      const updatedState = Array.isArray(prevState) ? [...prevState] : Array(3).fill(false);;
       updatedState[0] = true; // Open the first form by default
       return updatedState;
     });
@@ -149,7 +173,7 @@ const FounderTeam = () => {
               <div
                 className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full font-bold z-10 ${index === activeStep
                   ? "bg-transparent border-2 border-[#0A66C2]" // Active step - blue border
-                  : null
+                  : "border-2 border-[#D4D4D4]" // Unvisited step - grey border
                   }`}
               >
                 {index === activeStep ? (

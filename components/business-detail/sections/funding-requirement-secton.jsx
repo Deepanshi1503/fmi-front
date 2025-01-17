@@ -96,7 +96,7 @@ const OverviewSection = React.forwardRef(({ business }, ref) => {
                             src="/images/salePrice.png"
                             className="mt-2"
                             alt="logo"
-                            width={50}
+                            width={40}
                             height={77}
                         />
                         <div>
@@ -112,7 +112,7 @@ const OverviewSection = React.forwardRef(({ business }, ref) => {
                             src="/images/ownershipOffered.png"
                             className="mt-2"
                             alt="logo"
-                            width={50}
+                            width={40}
                             height={77}
                         />
                         <div>
@@ -128,7 +128,7 @@ const OverviewSection = React.forwardRef(({ business }, ref) => {
                             src="/images/valuation.png"
                             className="mt-2"
                             alt="logo"
-                            width={50}
+                            width={40}
                             height={77}
                         />
                         <div>
@@ -144,7 +144,7 @@ const OverviewSection = React.forwardRef(({ business }, ref) => {
                             src="/images/reasonForSale.png"
                             className="mt-2"
                             alt="logo"
-                            width={50}
+                            width={40}
                             height={77}
                         />
                         <div>

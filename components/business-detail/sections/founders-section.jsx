@@ -8,7 +8,7 @@ const OverviewSection = React.forwardRef(({ business }, ref) => {
   const peopleToShow = showMore ? allPeople : allPeople.slice(0, 1);
 
   const renderPersonDetails = (person, index) => {
-    const imageUrl = `${process.env.NEXT_PUBLIC_STRAPI_URL}${person.image?.data?.attributes?.url}`;
+    const imageUrl = person.image?.data?.attributes?.url?`${process.env.NEXT_PUBLIC_STRAPI_URL}${person.image?.data?.attributes?.url}`: "/images/default-profile";
 
     const isTeamDetailsStart =
       index === founder_detail.length && team_details.length > 0;
