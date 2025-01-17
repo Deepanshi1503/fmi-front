@@ -5,16 +5,15 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { useGlobalContext } from "@/context/context";
 import businessStepsConfig from "@/config/business-step.config"
-import { validateMandatoryFields, syncBusinessData } from "@/utils/valdation-business-profile-creation";
+import { validateMandatoryFields, syncInvestorData } from "@/utils/validation-investor-profile-creation";
 
 import { Button } from "@/components/ui/button";
 import { MoveLeft, MoveRight } from "lucide-react";
 import Loader from "@/components/loader";
 
 const ProfileStep = () => {
-    const { investorActiveStep, setInvestorActiveStep, loading } = useGlobalContext();
+    const { investorActiveStep, setInvestorActiveStep, loading, isInvestorFormDirty, setIsInvestorFormDirty } = useGlobalContext();
 
-    const [isFormDirty, setIsFormDirty] = useState(true); // Track unsaved changes
     const [targetStep, setTargetStep] = useState(null);
 
     if (loading) {
@@ -23,23 +22,23 @@ const ProfileStep = () => {
 
     const handleNext = async () => {
         // Simulate form data
-        // const formData = JSON.parse(localStorage.getItem("combineInvestorInfo"));
-        // const progress = JSON.parse(localStorage.getItem("profileInvestorProgress"));
+        const formData = JSON.parse(localStorage.getItem("combineInvestorInfo"));
+        const progress = JSON.parse(localStorage.getItem("profileInvestorProgress"));
 
         // Validate mandatory fields dynamically
-        // const mandatoryFields = ["companyName", "professionalEmail", "phoneNumber"];
-        // const errorMessage = "Please fill in the Company Name, Email, and Phone Number to proceed.";
+        const mandatoryFields = ["companyName", "professionalEmail", "phoneNumber"];
+        const errorMessage = "Please fill in the Company Name, Email, and Phone Number to proceed.";
 
         // Validate only for the first step
-        // if (investorActiveStep === 0 && !validateMandatoryFields(formData, mandatoryFields, errorMessage)) {
-        //     return;
-        // }
+        if (investorActiveStep === 0 && !validateMandatoryFields(formData, mandatoryFields, errorMessage)) {
+            return;
+        }
 
         // Sync with backend before navigating
-        // await syncInvestorData(formData, progress);
+        await syncInvestorData(formData, progress);
 
-        setIsFormDirty(false);
-        if (investorActiveStep < stepsConfig.length - 1) setInvestorActiveStep((prev) => prev + 1);
+        setIsInvestorFormDirty(false);
+        if (investorActiveStep < businessStepsConfig.length - 1) setInvestorActiveStep((prev) => prev + 1);
     };
 
     const handleBack = () => {
@@ -51,7 +50,7 @@ const ProfileStep = () => {
     };
 
     const handleStepClick = (index) => {
-        if (isFormDirty) {
+        if (isInvestorFormDirty) {
             setTargetStep(index); // Save the target step
             showUnsavedChangesToast(); // Show the confirmation modal
         } else {
@@ -97,7 +96,7 @@ const ProfileStep = () => {
     const handleSaveChanges = () => {
         toast.dismiss(); // Close the toast
         toast.success("Changes saved successfully!");
-        setIsFormDirty(false);
+        setIsInvestorFormDirty(false);
         if (targetStep !== null) {
             setInvestorActiveStep(targetStep); // Navigate to the target step
             setTargetStep(null);
@@ -107,7 +106,7 @@ const ProfileStep = () => {
     const handleDiscardChanges = () => {
         toast.dismiss(); // Close the toast
         toast.warning("Changes discarded.");
-        setIsFormDirty(false);
+        setIsInvestorFormDirty(false);
         if (targetStep !== null) {
             setInvestorActiveStep(targetStep); // Navigate to the target step
             setTargetStep(null);

@@ -92,6 +92,8 @@ export const GlobalContextProvider = ({ children }) => {
             localStorage.setItem("investorActiveStep", investorActiveStep); // Save the active step to localStorage whenever it changes
         }
     }, [investorActiveStep]);
+    
+    const [isInvestorFormDirty, setIsInvestorFormDirty] = useState(true); // Track unsaved changes
 
 
 
@@ -122,7 +124,9 @@ export const GlobalContextProvider = ({ children }) => {
                 name,
                 setName,
                 investorActiveStep,
-                setInvestorActiveStep
+                setInvestorActiveStep,
+                isInvestorFormDirty,
+                setIsInvestorFormDirty
             }}
         >
             {children}
