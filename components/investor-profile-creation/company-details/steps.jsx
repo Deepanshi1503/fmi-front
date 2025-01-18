@@ -47,6 +47,7 @@ const CompanyOverview = () => {
   const stepsComponents = useMemo(
     () => [
       {
+        image: "/images/company-details.png",
         name: "Company Overview",
         description: "Provide details about your company and its operations.",
         formComponent: () => (
@@ -56,6 +57,7 @@ const CompanyOverview = () => {
         ),
       },
       {
+        image: "/images/contact-details2.png",
         name: "Contact Details",
         description: "Provide your company's contact details.",
         formComponent: () => (
@@ -143,6 +145,13 @@ const CompanyOverview = () => {
                 }`}
               onClick={() => handleToggleForm(index)}
             >
+              {step.image && (
+                <img
+                  src={step.image}
+                  alt={`${step.name} illustration`}
+                  className="2xl:w-[38px] 2xl:h-[38px] w-[30px] h-[30px] rounded"
+                />
+              )}
               <div className="justify-between w-full items-center flex">
                 <h2 className="font-normal text-left text-[18px] 2xl:text-[28px] ml-3 text-[#181818]">
                   {step.name}

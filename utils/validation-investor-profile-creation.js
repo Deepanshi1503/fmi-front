@@ -13,7 +13,6 @@ export const validateMandatoryFields = (data, mandatoryFields, errorMessage) => 
     return true;
 };
 
-
 export const base64ToBlob = (base64) => {
     const [metadata, base64String] = base64.split(",");
     const mime = metadata.match(/:(.*?);/)[1];
@@ -24,7 +23,6 @@ export const base64ToBlob = (base64) => {
     }
     return new Blob([new Uint8Array(array)], { type: mime });
 };
-
 
 export const uploadImage = async (imageData) => {
     const blob = base64ToBlob(imageData);
@@ -45,8 +43,30 @@ export const uploadImage = async (imageData) => {
     }
 };
 
-export const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+export const fetchFundingInterestOptions = async () => {
+  try {
+    const response = await axios.get("http://localhost:1337/api/industries");
+    const options= response.data?.data || [];
+    return options
+  } catch (err) {
+    console.error("Error fetching funding interest options:", err);
+    return [];
+  }
+};
 
+export const fetchInvestorTypeOptions = async () => {
+  try {
+    const response = await axios.get("http://localhost:1337/api/content-type-builder/content-types/api::investor.investor");
+    const options= response.data?.data?.schema?.attributes?.investor_type?.enum || [];
+    const option2 = response.data?.data?.schema?.attributes || null;
+    return {options, option2};
+  } catch (err) {
+    console.error("Error fetching investor type options:", err);
+    return [];
+  }
+};
+
+export const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 export const syncInvestorData = async (investorData, profileProgress) => {
     const investorId = localStorage.getItem("investorId");
@@ -66,7 +86,7 @@ export const syncInvestorData = async (investorData, profileProgress) => {
             company_name: investorData.companyName,
             logo: investorData.companyLogo?.fileId || null,
             website_url: investorData.website,
-            year_of_establishment: investorData.yearOfEstablishment,
+            year_of_establishment: parseInt(investorData.yearOfEstablishment) || null,
             headquarters: investorData.headquarters,
             profile_description: investorData.productDescription,
             availability_for_pitches: investorData.availabilityForPitches,

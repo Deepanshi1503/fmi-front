@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import { usePathname } from "next/navigation";
 
 import { useGlobalContext } from "@/context/context";
 import businessStepsConfig from "@/config/business-step.config"
@@ -12,9 +14,52 @@ import { MoveLeft, MoveRight } from "lucide-react";
 import Loader from "@/components/loader";
 
 const ProfileStep = () => {
-    const { investorActiveStep, setInvestorActiveStep, loading, isInvestorFormDirty, setIsInvestorFormDirty } = useGlobalContext();
-
+    const { investorActiveStep, setInvestorActiveStep, loading, setLoading, isInvestorFormDirty, setIsInvestorFormDirty } = useGlobalContext();
     const [targetStep, setTargetStep] = useState(null);
+    const pathname = usePathname();
+
+    useEffect(() => {
+        const fetchInvestorData = async () => {
+            const investorId = localStorage.getItem("investorId");
+            console.log(investorId);
+            if (investorId) {
+                try {
+                    const response = await axios.get(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/investors/${investorId}?populate=*`);
+                    const investorData = response.data?.data?.attributes;
+                    console.log(investorData);
+                    if (investorData) {
+                        const combineInvestorInfo = {
+                            companyName: investorData.company_name,
+                            companyLogo: investorData.logo,
+                            website: investorData.website_url,
+                            yearOfEstablishment: investorData.year_of_establishment,
+                            headquarters: investorData.headquarters,
+                            productDescription: investorData.profile_description,
+                            availabilityForPitches: investorData.availability_for_pitches,
+                            phoneNumber: investorData.phone_number,
+                            professionalEmail: investorData.professional_emailid,
+                            linkedInId: investorData.linkedin_id,
+                        };
+                        localStorage.setItem("combineInvestorInfo", JSON.stringify(combineInvestorInfo));
+                    }
+                } catch (error) {
+                    console.error("Error fetching investor data:", error);
+                }
+            }
+            setLoading(false); // Ensure loading is false after data fetch
+        };
+
+        fetchInvestorData();
+    }, [setLoading]);
+
+    useEffect(() => {
+        // This runs every time the pathname changes
+        console.log("Pathname changed to:", pathname);
+        localStorage.removeItem("combineInvestorInfo");
+        localStorage.removeItem("profileInvestorProgress");
+        localStorage.removeItem("investorActiveStep");
+        localStorage.removeItem("investorId");
+    }, [pathname]);
 
     if (loading) {
         return <Loader />;
@@ -35,7 +80,7 @@ const ProfileStep = () => {
         }
 
         // Sync with backend before navigating
-        if(isInvestorFormDirty){
+        if (isInvestorFormDirty) {
             await syncInvestorData(formData, progress);
             setIsInvestorFormDirty(false);
         }
