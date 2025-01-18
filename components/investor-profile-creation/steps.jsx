@@ -35,9 +35,11 @@ const ProfileStep = () => {
         }
 
         // Sync with backend before navigating
-        await syncInvestorData(formData, progress);
+        if(isInvestorFormDirty){
+            await syncInvestorData(formData, progress);
+            setIsInvestorFormDirty(false);
+        }
 
-        setIsInvestorFormDirty(false);
         if (investorActiveStep < businessStepsConfig.length - 1) setInvestorActiveStep((prev) => prev + 1);
     };
 

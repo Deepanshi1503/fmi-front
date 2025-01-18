@@ -92,9 +92,34 @@ export const GlobalContextProvider = ({ children }) => {
             localStorage.setItem("investorActiveStep", investorActiveStep); // Save the active step to localStorage whenever it changes
         }
     }, [investorActiveStep]);
-    
-    const [isInvestorFormDirty, setIsInvestorFormDirty] = useState(true); // Track unsaved changes
 
+    const [isInvestorFormDirty, setIsInvestorFormDirty] = useState(true); // Track unsaved changes
+    useEffect(() => {
+        // Store the initial values of the localStorage keys to track
+        const initialInvestorInfo = JSON.stringify(localStorage.getItem("combineInvestorInfo"));
+        const initialInvestorProgress = JSON.stringify(localStorage.getItem("profileInvestorProgress"));
+
+        const handleStorageChange = () => {
+            const updatedInvestorInfo = JSON.stringify(localStorage.getItem("combineInvestorInfo"));
+            const updatedInvestorProgress = JSON.stringify(localStorage.getItem("profileInvestorProgress"));
+
+            // Check if the values have changed compared to the initial state
+            if (
+                updatedInvestorInfo !== initialInvestorInfo ||
+                updatedInvestorProgress !== initialInvestorProgress
+            ) {
+                setIsInvestorFormDirty(true); // Mark the form as dirty
+            }
+        };
+
+        // Add the storage event listener
+        window.addEventListener("storage", handleStorageChange);
+
+        // Cleanup on component unmount
+        return () => {
+            window.removeEventListener("storage", handleStorageChange);
+        };
+    }, []);
 
 
     //****************** Step up form for business 6th step equity and fundraising *********************//
