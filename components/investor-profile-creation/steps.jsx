@@ -26,7 +26,7 @@ const ProfileStep = () => {
                 try {
                     const response = await axios.get(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/investors/${investorId}?populate=*`);
                     const investorData = response.data?.data?.attributes;
-                    console.log(investorData);
+                    console.log("fetched the data onload succesfully", investorData);
                     if (investorData) {
                         const combineInvestorInfo = {
                             companyName: investorData.company_name,
@@ -52,14 +52,14 @@ const ProfileStep = () => {
         fetchInvestorData();
     }, [setLoading]);
 
-    useEffect(() => {
-        // This runs every time the pathname changes
-        console.log("Pathname changed to:", pathname);
-        localStorage.removeItem("combineInvestorInfo");
-        localStorage.removeItem("profileInvestorProgress");
-        localStorage.removeItem("investorActiveStep");
-        localStorage.removeItem("investorId");
-    }, [pathname]);
+    // useEffect(() => {
+    //     // This runs every time the pathname changes
+    //     console.log("Pathname changed to:", pathname);
+    //     localStorage.removeItem("combineInvestorInfo");
+    //     localStorage.removeItem("profileInvestorProgress");
+    //     localStorage.removeItem("investorActiveStep");
+    //     localStorage.removeItem("investorId");
+    // }, [pathname]);
 
     if (loading) {
         return <Loader />;

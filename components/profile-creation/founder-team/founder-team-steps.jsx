@@ -44,26 +44,6 @@ const FounderTeam = () => {
     );
   }, []);
 
-
-  /* Load and upload data from localStorage */
-  // useEffect(() => {
-  //   const savedData = {
-  //     founders: JSON.parse(localStorage.getItem("founders")) || [],
-  //     teamMembers: JSON.parse(localStorage.getItem("teamMembers")) || [],
-  //     advisors: JSON.parse(localStorage.getItem("advisors")) || [],
-  //     formState: JSON.parse(localStorage.getItem("formState")) || Array(3).fill(false),
-  //   };
-  //   setFounders(savedData.founders);
-  //   setTeamMembers(savedData.teamMembers);
-  //   setAdvisors(savedData.advisors);
-  //   setIsFormOpen(savedData.formState);
-  // }, []);
-  // useEffect(() => {
-  //   localStorage.setItem("founders", JSON.stringify(founders));
-  //   localStorage.setItem("teamMembers", JSON.stringify(teamMembers));
-  //   localStorage.setItem("advisors", JSON.stringify(advisors));
-  // }, [founders, teamMembers, advisors]);
-
   useEffect(() => {
     const savedData = JSON.parse(localStorage.getItem("combineInfo")) || {
       founders: [],

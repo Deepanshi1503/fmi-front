@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { fetchInvestorTypeOptions } from "@/utils/validation-investor-profile-creation";
+import { fetchInvestorTypeOptions, fetchSectors } from "@/utils/validation-investor-profile-creation";
 import Select from "react-select";
 import { Country } from "country-state-city";
 
@@ -12,10 +12,6 @@ const InvestmentPreferences = ({ onCompletion }) => {
         typicalInvestmentRange: "",
         preferredStageOfInvestment: "",
     });
-
-    const fundingInterestOptions = localStorage.getItem("combineInvestorInfo");
-    const fundingInterest = fundingInterestOptions.fundingInterest;
-    console.log(fundingInterest)
 
     useEffect(() => {
         const isCompleted =
@@ -61,26 +57,16 @@ const InvestmentPreferences = ({ onCompletion }) => {
     useEffect(() => {
         const fetchOptions = async () => {
             const preferredInvestmentTypeData = await fetchInvestorTypeOptions();
-            console.log(preferredInvestmentTypeData);
             setInvestorTypeOptions(preferredInvestmentTypeData.option2.investor_type.enum);
             setTypicalInvestmentRanges(preferredInvestmentTypeData.option2.typical_investment_range.enum);
             setPreferredStages(preferredInvestmentTypeData.option2.preferred_stage_of_investment.enum);
+
+            const fetchSectorOptions = await fetchSectors();
+            setPreferredSectors(fetchSectorOptions);
         };
 
         fetchOptions();
     }, []);
-
-    // Fetch preferred sectors based on funding interest
-    // useEffect(() => {
-    //     if (formData.fundingInterest) {
-    //         const associatedSectors = fundingInterestOptions.find(
-    //             (item) => item.attributes.name === formData.fundingInterest
-    //         );
-    //         setPreferredSectors(associatedSectors ? associatedSectors.attributes.sectors : []);
-    //     } else {
-    //         setPreferredSectors(fundingInterestOptions);
-    //     }
-    // }, [formData.fundingInterest, fundingInterestOptions]);
 
     useEffect(() => {
         const savedData = JSON.parse(localStorage.getItem("combineInvestorInfo")) || {};
@@ -120,26 +106,44 @@ const InvestmentPreferences = ({ onCompletion }) => {
                 </div>
 
                 {/* Preferred Sectors of Interest */}
-                {/* <div className="form-group mb-4">
-                    <label htmlFor="preferredSectorOfInterest" className="block mb-3 text-[16px] text-left font-medium">
+                <div className="form-group mb-4">
+                    <label htmlFor="geographicFocus" className="block mb-3 text-[16px] text-left font-medium">
                         Preferred Sectors of Interest*
                     </label>
-                    <select
-                        name="preferredSectorOfInterest"
-                        id="preferredSectorOfInterest"
-                        value={formData.preferredSectorOfInterest}
-                        onChange={handleChange}
-                        required
-                        className="w-full p-3 border rounded-lg focus:ring-1 focus:ring-blue-500"
-                    >
-                        <option value="">Select Sector of Interest</option>
-                        {preferredSectors.map((sector) => (
-                            <option key={sector.id} value={sector.name}>
-                                {sector.name}
-                            </option>
-                        ))}
-                    </select>
-                </div> */}
+                    <Select
+                        isMulti
+                        options={preferredSectors.map((sector) => ({
+                            value: sector.id,
+                            label: sector.attributes.name,
+                        }))} 
+                        value={preferredSectors
+                            .filter((sector) =>
+                                formData.preferredSectorOfInterest.includes(sector.attributes.name)
+                            )
+                            .map((sector) => ({
+                                value: sector.id,
+                                label: sector.attributes.name,
+                            }))}
+                        onChange={(selectedOptions) =>
+                            handleMultiSelectChange(selectedOptions, "preferredSectorOfInterest")
+                        }
+                        placeholder="Select Sectors of Interest"
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        styles={{
+                            control: (base) => ({
+                                ...base,
+                                minHeight: "55px",
+                                borderRadius: "0.5rem",
+                                borderColor: "#d1d5db", 
+                                boxShadow: "none",
+                                "&:hover": {
+                                    borderColor: "#2563eb",
+                                },
+                            }),
+                        }}
+                    />
+                </div>
 
                 {/* Geographic Focus (Multi-Select) */}
                 <div className="form-group mb-4">

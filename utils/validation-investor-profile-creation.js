@@ -44,27 +44,51 @@ export const uploadImage = async (imageData) => {
 };
 
 export const fetchFundingInterestOptions = async () => {
-  try {
-    const response = await axios.get("http://localhost:1337/api/industries");
-    const options= response.data?.data || [];
-    return options
-  } catch (err) {
-    console.error("Error fetching funding interest options:", err);
-    return [];
-  }
+    try {
+        const response = await axios.get("http://localhost:1337/api/industries");
+        const options = response.data?.data || [];
+        return options
+    } catch (err) {
+        console.error("Error fetching funding interest options:", err);
+        return [];
+    }
 };
 
 export const fetchInvestorTypeOptions = async () => {
-  try {
-    const response = await axios.get("http://localhost:1337/api/content-type-builder/content-types/api::investor.investor");
-    const options= response.data?.data?.schema?.attributes?.investor_type?.enum || [];
-    const option2 = response.data?.data?.schema?.attributes || null;
-    return {options, option2};
-  } catch (err) {
-    console.error("Error fetching investor type options:", err);
-    return [];
-  }
+    try {
+        const response = await axios.get("http://localhost:1337/api/content-type-builder/content-types/api::investor.investor");
+        const options = response.data?.data?.schema?.attributes?.investor_type?.enum || [];
+        const option2 = response.data?.data?.schema?.attributes || null;
+        return { options, option2 };
+    } catch (err) {
+        console.error("Error fetching investor type options:", err);
+        return [];
+    }
 };
+
+export const fetchSectors = async () => {
+    const fundingInterestOptions = JSON.parse(localStorage.getItem("combineInvestorInfo"));
+    const fundingInterest = fundingInterestOptions.fundingInterest;
+    // console.log(fundingInterestOptions.fundingInterest);
+
+    try {
+        const response = await axios.get("http://localhost:1337/api/sub-industries?populate=*");
+        const options = response.data?.data || [];
+
+        if (fundingInterest.length > 0) {
+            const filteredOptions = options.filter(option => 
+                fundingInterest.includes(option.attributes.industry.data.attributes.name)
+            );
+            return filteredOptions; 
+        } else {
+            return options;
+        }
+    } catch (err) {
+        console.error("Error fetching funding interest options:", err);
+        return [];
+    }
+};
+
 
 export const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
