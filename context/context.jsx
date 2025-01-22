@@ -93,7 +93,7 @@ export const GlobalContextProvider = ({ children }) => {
         }
     }, [investorActiveStep]);
 
-    const [isInvestorFormDirty, setIsInvestorFormDirty] = useState(true); // Track unsaved changes
+    const [isInvestorFormDirty, setIsInvestorFormDirty] = useState(false); // Track unsaved changes
     useEffect(() => {
         // Store the initial values of the localStorage keys to track
         const initialInvestorInfo = JSON.stringify(localStorage.getItem("combineInvestorInfo"));

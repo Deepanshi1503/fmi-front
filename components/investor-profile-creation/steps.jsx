@@ -24,21 +24,60 @@ const ProfileStep = () => {
             console.log(investorId);
             if (investorId) {
                 try {
-                    const response = await axios.get(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/investors/${investorId}?populate=*`);
+                    const response = await axios.get(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/investors/${investorId}?populate=*,logo,funding_interest,preferred_sectors_of_interests,investment_details,founder_team_detail.image`);
                     const investorData = response.data?.data?.attributes;
                     console.log("fetched the data onload succesfully", investorData);
                     if (investorData) {
                         const combineInvestorInfo = {
                             companyName: investorData.company_name,
-                            companyLogo: investorData.logo,
+                            companyLogo: {
+                                fileId: investorData.logo.data.id,
+                                fileUrl: `${process.env.NEXT_PUBLIC_STRAPI_URL}${investorData.logo.data.attributes.url}`,
+                            },
                             website: investorData.website_url,
                             yearOfEstablishment: investorData.year_of_establishment,
                             headquarters: investorData.headquarters,
-                            productDescription: investorData.profile_description,
-                            availabilityForPitches: investorData.availability_for_pitches,
+                            profileDescription: investorData.profile_description,
+                            availableForPitches: investorData.availability_for_pitches ? 'Yes' : 'No',
                             phoneNumber: investorData.phone_number,
                             professionalEmail: investorData.professional_emailid,
                             linkedInId: investorData.linkedin_id,
+                            fundingInterest: investorData.funding_interest.data?.map((interest) => ({
+                                id: interest.id,
+                                name: interest.attributes.name,
+                            })) || [],
+                            totalCommitmentAmount: investorData.commitment_amount,
+                            investorType: investorData.investor_type,
+                            preferredInvestmentType: investorData.preferred_investment_type,
+                            preferredSectorOfInterest: investorData.preferred_sectors_of_interests.data?.map((interest) => ({
+                                id: interest.id,
+                                name: interest.attributes.name,
+                            })) || [],
+                            typicalInvestmentRange: investorData.typical_investment_range,
+                            preferredStageOfInvestment: investorData.preferred_stage_of_investment,
+                            geographicFocus: investorData.geographic_focus,
+                            investmentDetails:
+                                investorData.investment_details?.map((investment) => ({
+                                    investmentDate: investment.investment_date,
+                                    fundingAmount: investment.funding_amount,
+                                    currency: investment.currency,
+                                    fundingStage: investment.funding_stage,
+                                    fundingType: investment.funding_type,
+                                })) || [],
+                            founderServiceData:
+                                investorData.founder_team_detail?.map((founder) => ({
+                                    name: founder.name || null,
+                                    role: founder.role || null,
+                                    professionalBackground: founder.background || null,
+                                    linkedinProfile: founder.linkedin_profile || null,
+                                    education: founder.education || null,
+                                    profileImage: founder.image?.data
+                                        ? {
+                                            fileId: founder.image.data.id,
+                                            fileUrl: `${process.env.NEXT_PUBLIC_STRAPI_URL}${founder.image.data.attributes.url}`,
+                                        }
+                                        : null,
+                                })) || [],
                         };
                         localStorage.setItem("combineInvestorInfo", JSON.stringify(combineInvestorInfo));
                     }
@@ -80,10 +119,13 @@ const ProfileStep = () => {
         }
 
         // Sync with backend before navigating
-        if (isInvestorFormDirty) {
-            await syncInvestorData(formData, progress);
-            setIsInvestorFormDirty(false);
-        }
+        // if (isInvestorFormDirty) {
+        //     await syncInvestorData(formData, progress);
+        //     setIsInvestorFormDirty(false);
+        // }
+
+        await syncInvestorData(formData, progress);
+        setIsInvestorFormDirty(false);
 
         if (investorActiveStep < businessStepsConfig.length - 1) setInvestorActiveStep((prev) => prev + 1);
     };

@@ -57,9 +57,8 @@ export const fetchFundingInterestOptions = async () => {
 export const fetchInvestorTypeOptions = async () => {
     try {
         const response = await axios.get("http://localhost:1337/api/content-type-builder/content-types/api::investor.investor");
-        const options = response.data?.data?.schema?.attributes?.investor_type?.enum || [];
         const option2 = response.data?.data?.schema?.attributes || null;
-        return { options, option2 };
+        return { option2 };
     } catch (err) {
         console.error("Error fetching investor type options:", err);
         return [];
@@ -69,17 +68,18 @@ export const fetchInvestorTypeOptions = async () => {
 export const fetchSectors = async () => {
     const fundingInterestOptions = JSON.parse(localStorage.getItem("combineInvestorInfo"));
     const fundingInterest = fundingInterestOptions.fundingInterest;
-    // console.log(fundingInterestOptions.fundingInterest);
 
     try {
         const response = await axios.get("http://localhost:1337/api/sub-industries?populate=*");
         const options = response.data?.data || [];
 
         if (fundingInterest.length > 0) {
-            const filteredOptions = options.filter(option => 
-                fundingInterest.includes(option.attributes.industry.data.attributes.name)
+            const fundingInterestNames = fundingInterest.map(interest => interest.name);
+
+            const filteredOptions = options.filter(option =>
+                fundingInterestNames.includes(option.attributes.industry.data.attributes.name)
             );
-            return filteredOptions; 
+            return filteredOptions;
         } else {
             return options;
         }
@@ -89,11 +89,22 @@ export const fetchSectors = async () => {
     }
 };
 
+export const fetchInvestorOptions = async () => {
+    try {
+        const response = await axios.get("http://localhost:1337/api/content-type-builder/components/form.investment-details");
+        const option = response.data?.data?.schema?.attributes || null;
+        return option;
+    } catch (err) {
+        console.error("Error fetching investor type options:", err);
+        return [];
+    }
+};
 
 export const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 export const syncInvestorData = async (investorData, profileProgress) => {
     const investorId = localStorage.getItem("investorId");
+    const userId = localStorage.getItem("userId");
 
     if (!investorId) {
         if (!investorData.companyName || !investorData.professionalEmail || !investorData.phoneNumber) {
@@ -105,6 +116,7 @@ export const syncInvestorData = async (investorData, profileProgress) => {
     // Map data to backend schema
     const payload = {
         data: {
+            user: userId ? { id: parseInt(userId) } : null,
             title: investorData.companyName || "",
             slug: (investorData.companyName ? investorData.companyName.toLowerCase().replace(/\s+/g, '-') : '') + '-title',
             company_name: investorData.companyName,
@@ -112,13 +124,50 @@ export const syncInvestorData = async (investorData, profileProgress) => {
             website_url: investorData.website,
             year_of_establishment: parseInt(investorData.yearOfEstablishment) || null,
             headquarters: investorData.headquarters,
-            profile_description: investorData.productDescription,
-            availability_for_pitches: investorData.availabilityForPitches,
+            profile_description: investorData.profileDescription,
+            availability_for_pitches: investorData.availableForPitches === 'Yes' ? true : false,
             phone_number: investorData.phoneNumber,
             professional_emailid: investorData.professionalEmail,
             linkedin_id: investorData.linkedInId,
+            funding_interest: investorData.fundingInterest.map((interest) => ({
+                id: interest.id,
+            })),
+            commitment_amount: investorData.totalCommitmentAmount || null,
+            investor_type: investorData.investorType || null,
+            preferred_investment_type: investorData.preferredInvestmentType || null,
+            preferred_sectors_of_interests: investorData.preferredSectorOfInterest.map((interest) => ({
+                id: interest.id,
+            })),
+            typical_investment_range: investorData.typicalInvestmentRange || null,
+            preferred_stage_of_investment: investorData.preferredStageOfInvestment || null,
+            geographic_focus: investorData.geographicFocus && investorData.geographicFocus.length > 0 ? investorData.geographicFocus : null,
+            investment_details: await Promise.all(
+                (investorData.investmentDetails || [])?.map(async (investment) => {
+                    return {
+                        investment_date: investment.investmentDate || null,
+                        funding_amount: investment.fundingAmount || null,
+                        currency: investment.currency || null,
+                        funding_stage: investment.fundingStage || null,
+                        funding_type: investment.fundingType || null
+                    };
+                })
+            ),
+            founder_team_detail: await Promise.all(
+                (investorData.founderServiceData || [])?.map(async (founder) => {
+                    return {
+                        name: founder.name || null,
+                        role: founder.role || null,
+                        background: founder.professionalBackground || null,
+                        linkedin_profile: founder.linkedinProfile || null,
+                        education: founder.education || null,
+                        image: founder.profileImage.fileId || null,
+                    };
+                })
+            ),
         }
     };
+
+    console.log(payload);
 
     if (!isValidEmail(investorData.professionalEmail) && !investorId) {
         console.error("Invalid email format:", investorData.professionalEmail);

@@ -35,7 +35,11 @@ const InvestmentPreferences = ({ onCompletion }) => {
     const handleMultiSelectChange = (selectedOptions, field) => {
         setFormData((prev) => ({
             ...prev,
-            [field]: selectedOptions.map(option => option.label),  // store selected values in array
+            [field]: selectedOptions.map((option) => ({
+                id: option.value,
+                name: option.label,
+            })),
+            // [field]: selectedOptions.map(option => option.label),  // store selected values in array
         }));
     };
 
@@ -57,7 +61,7 @@ const InvestmentPreferences = ({ onCompletion }) => {
     useEffect(() => {
         const fetchOptions = async () => {
             const preferredInvestmentTypeData = await fetchInvestorTypeOptions();
-            setInvestorTypeOptions(preferredInvestmentTypeData.option2.investor_type.enum);
+            setInvestorTypeOptions(preferredInvestmentTypeData.option2.preferred_investment_type.enum);
             setTypicalInvestmentRanges(preferredInvestmentTypeData.option2.typical_investment_range.enum);
             setPreferredStages(preferredInvestmentTypeData.option2.preferred_stage_of_investment.enum);
 
@@ -118,7 +122,9 @@ const InvestmentPreferences = ({ onCompletion }) => {
                         }))} 
                         value={preferredSectors
                             .filter((sector) =>
-                                formData.preferredSectorOfInterest.includes(sector.attributes.name)
+                                formData.preferredSectorOfInterest.some(
+                                    (selected) => selected.id === sector.id
+                                )
                             )
                             .map((sector) => ({
                                 value: sector.id,
@@ -154,7 +160,7 @@ const InvestmentPreferences = ({ onCompletion }) => {
                         isMulti
                         options={geographicFocusOptions}
                         value={geographicFocusOptions.filter((option) =>
-                            formData.geographicFocus.includes(option.label)
+                            formData.geographicFocus.some((selected) => selected.id === option.value)
                         )}
                         onChange={(selected) => handleMultiSelectChange(selected, "geographicFocus")}
                         placeholder="Select Geographic Focus"

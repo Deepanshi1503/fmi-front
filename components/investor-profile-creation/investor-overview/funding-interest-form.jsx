@@ -24,13 +24,18 @@ const FundingInterest = ({ onCompletion }) => {
     const handleChange = (selectedOption) => {
         setFormData((prev) => {
             let updatedFundingInterest = [...prev.fundingInterest];
-            if (updatedFundingInterest.includes(selectedOption)) {
-                updatedFundingInterest = updatedFundingInterest.filter(
-                    (interest) => interest !== selectedOption
-                );
+            const index = updatedFundingInterest.findIndex(
+                (interest) => interest.id === selectedOption.id
+            );
+
+            if (index !== -1) {
+                // Remove the interest if it is already selected
+                updatedFundingInterest.splice(index, 1);
             } else {
+                // Add the new interest
                 updatedFundingInterest.push(selectedOption);
             }
+
             return {
                 ...prev,
                 fundingInterest: updatedFundingInterest,
@@ -55,9 +60,9 @@ const FundingInterest = ({ onCompletion }) => {
         const fetchOptions = async () => {
             const fundingInterestData = await fetchFundingInterestOptions();
             setFundingInterestOptions(fundingInterestData);
-            
+
             const investorTypeData = await fetchInvestorTypeOptions();
-            setInvestorTypeOptions(investorTypeData.options);
+            setInvestorTypeOptions(investorTypeData.option2.investor_type.enum);
         };
 
         fetchOptions();
@@ -79,12 +84,13 @@ const FundingInterest = ({ onCompletion }) => {
                             <button
                                 type="button"
                                 key={interest.id}
-                                className={`block w-full p-2 mb-2 text-left focus:outline-none focus:ring-0 rounded-lg ${
-                                    formData.fundingInterest.includes(interest.attributes.name)
+                                className={`block w-full p-2 mb-2 text-left focus:outline-none focus:ring-0 rounded-lg ${formData.fundingInterest.some(
+                                    (selected) => selected.id === interest.id
+                                )
                                         ? "bg-blue-500 text-white"
                                         : "bg-gray-100"
-                                }`}
-                                onClick={() => handleChange(interest.attributes.name)}
+                                    }`}
+                                onClick={() => handleChange({ id: interest.id, name: interest.attributes.name })}
                             >
                                 {interest.attributes.name}
                             </button>
