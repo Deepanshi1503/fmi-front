@@ -164,6 +164,7 @@ export const syncInvestorData = async (investorData, profileProgress) => {
                     };
                 })
             ),
+            step_progress: profileProgress || null,
         }
     };
 

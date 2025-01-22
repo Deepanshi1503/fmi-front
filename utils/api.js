@@ -100,6 +100,27 @@ export const fetchStats = async (userId, timeSpan = "7d", businessId = null) => 
     }
 };
 
+// for dashboard //
+export const fetchInvestorStats = async (userId, timeSpan = "7d", businessId = null) => {
+    try {
+        const queryParams = new URLSearchParams({
+            userId,
+            timeSpan,
+            ...(businessId && { businessId }), // Add businessId only if it exists
+        }).toString();
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/stats?${queryParams}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching stats:", error);
+        return { stats: [] }; // Return an empty stats array on error
+    }
+};
+
 // for the filters in the listing page //
 export const fetchFundingTypeOptions = async () => {
     try {

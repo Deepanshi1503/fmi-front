@@ -80,6 +80,15 @@ const ProfileStep = () => {
                                 })) || [],
                         };
                         localStorage.setItem("combineInvestorInfo", JSON.stringify(combineInvestorInfo));
+
+                        // Map and save step progress
+                        const profileProgress = {
+                            companyOverview: investorData.step_progress?.companyOverview || 0,
+                            investmentProfile: investorData.step_progress?.investmentProfile || 0,
+                            investments: investorData.step_progress?.investments || 0,
+                            founderTeam: investorData.step_progress?.founderTeam || 0,
+                        };
+                        localStorage.setItem("profileInvestorProgress", JSON.stringify(profileProgress));
                     }
                 } catch (error) {
                     console.error("Error fetching investor data:", error);
@@ -89,7 +98,7 @@ const ProfileStep = () => {
         };
 
         fetchInvestorData();
-    }, [setLoading]);
+    }, []);
 
     // useEffect(() => {
     //     // This runs every time the pathname changes

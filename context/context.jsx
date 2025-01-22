@@ -53,6 +53,26 @@ export const GlobalContextProvider = ({ children }) => {
         }
     }, [selectedBusiness, businesses])
 
+    //******************Investor Dashboard *********************//
+    // const [investor, setInvestor] = useState([]);
+    // useEffect(() => {
+    //     const fetchInvestor = async () => {
+    //         try {
+    //             const userId = JSON.parse(localStorage.getItem("userId"));
+    //             if (!userId) return;
+
+    //             const response = await axios.get(
+    //                 `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/investors?filters[user][id][$eq]=${userId}&populate=stats,step_progress` //fetch all the business
+    //             );
+    //             setBusinesses(response.data.data);
+    //         } catch (error) {
+    //             console.error("Error fetching businesses:", error);
+    //         }
+    //     };
+
+    //     fetchInvestor();
+    // }, []);
+
 
     //****************** Step up form for business *********************//
     const [activeStep, setActiveStep] = useState(null);
