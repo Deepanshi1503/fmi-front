@@ -1,16 +1,28 @@
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 const ProfileCard = ({ profile }) => {
     const [animatedCompletion, setAnimatedCompletion] = useState(0);
 
+    const router = useRouter();
+
+    const handleProfileClick = () => {
+        const investorId = profile.id;
+        if (investorId) {
+            localStorage.setItem('investorId', investorId);
+        }
+    };
+
     const calculateCompletion = () => {
         const stepProgress = profile.attributes.step_progress || {};
-        const totalSteps = 6
-        const totalCompletion = Object.values(stepProgress).reduce(
-            (sum, progress) => sum + progress,
-            0
-        );
-        return totalSteps > 0 ? totalCompletion / totalSteps : 0; // Average completion
+        const totalSteps = 4
+        let totalCompletion = 0;
+
+        Object.keys(stepProgress).forEach((step) => {
+            const progress = stepProgress[step].progress || 0;
+            totalCompletion += progress;
+        });
+        return totalSteps > 0 ? totalCompletion / totalSteps : 0;
     };
 
     const completion = calculateCompletion();
@@ -19,7 +31,7 @@ const ProfileCard = ({ profile }) => {
 
     useEffect(() => {
         let start = 0;
-        const increment = completion / 100; // Determines the step size
+        const increment = completion / 100;
         const animation = setInterval(() => {
             start += increment;
             if (start >= completion) {
@@ -27,7 +39,7 @@ const ProfileCard = ({ profile }) => {
                 start = completion; // Ensure it stops exactly at the target
             }
             setAnimatedCompletion(start);
-        }, 10); // Updates every 10ms for smooth animation
+        }, 10);
     }, [completion]);
 
     return (
@@ -36,9 +48,13 @@ const ProfileCard = ({ profile }) => {
                 <h3 className="text-[24px] font-medium text-[#181818]">
                     {profile.attributes.company_name}
                 </h3>
-                <button className="bg-[#E8F4FF] text-[#0966C3] text-[16px] px-8 py-2 rounded-full">
+                <a
+                    href="/profile-creation/investor" // Replace with your actual route
+                    onClick={handleProfileClick}
+                    className="bg-[#E8F4FF] text-[#0966C3] text-[16px] px-8 py-2 rounded-full"
+                >
                     Profile
-                </button>
+                </a>
             </div>
 
             {/* Conditional Layout */}
@@ -63,27 +79,28 @@ const ProfileCard = ({ profile }) => {
                 {/* Profile Sections (Visible Only if Incomplete) */}
                 {completion < 100 && profile?.attributes?.step_progress && (
                     <div className='space-y-4'>
-                        {Object.entries(profile.attributes.step_progress).map(([step, progress], idx) => {
+                        {Object.entries(profile.attributes.step_progress).map(([step, { progress }], idx) => {
                             // Skip the 'id' field
                             if (step === "id") return null;
 
                             // Map the step name to a custom label
                             const stepNameMap = {
-                                company_overview_progress: "Company Overview",
-                                product_services_progress: "Product & Services",
-                                founder_team_progress: "Founder & Team",
-                                market_competition_progress: "Market & Competition",
-                                financial_progress: "Financials",
-                                equity_fundraising_progress: "Equity Fundraising"
+                                founderTeam: "Founder & Team",
+                                investments: "Investments",
+                                companyOverview: "Company Detail",
+                                investmentProfile: "Overview",
                             };
 
                             // Get the custom name from the map, or fallback to a formatted version of the step key
                             const customStepName = stepNameMap[step] || step.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
 
+                            // Determine if the step is complete based on the progress value
+                            const isComplete = progress === 100;
+
                             return (
                                 <div key={idx} className="flex items-center text-[12px] font-medium text-[#00000099]">
                                     <span>
-                                        {progress === 100 ? (
+                                        {isComplete ? (
                                             <img src="/images/tick.png" alt="Tick" className="mr-2 h-3 w-3" />
                                         ) : (
                                             <img src="/images/cross.png" alt="Cross" className="mr-2 h-3 w-3" />
@@ -95,8 +112,6 @@ const ProfileCard = ({ profile }) => {
                         })}
                     </div>
                 )}
-
-
             </div>
 
             {/* Status Message */}
@@ -131,10 +146,12 @@ const ProfilesSection = ({ profiles }) => {
     }
 
     return (
-        <div className={`grid grid-cols-1 sm:grid-cols-2 gap-10 mt-8 mb-10`}>
-            {profiles.map((profile, index) => (
-                <ProfileCard key={index} profile={profile} />
-            ))}
+        <div className="flex justify-center items-center">
+            <div className={`gap-10 mt-8 mb-10 w-[700px]`}>
+                {profiles.map((profile, index) => (
+                    <ProfileCard key={index} profile={profile} />
+                ))}
+            </div>
         </div>
     );
 };

@@ -3,10 +3,10 @@ import Heading from './heading';
 import StatCard from './StatCard';
 import ProfileSection from './graphs';
 import { useGlobalContext } from '@/context/context';
-import { fetchStats } from '@/utils/api';
+import { fetchInvestorStats } from '@/utils/api';
 
 const Dashboard = () => {
-  const { businesses, filteredProfiles, selectedBusiness } = useGlobalContext();
+  const { investor, setInvestor } = useGlobalContext();
   const [statsData, setStatsData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,9 +15,9 @@ const Dashboard = () => {
       try {
         const userId = JSON.parse(localStorage.getItem("userId")); // Replace with the actual userId from context/auth
         const timeSpan = '7d'; // Adjust as needed
-        const businessId = selectedBusiness?.id || null;
+        const investorId =  null;
 
-        const response = await fetchStats(userId, timeSpan, businessId);
+        const response = await fetchInvestorStats(userId, timeSpan, investorId);
         setStatsData(response.stats || []);
       } catch (error) {
         console.error('Error loading stats:', error);
@@ -27,7 +27,7 @@ const Dashboard = () => {
     };
 
     loadStats();
-  }, [selectedBusiness]);
+  }, []);
 
   const stats = useMemo(() => {
     if (loading || statsData.length === 0) return [];
@@ -69,7 +69,7 @@ const Dashboard = () => {
 
   return (
     <div className="mx-60">
-      <Heading profiles={businesses} />
+      <Heading profiles={investor} />
 
       {/* Stats Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 mt-8">
@@ -86,7 +86,7 @@ const Dashboard = () => {
         ))}
       </div>
 
-      <ProfileSection profiles={filteredProfiles} />
+      <ProfileSection profiles={investor} />
     </div>
   );
 };

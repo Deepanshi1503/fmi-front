@@ -27,6 +27,7 @@ export const fetchBusinesses = async (filters = {}, sort = "") => {
 
         // Apply sorting
         if (sort) queryParams.append("sort", sort);
+        console.log("business queryparams", queryParams);
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/businesses?populate=business_image,pitch_deck,company_profile,product_services_detail,founder_detail.image,team_details.image,board_member_advisor_detail.image,global_market_share,current_market_share,financial_model_details.quarter_details,fundraising_status,fundraise_business_details,sale_business_details,step_progress,industry&${queryParams.toString()}`
         );
@@ -35,6 +36,75 @@ export const fetchBusinesses = async (filters = {}, sort = "") => {
         }
         const data = await response.json();
         return data;
+    } catch (error) {
+        console.error("Error fetching businesses:", error);
+        return { data: [] }; // Return an empty array on error
+    }
+};
+
+// for investor listing //
+export const fetchInvestorBusinesses = async (filters={}, sort="", page = 1, pageSize = 10) => {
+    console.log(filters);
+    try {
+        const queryParams = new URLSearchParams();
+        // // Apply filters dynamically
+        if (filters?.search) { queryParams.append('filters[company_name][$containsi]', filters.search); }
+        if (filters?.fundingInterest) {
+            filters?.fundingInterest.forEach(industryName => {
+                queryParams.append("filters[funding_interest][name][$in]", industryName);
+            });
+        }
+
+        // Sorting Logic: Convert UI values to Strapi-compatible sorting
+        const sortMappings = {
+            "newest":"year_of_establishment:asc",
+            "views":"investor_view:desc",
+            "search":"investor_search:desc",
+            "commitment-amount-low-to-high": "commitment_amount:asc",
+            "commitment-amount-high-to-low": "commitment_amount:desc",
+        };
+
+        if (sort && sortMappings[sort]) {
+            queryParams.append('sort', sortMappings[sort]);
+        }
+        
+        queryParams.append('pagination[page]', page);
+        queryParams.append('pagination[pageSize]', pageSize);
+
+        // if (filters.revenue.min) queryParams.append("filters[overall_revenue][$gte]", filters.revenue.min);
+        // if (filters.revenue.max) queryParams.append("filters[overall_revenue][$lte]", filters.revenue.max);
+        // if (filters.profit.min) queryParams.append("filters[overall_profile_loss][$gte]", filters.profit.min);
+        // if (filters.profit.max) queryParams.append("filters[overall_profile_loss][$lte]", filters.profit.max);
+        // if (filters.valuation.min) queryParams.append("filters[fundraise_business_details][valuation][$gte]", filters.valuation.min);
+        // if (filters.valuation.max) queryParams.append("filters[fundraise_business_details][valuation][$lte]", filters.valuation.max);
+        // if (filters.funding.length) {
+        //     filters.funding.forEach(fundingType => {
+        //         queryParams.append("filters[fundraise_business_details][type_of_funding][$in]", fundingType);
+        //     });
+        // }
+        // if (filters.industry.length) {
+        //     filters.industry.forEach(industryName => {
+        //         queryParams.append("filters[industry][name][$in]", industryName);
+        //     });
+        // }
+        // if (filters.region.length) queryParams.append("filters[country][$in]", filters.region.join(","));
+        // if (filters.employeeSize) queryParams.append("filters[workforce_range][$gte]", filters.employeeSize);
+
+        console.log("queryParams",queryParams);
+
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/investors?populate=*,funding_interest,preferred_sectors_of_interests,founder_team_detail.image,logo&${queryParams.toString()}`,
+            {
+                method: "GET",
+                cache: 'no-store',
+            },
+        );
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        // console.log(JSON.stringify(data,null,2));
+        return {data:data?.data, meta: data?.meta, total:data?.meta?.pagination?.total || 0};
     } catch (error) {
         console.error("Error fetching businesses:", error);
         return { data: [] }; // Return an empty array on error
@@ -109,7 +179,7 @@ export const fetchInvestorStats = async (userId, timeSpan = "7d", businessId = n
             ...(businessId && { businessId }), // Add businessId only if it exists
         }).toString();
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/stats?${queryParams}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/investor-stats?${queryParams}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

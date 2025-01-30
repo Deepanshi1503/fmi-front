@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -16,6 +17,7 @@ import Loader from "@/components/loader";
 const ProfileStep = () => {
     const { investorActiveStep, setInvestorActiveStep, loading, setLoading, isInvestorFormDirty, setIsInvestorFormDirty } = useGlobalContext();
     const [targetStep, setTargetStep] = useState(null);
+    const router = useRouter();
     const pathname = usePathname();
 
     useEffect(() => {
@@ -89,6 +91,7 @@ const ProfileStep = () => {
                             founderTeam: investorData.step_progress?.founderTeam || 0,
                         };
                         localStorage.setItem("profileInvestorProgress", JSON.stringify(profileProgress));
+                        router.push(`/profile-creation/investor?${investorId}`); 
                     }
                 } catch (error) {
                     console.error("Error fetching investor data:", error);

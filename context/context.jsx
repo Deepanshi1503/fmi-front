@@ -1,5 +1,6 @@
 "use client";
 import { createContext, useContext, useState, useEffect } from "react";
+import { fetchBusinesses } from "@/utils/api";
 import axios from 'axios';
 // import useSWR from "swr";
 // import { useSearchParams } from "next/navigation";
@@ -54,24 +55,24 @@ export const GlobalContextProvider = ({ children }) => {
     }, [selectedBusiness, businesses])
 
     //******************Investor Dashboard *********************//
-    // const [investor, setInvestor] = useState([]);
-    // useEffect(() => {
-    //     const fetchInvestor = async () => {
-    //         try {
-    //             const userId = JSON.parse(localStorage.getItem("userId"));
-    //             if (!userId) return;
+    const [investor, setInvestor] = useState([]);
+    useEffect(() => {
+        const fetchInvestor = async () => {
+            try {
+                const userId = JSON.parse(localStorage.getItem("userId"));
+                if (!userId) return;
 
-    //             const response = await axios.get(
-    //                 `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/investors?filters[user][id][$eq]=${userId}&populate=stats,step_progress` //fetch all the business
-    //             );
-    //             setBusinesses(response.data.data);
-    //         } catch (error) {
-    //             console.error("Error fetching businesses:", error);
-    //         }
-    //     };
+                const response = await axios.get(
+                    `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/investors?filters[user][id][$eq]=${userId}&populate=*` //fetch all the business
+                );
+                setInvestor(response.data.data);
+            } catch (error) {
+                console.error("Error fetching businesses:", error);
+            }
+        };
 
-    //     fetchInvestor();
-    // }, []);
+        fetchInvestor();
+    }, []);
 
 
     //****************** Step up form for business *********************//
@@ -145,6 +146,9 @@ export const GlobalContextProvider = ({ children }) => {
     //****************** Step up form for business 6th step equity and fundraising *********************//
     const [isSaleListing, setIsSaleListing] = useState(true); // Default to Fundraise Listing
 
+
+    //****************** Investor Listing page *********************//
+
     return (
         <GlobalContext.Provider
             value={{
@@ -171,7 +175,9 @@ export const GlobalContextProvider = ({ children }) => {
                 investorActiveStep,
                 setInvestorActiveStep,
                 isInvestorFormDirty,
-                setIsInvestorFormDirty
+                setIsInvestorFormDirty,
+                investor,
+                setInvestor,
             }}
         >
             {children}
