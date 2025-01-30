@@ -25,11 +25,6 @@ const Filter = () => {
         search: "",
         fundingInterest: [],
         // revenue: { min: "", max: "" },
-        // profit: { min: "", max: "" },
-        // funding: [],
-        // industry: [],
-        // region: [],
-        // employeeSize: ""
     };
 
     const [filters, setFilters] = useState(initialFilters);
