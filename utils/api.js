@@ -43,24 +43,47 @@ export const fetchBusinesses = async (filters = {}, sort = "") => {
 };
 
 // for investor listing //
-export const fetchInvestorBusinesses = async (filters={}, sort="", page = 1, pageSize = 10) => {
+export const fetchInvestorBusinesses = async (filters = {}, sort = "", page = 1, pageSize = 10) => {
     console.log(filters);
     try {
+        // Fetch countries and cities data
+        const { countries, cities } = await fetchCountryCityOptions();
+
         const queryParams = new URLSearchParams();
-        // // Apply filters dynamically
+        // Apply filters dynamically
         if (filters?.search) { queryParams.append('filters[company_name][$containsi]', filters.search); }
-        if (filters?.fundingInterest?.length) {
+        if (filters?.fundingInterest) {
             queryParams.append(
-                "filters[funding_interest][name][$in]", 
-                JSON.stringify(filters.fundingInterest)
+                "filters[funding_interests][name][$in]", 
+                filters.fundingInterest
             );
+        }
+        if (filters?.fundingType?.length) {
+            filters.fundingType.forEach(type => {
+                queryParams.append("filters[preferred_investment_type][$in]", type);
+            });
+        }
+        if (filters?.fundingAmount) {
+            const [min, max] = filters.fundingAmount.split('-').map(Number);
+            if (!isNaN(min)) queryParams.append("filters[commitment_amount][$gte]", min);
+            if (!isNaN(max)) queryParams.append("filters[commitment_amount][$lte]", max);
+        }
+        if (filters?.region) {
+            const isCity = cities.some(city => city.name.toLowerCase() === filters.region.toLowerCase());
+            const isCountry = countries.some(country => country.name.toLowerCase() === filters.region.toLowerCase());
+            
+            if (isCity) {
+                queryParams.append("filters[city][name][$in]", filters.region);
+            } else if (isCountry) {
+                queryParams.append("filters[country][name][$in]", filters.region);
+            }
         }
 
         // Sorting Logic: Convert UI values to Strapi-compatible sorting
         const sortMappings = {
-            "newest":"year_of_establishment:asc",
-            "views":"investor_view:desc",
-            "search":"investor_search:desc",
+            "newest": "year_of_establishment:asc",
+            "views": "investor_view:desc",
+            "search": "investor_search:desc",
             "commitment-amount-low-to-high": "commitment_amount:asc",
             "commitment-amount-high-to-low": "commitment_amount:desc",
         };
@@ -68,14 +91,14 @@ export const fetchInvestorBusinesses = async (filters={}, sort="", page = 1, pag
         if (sort && sortMappings[sort]) {
             queryParams.append('sort', sortMappings[sort]);
         }
-        
+
         queryParams.append('pagination[page]', page);
         queryParams.append('pagination[pageSize]', pageSize);
 
-        console.log("queryParams",queryParams);
+        console.log("queryParams", queryParams);
 
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/investors?populate=*,funding_interest,preferred_sectors_of_interests,founder_team_detail.image,logo&${queryParams.toString()}`,
+            `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/investors?populate=*,country,city,funding_interest,preferred_sectors_of_interests,founder_team_detail.image,logo&${queryParams.toString()}`,
             {
                 method: "GET",
                 cache: 'no-store',
@@ -86,12 +109,70 @@ export const fetchInvestorBusinesses = async (filters={}, sort="", page = 1, pag
         }
         const data = await response.json();
         // console.log(JSON.stringify(data,null,2));
-        return {data:data?.data, meta: data?.meta, total:data?.meta?.pagination?.total || 0};
+        return { data: data?.data, meta: data?.meta, total: data?.meta?.pagination?.total || 0 };
     } catch (error) {
         console.error("Error fetching businesses:", error);
         return { data: [] }; // Return an empty array on error
     }
 };
+
+// export const fetchInvestorBusinesses = async (filters = {}, sort = "", page = 1, pageSize = 10) => {
+//     try {
+//         let queryParams = [];
+
+//         // Apply search filter
+//         if (filters?.search) {
+//             queryParams.push(`filters[company_name][$containsi]=${encodeURIComponent(filters.search)}`);
+//         }
+
+//         // Apply fundingInterest filter
+//         if (filters?.fundingInterest?.length) {
+//             const fundingInterestQuery = `filters[funding_interest][name][$in]=${filters.fundingInterest.map(encodeURIComponent).join(",")}`;
+//             queryParams.push(fundingInterestQuery);
+//         }
+
+//         // Sorting logic
+//         const sortMappings = {
+//             "newest": "year_of_establishment:asc",
+//             "views": "investor_view:desc",
+//             "search": "investor_search:desc",
+//             "commitment-amount-low-to-high": "commitment_amount:asc",
+//             "commitment-amount-high-to-low": "commitment_amount:desc",
+//         };
+
+//         if (sort && sortMappings[sort]) {
+//             queryParams.push(`sort=${encodeURIComponent(sortMappings[sort])}`);
+//         }
+
+//         // Pagination
+//         queryParams.push(`pagination[page]=${page}`);
+//         queryParams.push(`pagination[pageSize]=${pageSize}`);
+
+//         // Final query string
+//         const queryString = queryParams.join("&");
+
+//         console.log("Final Query String:", queryString);
+
+//         const response = await fetch(
+//             `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/investors?populate=*,funding_interest,preferred_sectors_of_interests,founder_team_detail.image,logo&${queryString}`,
+//             {
+//                 method: "GET",
+//                 cache: 'no-store',
+//             },
+//         );
+
+//         if (!response.ok) {
+//             throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+
+//         const data = await response.json();
+//         return { data: data?.data, meta: data?.meta, total: data?.meta?.pagination?.total || 0 };
+//     } catch (error) {
+//         console.error("Error fetching businesses:", error);
+//         return { data: [] };
+//     }
+// };
+
 
 // detail page according to id detail page//
 export const fetchBusinessById = async (id) => {
@@ -268,5 +349,29 @@ export const fetchWorkforceRanges = async () => {
     } catch (err) {
         console.error("Error fetching workforce range options:", err);
         setError("Failed to load workforce range options.");
+    }
+};
+
+export const fetchCountryCityOptions = async () => {
+    try {
+        const [countriesResponse, citiesResponse] = await Promise.all([
+            axios.get("http://localhost:1337/api/countries"),
+            axios.get("http://localhost:1337/api/cities"),
+        ]);
+
+        const countries = countriesResponse.data?.data?.map((country) => ({
+            id: country.id,
+            name: country.attributes.name,
+        })) || [];
+
+        const cities = citiesResponse.data?.data?.map((city) => ({
+            id: city.id,
+            name: city.attributes.name,
+        })) || [];
+
+        return { countries, cities };
+    } catch (err) {
+        console.error("Error fetching country and city options:", err);
+        return { countries: [], cities: [] };
     }
 };

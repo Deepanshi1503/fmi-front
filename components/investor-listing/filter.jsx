@@ -2,7 +2,9 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { fetchIndustryOptions } from "@/utils/api";
+import { fetchIndustryOptions, fetchCountryCityOptions } from "@/utils/api";
+import { fetchInvestorTypeOptions } from "@/utils/validation-investor-profile-creation";
+import { Range } from "react-range";
 
 const CollapsibleSection = ({ title, isCollapsed, toggleSection, children }) => (
     <div>
@@ -21,28 +23,53 @@ const Filter = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
 
+    const MIN = 1;
+    const MAX = 10000;
+
     const initialFilters = {
         search: "",
-        fundingInterest: [],
-        // revenue: { min: "", max: "" },
+        fundingInterest: "",
+        fundingType: [],
+        fundingAmount: [1, 10000],
+        region:""
     };
 
     const [filters, setFilters] = useState(initialFilters);
 
-    const [showAllFundingInterestOptions, setShowAllFundingInterestOptions] = useState(false);
+    let [showAllFundingInterestOptions, setShowAllFundingInterestOptions] = useState(false);
+    let [showFundingTypeOptions, setShowFundingTypeOptions] = useState(false);
+    let [showCountryCityOptions, setShowCountryCityOptions] = useState(false);
 
-    const [fundingInterestOptions, setFundingInterestOptions] = useState([]);
+    let [fundingInterestOptions, setFundingInterestOptions] = useState([]);
+    let [fundingTypeOptions, setFundingTypeOptions] = useState([]);
+    let [countryCityOptions, setCountryCityOptions] = useState([]);
 
     // Fetch options on mount
     useEffect(() => {
         const fetchData = async () => {
             setFundingInterestOptions(await fetchIndustryOptions());
+            const preferredInvestmentTypeData = await fetchInvestorTypeOptions();
+            const countryCityData = await fetchCountryCityOptions();
+
+            const combinedCountryCity = [];
+
+            const countries = Array.from(new Set(countryCityData.countries.map(item => item.name)));
+            combinedCountryCity.push(...countries);
+
+            const cities = countryCityData.cities.map(item => item.name);
+            combinedCountryCity.push(...cities);
+
+            setCountryCityOptions(combinedCountryCity);
+            setFundingTypeOptions(preferredInvestmentTypeData.option2.preferred_investment_type.enum);
         };
         fetchData();
     }, []);
 
     const [collapsedSections, setCollapsedSections] = useState({
         fundingInterest: false,
+        fundingType: true,
+        fundingAmount: true,
+        region:true,
     });
 
     const toggleSection = (section) => {
@@ -75,21 +102,18 @@ const Filter = () => {
     };
     console.log("filters:", filters);
 
+    const handleFundingChange = (values) => {
+        setFilters((prev) => ({ ...prev, fundingAmount: values }));
+    };
+
     useEffect(() => {
         let params = new URLSearchParams(searchParams.toString());
 
         filters.search ? params.set("search", filters.search) : params.delete("search");
-
-        if (filters.fundingInterest.length > 0) {
-            const formattedInterests = filters.fundingInterest.map((interest) =>
-                interest.toLowerCase().replace(/\s*\/\s*/g, "-").replace(/\s+/g, "-")
-            );
-
-            params.set("funding-interest", formattedInterests.join("_"));
-        } else {
-            params.delete("funding-interest");
-        }
-
+        filters.fundingInterest ? params.set("fundingInterest", filters.fundingInterest) : params.delete("fundingInterest");
+        filters.fundingType.length > 0 ? params.set("fundingType", filters.fundingType.join("_")) : params.delete("fundingType");
+        filters.fundingAmount ? params.set("fundingAmount", filters.fundingAmount.join("-")) : params.delete("fundingAmount");
+        filters.region ? params.set("region", filters.region) : params.delete("region");
 
         router.push(`/investor-listing?${params.toString()}`, { scroll: false });
     }, [filters, router]);
@@ -129,7 +153,7 @@ const Filter = () => {
                         {fundingInterestOptions.slice(0, showAllFundingInterestOptions ? fundingInterestOptions.length : 2).map((option, index) => (
                             <label key={index} className="flex items-center space-x-2 text-sm">
                                 <input
-                                    type="checkbox"
+                                    type="radio"
                                     name="fundingInterest"
                                     value={option}
                                     checked={filters.fundingInterest.includes(option)}
@@ -150,129 +174,118 @@ const Filter = () => {
                     )}
                 </CollapsibleSection>
 
-                {/* <CollapsibleSection
-                    title="Financial Metrics"
-                    isCollapsed={collapsedSections.financialMetrics}
-                    toggleSection={() => toggleSection("financialMetrics")}
-                >
-                    <p>Financial Metrics Content</p>
-                </CollapsibleSection> */}
+                <div className="border-b-[1px] border-[#18181833]"></div>
 
-                {/* Financial Metrics */}
-                {/* <CollapsibleSection
-                    title="Financial Metrics"
-                    isCollapsed={collapsedSections.financialMetrics}
-                    toggleSection={() => toggleSection("financialMetrics")}
-                >
-                    {["revenue", "profit", "valuation"].map((key) => (
-                        <div key={key} className="mb-3">
-                            <label className="text-[20px] font-medium capitalize">{key}</label>
-                            <div className="flex items-center gap-2 mt-1">
-                                <input
-                                    type="number"
-                                    name="min"
-                                    placeholder="$Min"
-                                    value={filters[key].min}
-                                    onChange={(e) => handleInputChange(e, key)}
-                                    className="w-1/2 px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600 text-sm"
-                                />
-                                <span className="text-[#363638] mt-2">-</span>
-                                <input
-                                    type="number"
-                                    name="max"
-                                    placeholder="$Max"
-                                    value={filters[key].max}
-                                    onChange={(e) => handleInputChange(e, key)}
-                                    className="w-1/2 px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600 text-sm"
-                                />
-                            </div>
-                        </div>
-                    ))}
-                </CollapsibleSection> */}
-
-                {/* <div className="border-b-[1px] border-[#18181833]"></div> */}
-
-                {/* Funding */}
-                {/* <CollapsibleSection
-                    title="Type of Funding"
-                    isCollapsed={collapsedSections.funding}
-                    toggleSection={() => toggleSection("funding")}
+                {/* Investor Type */}
+                <CollapsibleSection
+                    title="Investor Type"
+                    isCollapsed={collapsedSections.fundingType}
+                    toggleSection={() => toggleSection("fundingType")}
                 >
                     <div className="mt-2 flex flex-col gap-y-3">
-                        {fundingOptions.slice(0, showAllFunding ? fundingOptions.length : 2).map((option, index) => (
+                        {fundingTypeOptions.slice(0, showFundingTypeOptions ? fundingTypeOptions.length : 2).map((option, index) => (
                             <label key={index} className="flex items-center space-x-2 text-sm">
                                 <input
                                     type="checkbox"
-                                    name="funding"
+                                    name="fundingType"
                                     value={option}
-                                    checked={filters.funding.includes(option)}
-                                    onChange={(e) => handleInputChange(e, "funding")}
+                                    checked={filters.fundingType.includes(option)}
+                                    onChange={(e) => handleInputChange(e, "fundingType")}
                                     className="form-checkbox h-[20px] w-[20px] text-[#181818]"
                                 />
                                 <span className="text-[18px]">{option}</span>
                             </label>
                         ))}
                     </div>
-                    {fundingOptions.length > 2 && (
+                    {fundingTypeOptions.length > 2 && (
                         <p
-                            onClick={() => setShowAllFunding((prev) => !prev)}
+                            onClick={() => setShowFundingTypeOptions((prev) => !prev)}
                             className="text-[#0966C3] text-[18px] mt-2 cursor-pointer"
                         >
-                            {showAllFunding ? "See less options" : "See all options"}
+                            {showFundingTypeOptions ? "See less options" : "See all options"}
                         </p>
                     )}
-                </CollapsibleSection> */}
+                </CollapsibleSection>
 
-                {/* <div className="border-b-[1px] border-[#18181833]"></div> */}
+                <div className="border-b-[1px] border-[#18181833]"></div>
 
-                {/* <div className="border-b-[1px] border-[#18181833]"></div> */}
-
-                {/* Employee Size */}
-                {/* <CollapsibleSection
-                    title="Employee Size"
-                    isCollapsed={collapsedSections.employeeSize}
-                    toggleSection={() => toggleSection("employeeSize")}
+                {/* Funding Amount Filter */}
+                <CollapsibleSection
+                    title="Funding Amount"
+                    isCollapsed={collapsedSections.fundingAmount}
+                    toggleSection={() => toggleSection("fundingAmount")}
                 >
                     <div className="mt-2">
-                        <input
-                            type="range"
-                            name="employeeSize"
-                            min="1"
-                            max="1000"
-                            value={filters.employeeSize}
-                            onChange={(e) => handleInputChange(e)}  // When the slider is moved
-                            className="w-full"
-                            onMouseDown={() => setIsDragging(true)}  // When the user starts dragging
-                            onMouseUp={() => setIsDragging(false)}  // When the user stops dragging
-                        />
-                        <div className="text-sm text-gray-600">{filters.employeeSize}+</div>
-                    </div>
-                </CollapsibleSection> */}
+                        <p className="text-[18px] mb-2">
+                            {filters.fundingAmount[0]} - {filters.fundingAmount[1]} Cr
+                        </p>
+                        <div className="relative w-full px-2 my-2 flex flex-col items-center">
+                            <Range
+                                step={1}
+                                min={MIN}
+                                max={MAX}
+                                values={filters.fundingAmount}
+                                onChange={handleFundingChange}
+                                renderTrack={({ props, children }) => {
+                                    const minValue = filters.fundingAmount[0];
+                                    const maxValue = filters.fundingAmount[1];
 
-                {/* <div className="border-b-[1px] border-[#18181833]"></div> */}
+                                    return (
+                                        <div
+                                            {...props}
+                                            className="w-full h-2 bg-gray-300 rounded-lg relative"
+                                            style={{
+                                                background: `linear-gradient(to right, #d1d5db 0%, #d1d5db ${(minValue - MIN) / (MAX - MIN) * 100}%, #0966C3 ${(minValue - MIN) / (MAX - MIN) * 100}%, #0966C3 ${(maxValue - MIN) / (MAX - MIN) * 100}%, #d1d5db ${(maxValue - MIN) / (MAX - MIN) * 100}%, #d1d5db 100%)`,
+                                            }}
+                                        >
+                                            {children}
+                                        </div>
+                                    );
+                                }}
+                                renderThumb={({ props }) => (
+                                    <div
+                                        {...props}
+                                        className="h-5 w-5 bg-[#0966C3] rounded-full cursor-pointer border-2 border-white shadow-md"
+                                    />
+                                )}
+                            />
+
+                        </div>
+                    </div>
+                </CollapsibleSection>
+
+                <div className="border-b-[1px] border-[#18181833]"></div>
 
                 {/* Region */}
-                {/* <CollapsibleSection
+                <CollapsibleSection
                     title="Region"
                     isCollapsed={collapsedSections.region}
                     toggleSection={() => toggleSection("region")}
                 >
-                    <div className="mt-2 flex flex-col gap-y-3 overflow-y-scroll max-h-[200px]">
-                        {countryOptions.map((option, index) => (
+                    <div className="mt-2 flex flex-col gap-y-3">
+                        {countryCityOptions.slice(0, showCountryCityOptions ? countryCityOptions.length : 2).map((option, index) => (
                             <label key={index} className="flex items-center space-x-2 text-sm">
                                 <input
-                                    type="checkbox"
+                                    type="radio"
                                     name="region"
-                                    value={option.value}
-                                    checked={filters.region.includes(option.value)}
+                                    value={option}
+                                    checked={filters.region.includes(option)}
                                     onChange={(e) => handleInputChange(e, "region")}
                                     className="form-checkbox h-[20px] w-[20px] text-[#181818]"
                                 />
-                                <span className="text-[18px]">{option.label}</span>
+                                <span className="text-[18px]">{option}</span>
                             </label>
                         ))}
                     </div>
-                </CollapsibleSection> */}
+                    {countryCityOptions.length > 2 && (
+                        <p
+                            onClick={() => setShowCountryCityOptions((prev) => !prev)}
+                            className="text-[#0966C3] text-[18px] mt-2 cursor-pointer"
+                        >
+                            {showCountryCityOptions ? "See less options" : "See all options"}
+                        </p>
+                    )}
+                </CollapsibleSection>
 
                 <div className="border-b-[1px] border-[#18181833]"></div>
             </div >

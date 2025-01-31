@@ -9,14 +9,25 @@ import InfiniteScroll from "./infinite-scroll";
 
 export const dynamic = 'force-dynamic';
 
-export default async function Listing({ searchParams,searchParamsData }) {
-    console.log("searchParamsData",searchParamsData);
-    
+export default async function Listing({ searchParams, searchParamsData }) {
+    console.log("searchParamsData", searchParamsData);
+
     // Fetch data directly in the component for Next.js 14
     const filters = {
         search: searchParamsData?.search,
+        fundingInterest: searchParamsData?.fundingInterest,
+        fundingType: searchParamsData?.fundingType
+            ?.split("_")
+            .map(value =>
+                decodeURIComponent(value)
+                    .replace(/\s*\+\s*/g, " / ")
+            ),
+        fundingAmount: searchParamsData?.fundingAmount,
+        region : searchParamsData?.region,
     };
     const sort = searchParamsData?.sort || "";
+
+    console.log("filters abc: ", filters);
 
     if (searchParams) {
         Object.entries(searchParams).forEach(([key, value]) => {

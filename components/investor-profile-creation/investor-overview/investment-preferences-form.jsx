@@ -39,7 +39,6 @@ const InvestmentPreferences = ({ onCompletion }) => {
                 id: option.value,
                 name: option.label,
             })),
-            // [field]: selectedOptions.map(option => option.label),  // store selected values in array
         }));
     };
 
