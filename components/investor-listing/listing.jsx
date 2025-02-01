@@ -9,10 +9,10 @@ import InfiniteScroll from "./infinite-scroll";
 
 export const dynamic = 'force-dynamic';
 
-export default async function Listing({ searchParams, searchParamsData }) {
+export default async function Listing({ searchParamsData, slugData }) {
     console.log("searchParamsData", searchParamsData);
+    console.log("slugdata abcdefgh",slugData);
 
-    // Fetch data directly in the component for Next.js 14
     const filters = {
         search: searchParamsData?.search,
         fundingInterest: searchParamsData?.fundingInterest,
@@ -29,15 +29,7 @@ export default async function Listing({ searchParams, searchParamsData }) {
 
     console.log("filters abc: ", filters);
 
-    if (searchParams) {
-        Object.entries(searchParams).forEach(([key, value]) => {
-            if (typeof value === 'string') {
-                filters[key] = value;
-            }
-        });
-    }
-
-    const { data: initialBusinesses = [], total = 0 } = await fetchInvestorBusinesses(filters, sort, 1);
+    const { data: initialBusinesses = [], total = 0 } = await fetchInvestorBusinesses({...filters, slug : slugData}, sort, 1);
 
     return (
         <>
@@ -49,7 +41,7 @@ export default async function Listing({ searchParams, searchParamsData }) {
                     top: "0",
                     alignSelf: "flex-start",
                 }}>
-                    <Filter />
+                    <Filter initialSlugData={slugData}/>
                 </div>
                 <div className="w-[75%] mb-8">
                     {/* Results header section */}

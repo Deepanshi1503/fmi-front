@@ -1,4 +1,5 @@
 import axios from 'axios';
+import slugify from "slugify";
 
 // for listing //
 export const fetchBusinesses = async (filters = {}, sort = "") => {
@@ -42,9 +43,30 @@ export const fetchBusinesses = async (filters = {}, sort = "") => {
     }
 };
 
+// investor url generation //
+export function generateInvestorListingURL(category, region = undefined) {
+    const actualRegion = region;
+
+    if (category && actualRegion) {
+        return `/${slugify(category || "", {
+            lower: true,
+        })}-investors-in-${slugify(actualRegion || "", {
+            lower: true,
+        })}`;
+    } else if (category) {
+        return `/${slugify(category || "", { lower: true })}-investors`;
+    } else if (actualRegion) {
+        return `/investors-in-${slugify(actualRegion || "", { lower: true })}`;
+    } else {
+        return `/investors`;
+    }
+}
+
 // for investor listing //
 export const fetchInvestorBusinesses = async (filters = {}, sort = "", page = 1, pageSize = 10) => {
-    console.log(filters);
+    console.log("inside api ",filters);
+    const type = filters.slug.investors[0];
+     
     try {
         // Fetch countries and cities data
         const { countries, cities } = await fetchCountryCityOptions();
@@ -54,7 +76,7 @@ export const fetchInvestorBusinesses = async (filters = {}, sort = "", page = 1,
         if (filters?.search) { queryParams.append('filters[company_name][$containsi]', filters.search); }
         if (filters?.fundingInterest) {
             queryParams.append(
-                "filters[funding_interests][name][$in]", 
+                "filters[funding_interests][name][$in]",
                 filters.fundingInterest
             );
         }
@@ -71,7 +93,7 @@ export const fetchInvestorBusinesses = async (filters = {}, sort = "", page = 1,
         if (filters?.region) {
             const isCity = cities.some(city => city.name.toLowerCase() === filters.region.toLowerCase());
             const isCountry = countries.some(country => country.name.toLowerCase() === filters.region.toLowerCase());
-            
+
             if (isCity) {
                 queryParams.append("filters[city][name][$in]", filters.region);
             } else if (isCountry) {

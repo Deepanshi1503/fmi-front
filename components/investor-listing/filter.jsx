@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { fetchIndustryOptions, fetchCountryCityOptions } from "@/utils/api";
+import { fetchIndustryOptions, fetchCountryCityOptions, generateInvestorListingURL } from "@/utils/api";
 import { fetchInvestorTypeOptions } from "@/utils/validation-investor-profile-creation";
 import { Range } from "react-range";
 
@@ -19,22 +19,48 @@ const CollapsibleSection = ({ title, isCollapsed, toggleSection, children }) => 
     </div>
 );
 
-const Filter = () => {
+const Filter = ({initialSlugData}) => {
     const router = useRouter();
     const searchParams = useSearchParams();
 
     const MIN = 1;
     const MAX = 10000;
 
+    // Parse slug data to extract fundingInterest and region
+    const parseSlugData = (slugData) => {
+        if (!slugData || !slugData["investors"]) return { fundingInterest: "", region: "" };
+        
+        const slug = slugData["investors"][0];
+        let fundingInterest = "";
+        let region = "";
+
+        if (slug.includes("-investors-in-")) {
+            const parts = slug.split("-investors-in-");
+            fundingInterest = parts[0].replace(/-/g, " ");
+            region = parts[1].replace(/-/g, " ");
+        } else if (slug.includes("-investors")) {
+            fundingInterest = slug.replace(/-investors$/, "").replace(/-/g, " ");
+        } else if (slug.includes("investors-in-")) {
+            region = slug.replace(/^investors-in-/, "").replace(/-/g, " ");
+        }
+
+        return { fundingInterest, region };
+    };
+
+    // Get initial values from both URL params and slug
+    const slugValues = parseSlugData(initialSlugData);
+    console.log("slugvalue", slugValues);
+
     const initialFilters = {
-        search: "",
-        fundingInterest: "",
-        fundingType: [],
-        fundingAmount: [1, 10000],
-        region:""
+        search: searchParams.get("search") || "",
+        fundingInterest: slugValues.fundingInterest || "",
+        fundingType: searchParams.get("fundingType")?.split("_") || [],
+        fundingAmount: searchParams.get("fundingAmount")?.split("-").map(Number) || [1, 10000],
+        region: slugValues.region || ""
     };
 
     const [filters, setFilters] = useState(initialFilters);
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
 
     let [showAllFundingInterestOptions, setShowAllFundingInterestOptions] = useState(false);
     let [showFundingTypeOptions, setShowFundingTypeOptions] = useState(false);
@@ -69,7 +95,7 @@ const Filter = () => {
         fundingInterest: false,
         fundingType: true,
         fundingAmount: true,
-        region:true,
+        region: true,
     });
 
     const toggleSection = (section) => {
@@ -81,25 +107,14 @@ const Filter = () => {
 
     const handleInputChange = (e, key) => {
         const { value, checked } = e.target;
-        setFilters((prev) => {
-            // Handle multi-select fields (arrays)
-            if (Array.isArray(prev[key])) {
-                const updatedField = checked
-                    ? [...prev[key], value]
-                    : prev[key].filter((item) => item !== value);
-                return {
-                    ...prev,
-                    [key]: updatedField,
-                };
-            }
-
-            // Default fallback for simple fields
-            return {
-                ...prev,
-                [key]: value,
-            };
-        });
+        setFilters((prev) => ({
+            ...prev,
+            [key]: Array.isArray(prev[key])
+                ? checked ? [...prev[key], value] : prev[key].filter((item) => item !== value)
+                : value,
+        }));
     };
+
     console.log("filters:", filters);
 
     const handleFundingChange = (values) => {
@@ -107,25 +122,49 @@ const Filter = () => {
     };
 
     useEffect(() => {
-        let params = new URLSearchParams(searchParams.toString());
+        if(isInitialLoad){
+            setIsInitialLoad(false);
+            return;
+        }
 
-        filters.search ? params.set("search", filters.search) : params.delete("search");
-        filters.fundingInterest ? params.set("fundingInterest", filters.fundingInterest) : params.delete("fundingInterest");
-        filters.fundingType.length > 0 ? params.set("fundingType", filters.fundingType.join("_")) : params.delete("fundingType");
-        filters.fundingAmount ? params.set("fundingAmount", filters.fundingAmount.join("-")) : params.delete("fundingAmount");
-        filters.region ? params.set("region", filters.region) : params.delete("region");
+        const { fundingInterest, region, fundingType, fundingAmount, search } = filters;
 
-        router.push(`/investor-listing?${params.toString()}`, { scroll: false });
-    }, [filters, router]);
+        // Generate dynamic route
+        const dynamicRoute = generateInvestorListingURL(fundingInterest, region);
+
+        // Create query params
+        const params = new URLSearchParams();
+
+        if (search) params.set("search", search);
+        if (fundingType.length > 0) params.set("fundingType", fundingType.join("_"));
+        if (fundingAmount && !isNaN(fundingAmount[0])) {
+            params.set("fundingAmount", fundingAmount.join("-"));
+        }
+
+        // Construct the final URL
+        const queryString = params.toString();
+        const newUrl = `${dynamicRoute}${queryString ? `?${queryString}` : ''}`;
+
+        // Use push to update the URL and trigger a page refresh
+        router.push(newUrl);
+    }, [filters, router, isInitialLoad]);
+
 
     const handleClearFilters = () => {
-        setFilters(initialFilters);
+        setFilters({
+            search: "",
+            fundingInterest: "",
+            fundingType: [],
+            fundingAmount: [1, 10000],
+            region: ""
+        });
+        router.push('/investor-listing');
     };
 
     return (
         <div className="w-full">
             <div className="flex justify-between items-center mb-2">
-                <h3 className="text-[25px] font-medium">Filter</h3>
+                <h3 className="text-[25px] font-medium" >Filter</h3>
                 <button onClick={handleClearFilters} className="text-[16px] text-[#0A66C2] focus:outline-none">
                     Clear
                 </button>
