@@ -33,19 +33,27 @@ const Filter = ({initialSlugData}) => {
         const slug = slugData["investors"][0];
         let fundingInterest = "";
         let region = "";
-
+    
+        // Helper function to capitalize words properly
+        const capitalizeWords = (str) => {
+            return str
+                .split(" ")
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join(" ");
+        };
+    
         if (slug.includes("-investors-in-")) {
             const parts = slug.split("-investors-in-");
-            fundingInterest = parts[0].replace(/-/g, " ");
-            region = parts[1].replace(/-/g, " ");
+            fundingInterest = capitalizeWords(parts[0].replace(/-/g, " "));
+            region = capitalizeWords(parts[1].replace(/-/g, " "));
         } else if (slug.includes("-investors")) {
-            fundingInterest = slug.replace(/-investors$/, "").replace(/-/g, " ");
+            fundingInterest = capitalizeWords(slug.replace(/-investors$/, "").replace(/-/g, " "));
         } else if (slug.includes("investors-in-")) {
-            region = slug.replace(/^investors-in-/, "").replace(/-/g, " ");
+            region = capitalizeWords(slug.replace(/^investors-in-/, "").replace(/-/g, " "));
         }
-
+    
         return { fundingInterest, region };
-    };
+    };    
 
     // Get initial values from both URL params and slug
     const slugValues = parseSlugData(initialSlugData);

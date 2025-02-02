@@ -10,12 +10,51 @@ import InfiniteScroll from "./infinite-scroll";
 export const dynamic = 'force-dynamic';
 
 export default async function Listing({ searchParamsData, slugData }) {
-    console.log("searchParamsData", searchParamsData);
-    console.log("slugdata abcdefgh",slugData);
+    // Parse slug data to extract fundingInterest and region
+    const parseSlugData = (slugData) => {
+        if (!slugData || !slugData["investors"]) return { fundingInterest: "", region: "" };
+        
+        const slug = slugData["investors"][0];
+        let fundingInterest = "";
+        let region = "";
+    
+        // Helper function to capitalize words
+        const capitalizeWords = (str) => {
+            return str
+                .split(" ")
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join(" ");
+        };
+    
+        if (slug.includes("-investors-in-")) {
+            const parts = slug.split("-investors-in-");
+            fundingInterest = parts[0]
+                .split("-")
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" / ");
+            // Capitalize region
+            region = capitalizeWords(parts[1].replace(/-/g, " "));
+        } else if (slug.includes("-investors")) {
+            fundingInterest = slug
+                .replace(/-investors$/, "")
+                .split("-")
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" / ");
+        } else if (slug.includes("investors-in-")) {
+            // Capitalize region
+            region = capitalizeWords(slug.replace(/^investors-in-/, "").replace(/-/g, " "));
+        }
+    
+        return { fundingInterest, region };
+    };
+
+    // Get values from slug
+    const slugValues = parseSlugData(slugData);
+    console.log("filter slugValues", slugValues);
 
     const filters = {
         search: searchParamsData?.search,
-        fundingInterest: searchParamsData?.fundingInterest,
+        fundingInterest: slugValues.fundingInterest || searchParamsData?.fundingInterest,
         fundingType: searchParamsData?.fundingType
             ?.split("_")
             .map(value =>
@@ -23,7 +62,7 @@ export default async function Listing({ searchParamsData, slugData }) {
                     .replace(/\s*\+\s*/g, " / ")
             ),
         fundingAmount: searchParamsData?.fundingAmount,
-        region : searchParamsData?.region,
+        region : slugValues.region || searchParamsData?.region,
     };
     const sort = searchParamsData?.sort || "";
 
