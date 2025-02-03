@@ -1,26 +1,43 @@
 import NotFound from "./not-found";
+import Header2 from "@/components/business-listing/header2";
+import HeadingBox from "./_components/heading-box"
+import Footer from "@/components/footer";
+import SectionTracker from "./_components/section-tracker"
 
 const InvestorDetailPage = async ({ params }) => {
     const { investorDetailPage } = params;
-
-    // Extract the ID from the slug (assuming format: id-companyname-country)
     const id = investorDetailPage.split("-")[0];
 
-    // Fetch investor data using the extracted ID
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/investors/${id}?populate=*`, {
-        cache: "no-store",
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/investors/${id}?populate=logo,city,country`, {
+        cache: 'no-store',
     });
     const { data: business } = await res.json();
+    console.log("business data",business);
 
     if (!res.ok || !business) {
         return <NotFound/>;
     }
 
+    const scrollToSection = (id) => {
+        if (sections.current[id]) {
+            sections.current[id].scrollIntoView({ behavior: "smooth" });
+        }
+    };
+
     return (
-        <div className="container mx-auto p-6">
-            <div className="flex flex-col md:flex-row gap-6">
-                hi it is working 
-            </div>
+        <div>
+            <Header2/>
+            <HeadingBox
+                image={business.attributes.logo?.data?.attributes?.url}
+                title={business.attributes.company_name}
+                location={business.attributes.headquarters}
+                city={business.attributes.city?.data.attributes.name}
+                country={business.attributes.country?.data.attributes.name}
+                investor_type={business.attributes.preferred_investment_type}
+                funding_type={business.attributes.investor_type}
+            />
+            <SectionTracker business={business}/>
+            <Footer/>
         </div>
     );
 };

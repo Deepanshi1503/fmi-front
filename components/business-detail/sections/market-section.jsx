@@ -22,12 +22,6 @@ const OverviewSection = React.forwardRef(({ business }, ref) => {
         color: `hsl(${index * 60}, 70%, 50%)` // Generate dynamic colors based on index
     }));
 
-    // Dynamic generation of valuation data
-    // const valuationData = currentMarketValues.map((valuation, index) => ({
-    //     name: valuation.country,
-    //     value: valuation.value,
-    //     color: `hsl(${index * 50}, 80%, 60%)` // Generate dynamic colors for valuation
-    // }));
     const valuationData = currentMarketValues.map((market, index) => ({
         name: market.country,
         value: market.value,
@@ -131,47 +125,6 @@ const OverviewSection = React.forwardRef(({ business }, ref) => {
                         </ResponsiveContainer>
                     </div>
                 </div>
-
-                {/* Valuation Section */}
-                {/* <h3 className="text-[24px] font-semibold mb-2 mt-4 text-[#181818CC]">Valuation</h3>
-                <div className="flex">
-                    <div className="w-1/2">
-                        {valuationData.map((valuation, index) => (
-                            <div key={index} className="flex items-center mb-2">
-                                <span
-                                    className="inline-block w-3 h-3 rounded-full"
-                                    style={{ backgroundColor: valuation.color }}
-                                ></span>
-                                <span className="ml-2 text-[16px]">{valuation.name}</span>
-                                <strong className="ml-2 font-medium text-[16px]">
-                                    USD {valuation.value.toLocaleString()}
-                                </strong>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="w-1/2 flex justify-center">
-                        <ResponsiveContainer width="100%" height={160}>
-                            <PieChart>
-                                <Pie
-                                    data={valuationData}
-                                    cx="50%"
-                                    cy="50%"
-                                    labelLine={false}
-                                    outerRadius={80}
-                                    innerRadius={50}
-                                    fill="#8884d8"
-                                    dataKey="value"
-                                >
-                                    {valuationData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.color} />
-                                    ))}
-                                </Pie>
-                                <Tooltip />
-                            </PieChart>
-                        </ResponsiveContainer>
-                    </div>
-                </div> */}
             </div>
         </section>
     );
