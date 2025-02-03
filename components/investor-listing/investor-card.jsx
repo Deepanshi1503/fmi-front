@@ -1,7 +1,6 @@
-// import React from "react";
-// import { BarChart, Bar, XAxis, YAxis, Cell, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { MapPin } from "lucide-react";
 import Link from "next/link";
+import slugify from "slugify";
 
 const InvestorCard = ({ business }) => {
     const {
@@ -11,19 +10,26 @@ const InvestorCard = ({ business }) => {
         profile_description,
         commitment_amount,
         preferred_investment_type,
-        funding_interest,
+        funding_interests,
         preferred_sectors_of_interests,
         geographic_focus,
         investor_type,
         typical_investment_range,
         preferred_stage_of_investment,
+        country,
+        city
     } = business.attributes || {};
+
+    // console.log(country?.data?.attributes?.name);
+
+    const generateSlug = (text) => slugify(text || "unknown", { lower: true, strict: true });
+    const slug = `${business.id}-${generateSlug(company_name)}-${generateSlug(headquarters)}`;
 
     const metrics = [
         {
             key: "Funding Interest",
-            value: funding_interest?.data?.length
-                ? `${funding_interest.data[0].attributes.name}`
+            value: funding_interests?.data?.length
+                ? `${funding_interests.data[0].attributes.name}`
                 : "No interests available"
         },
         {
@@ -75,7 +81,7 @@ const InvestorCard = ({ business }) => {
                                 <h6 className="ml-1 text-[16px] text-[#18181899] overflow-hidden text-ellipsis whitespace-nowrap w-[670px]">
                                     {profile_description || "No description available"}{" "}
                                 </h6>
-                                <Link href={`/investor-detail/${business.id}`} className="ml-1 text-[#0966C3] text-[16px] -mt-2">Read more...</Link>
+                                <Link href={`/investors/${slug}`} className="ml-1 text-[#0966C3] text-[16px] -mt-2">Read more...</Link>
                                 <div className="inline-block text-[16px] text-[#181818CC] ml-1 mt-2">
                                     Investor Type : <span className="font-semibold">{preferred_investment_type || "None"}</span>
                                 </div>
@@ -86,7 +92,7 @@ const InvestorCard = ({ business }) => {
                         <p className="text-[28px] whitespace-nowrap font-semibold ml-4">$ {commitment_amount || "NA"} Million</p>
                         <h4 className="text-[16px] text-[#0966C3] font-medium mb-2 ml-4">Total Commitment Amount</h4>
                         {/* Add the button here */}
-                        <Link href={`/business-detail/${business.id}`} className="mt-2 ml-4 py-2 px-4 bg-[#0A66C2] text-white text-[16px] font-medium rounded-xl flex items-center justify-center gap-x-2 transition-transform transform hover:scale-105">
+                        <Link href={`/investors/${slug}`} className="mt-2 ml-4 py-2 px-4 bg-[#0A66C2] text-white text-[16px] font-medium rounded-xl flex items-center justify-center gap-x-2 transition-transform transform hover:scale-105">
                             View Listing
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"

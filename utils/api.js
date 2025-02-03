@@ -119,7 +119,7 @@ export const fetchInvestorBusinesses = async (filters = {}, sort = "", page = 1,
         console.log("queryParams", queryParams);
 
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/investors?populate=*,country,city,funding_interest,preferred_sectors_of_interests,founder_team_detail.image,logo&${queryParams.toString()}`,
+            `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/investors?populate=*,country,city,funding_interests,preferred_sectors_of_interests,founder_team_detail.image,logo&${queryParams.toString()}`,
             {
                 method: "GET",
                 cache: 'no-store',
