@@ -12,7 +12,7 @@ const OverviewSection = React.forwardRef(({ title, description }, ref) => {
     const shouldApplyFade = overviewText?.length > MAX_LENGTH;
 
     return (
-        <section id="overview" ref={ref} className="mb-12 pt-4 border border-[#EFEFEF] rounded-[16px] bg-white">
+        <section id="overview" ref={ref} className="mb-8 pt-4 border border-[#EFEFEF] rounded-[16px] bg-white">
             <div className="px-4">
                 <p className="text-[28px] font-semibold mb-3">Overview</p>
                 <p className="text-[24px] font-medium mb-2 text-[#181818CC]">{title}</p>

@@ -8,7 +8,7 @@ const InvestorDetailPage = async ({ params }) => {
     const { investorDetailPage } = params;
     const id = investorDetailPage.split("-")[0];
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/investors/${id}?populate=logo,city,country`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/investors/${id}?populate=logo,city,country,founder_team_detail.image,investment_details`, {
         cache: 'no-store',
     });
     const { data: business } = await res.json();
