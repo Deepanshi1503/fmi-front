@@ -20,10 +20,14 @@ const InvestorCard = ({ business }) => {
         city
     } = business.attributes || {};
 
-    // console.log(country?.data?.attributes?.name);
-
+    //generate slug of the url of the detail page
     const generateSlug = (text) => slugify(text || "unknown", { lower: true, strict: true });
-    const slug = `${business.id}-${generateSlug(company_name)}-${generateSlug(headquarters)}`;
+    const countryName = country?.data?.attributes?.name || "";
+    const slugParts = [business.id, generateSlug(company_name)];
+    if (countryName) {
+        slugParts.push(generateSlug(countryName));
+    }
+    const slug = slugParts.join("-");
 
     const metrics = [
         {
@@ -76,7 +80,9 @@ const InvestorCard = ({ business }) => {
                             <div className="flex flex-col gap-y-2">
                                 <div className="flex gap-x-1">
                                     <MapPin size={18} color="#0A66C2" />
-                                    <h6 className="text-[16px] font-medium -mt-1">{headquarters || "Location not available"}</h6>
+                                    <h6 className="text-[16px] font-medium -mt-1">{headquarters || city?.data?.attributes?.name || country?.data?.attributes?.name
+                                        ? `${headquarters ? headquarters + ", " : ""}${city?.data?.attributes?.name ? city?.data?.attributes?.name + ", " : ""}${country?.data?.attributes?.name || ""}`
+                                        : "Location not available"}</h6>
                                 </div>
                                 <h6 className="ml-1 text-[16px] text-[#18181899] overflow-hidden text-ellipsis whitespace-nowrap w-[670px]">
                                     {profile_description || "No description available"}{" "}
