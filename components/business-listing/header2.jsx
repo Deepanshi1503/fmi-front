@@ -2,10 +2,14 @@
 import Image from "next/image";
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Header2() {
+    const pathname = usePathname();
+    const navBgColor = pathname.includes("investors") ? "#094277" : "#0A66C2";
+
     return (
-        <nav className="bg-[#0A66C2] mx-12 mt-10 rounded-[16px]">
+        <nav className="mx-12 mt-10 rounded-[16px]" style={{ backgroundColor: navBgColor }}>
             <div className="container mx-auto px-12 flex items-center justify-between py-2">
                 {/* Logo */}
                 <div className="flex items-center justify-between">
