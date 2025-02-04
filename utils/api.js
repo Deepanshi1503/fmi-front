@@ -65,7 +65,7 @@ export function generateInvestorListingURL(category, region = undefined) {
 // for investor listing //
 export const fetchInvestorBusinesses = async (filters = {}, sort = "", page = 1, pageSize = 10) => {
     // console.log("inside api ",filters);
-     
+
     try {
         // Fetch countries and cities data
         const { countries, cities } = await fetchCountryCityOptions();
