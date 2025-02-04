@@ -144,6 +144,7 @@ export const syncInvestorData = async (investorData, profileProgress) => {
             investment_details: await Promise.all(
                 (investorData.investmentDetails || [])?.map(async (investment) => {
                     return {
+                        company_name:investment.companyName||null,
                         investment_date: investment.investmentDate || null,
                         funding_amount: investment.fundingAmount || null,
                         currency: investment.currency || null,

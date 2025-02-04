@@ -9,6 +9,7 @@ const InvestmentDetailsForm = ({ onCompletion }) => {
     const [items, setItems] = useState([]);
     const [editIndex, setEditIndex] = useState(null);
     const [formData, setFormData] = useState({
+        companyName:"",
         investmentDate: "",
         fundingAmount: "",
         fundingStage: "",
@@ -109,6 +110,7 @@ const InvestmentDetailsForm = ({ onCompletion }) => {
         }
 
         setFormData({
+            companyName:"",
             investmentDate: "",
             fundingAmount: "",
             fundingStage: "",
@@ -197,10 +199,22 @@ const InvestmentDetailsForm = ({ onCompletion }) => {
 
             {/* Modal for Form */}
             {showModal && (
-                <div className="fixed inset-0 mt-16 flex items-center justify-center bg-gray-500 bg-opacity-50">
+                <div className="fixed inset-0 mt-36 flex items-center justify-center bg-gray-500 bg-opacity-50">
                     <div className="bg-white p-6 rounded-[16px] w-1/3 z-20 relative">
                         <form className="space-y-4" onSubmit={handleSubmit}>
                             {/* Form Fields */}
+                            <div>
+                                <label className="block mb-2 text-left">Company Name</label>
+                                <input
+                                    type="text"
+                                    id="companyName"
+                                    value={formData.companyName}
+                                    onChange={handleChange}
+                                    className="w-full p-3 border rounded-lg"
+                                    required
+                                />
+                            </div>
+
                             <div>
                                 <label className="block mb-2 text-left">Investment Date</label>
                                 <input
