@@ -18,23 +18,17 @@ const InvestorDetailPage = async ({ params }) => {
         return <NotFound/>;
     }
 
-    const scrollToSection = (id) => {
-        if (sections.current[id]) {
-            sections.current[id].scrollIntoView({ behavior: "smooth" });
-        }
-    };
-
     return (
         <div>
             <Header2/>
             <HeadingBox
-                image={business.attributes.logo?.data?.attributes?.url}
-                title={business.attributes.company_name}
-                location={business.attributes.headquarters}
-                city={business.attributes.city?.data.attributes.name}
-                country={business.attributes.country?.data.attributes.name}
-                investor_type={business.attributes.preferred_investment_type}
-                funding_type={business.attributes.investor_type}
+                image={business?.attributes.logo?.data?.attributes?.url}
+                title={business?.attributes?.company_name}
+                location={business?.attributes?.headquarters}
+                city={business?.attributes?.city?.data?.attributes?.name}
+                country={business?.attributes?.country?.data?.attributes?.name}
+                investor_type={business?.attributes?.preferred_investment_type}
+                funding_type={business?.attributes?.investor_type}
             />
             <SectionTracker business={business}/>
             <Footer/>
