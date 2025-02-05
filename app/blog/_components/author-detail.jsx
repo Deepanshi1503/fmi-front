@@ -5,17 +5,17 @@ export default function AuthorDetail({ authorData }) {
   
     return (
       <div className="flex justify-center my-16">
-        <div className="bg-[#F9F7F7] rounded-[16px] p-6 flex items-center gap-6 w-[40rem]  transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl">
+        <div className="bg-[#F9F7F7] rounded-[16px] p-6 flex items-center gap-6 w-[40rem] transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl group">
           {/* Author Image */}
           <img
             src={`${process.env.NEXT_PUBLIC_STRAPI_URL}${author.profile_image.data.attributes.url}`} 
             alt={`${author.first_name} ${author.last_name}`}
-            className="w-[240px] h-[240px] rounded-lg object-cover"
+            className="w-[240px] h-[240px] rounded-lg object-cover "
           />
   
           {/* Author Info */}
           <div className="flex flex-col justify-center">
-            <h3 className="text-[20px] font-semibold">{`${author.first_name} ${author.last_name}`}</h3>
+            <h3 className="text-[20px] font-semibold transition-colors duration-300 ease-in-out group-hover:text-[#0A66C2]">{`${author.first_name} ${author.last_name}`}</h3>
             <h3 className="text-[16px] font-medium">{`Experience -  ${author.experience}`}</h3>
             <p className="text-[#181818CC] text-[16px]">
               {author.author_description}

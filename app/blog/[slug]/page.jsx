@@ -4,6 +4,7 @@ import HeadingBox from "../_components/heading-box2"
 import Footer from "@/components/footer";
 import BlogDetail from "../_components/blog-detail"
 import AuthorDetail from "../_components/author-detail";
+import SimilarBlogs from "../_components/similar-listing"
 
 const BlogDetailPage = async ({ params }) => {
     const id = params.slug?.split("-")[0];
@@ -12,29 +13,45 @@ const BlogDetailPage = async ({ params }) => {
         cache: 'no-store',
     });
 
-    const { data: investor } = await res.json();
-    console.log("investor data", investor);
+    const { data: blogData } = await res.json();
 
-    if (!res.ok || !investor) {
+    if (!res.ok || !blogData) {
         return <NotFound />;
+    }
+
+    // Fetch Similar Blogs based on category
+    const categoryIds = blogData.attributes.industries?.data.map(cat => cat.id);
+
+    let similarBlogs = [];
+    if (categoryIds.length > 0) {
+        const categoryFilter = categoryIds.map(id => `filters[industries][id][$in]=${id}`).join("&");
+
+        const similarRes = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/blogs?populate=*,cover_image,industries&${categoryFilter}&filters[id][$ne]=${id}`, {
+            cache: 'no-store',
+        });
+
+        const { data: similarData } = await similarRes.json();
+        similarBlogs = similarData || [];
     }
 
     return (
         <div>
             <Header2 />
             <HeadingBox
-                title={investor.attributes.title}
-                authors={investor.attributes.authors}
-                category={investor.attributes.industries}
-                issueDate={investor.attributes.createdAt}
+                title={blogData.attributes.title}
+                authors={blogData.attributes.authors}
+                category={blogData.attributes.industries}
+                issueDate={blogData.attributes.createdAt}
             />
             <BlogDetail
-                image={investor.attributes.cover_image.data.attributes.url}
-                description={investor.attributes.description}
+                image={blogData.attributes.cover_image.data.attributes.url}
+                description={blogData.attributes.description}
             />
             <AuthorDetail
-                authorData={investor.attributes.authors?.data}
+                authorData={blogData.attributes.authors?.data}
             />
+            {/* Similar Blogs Section */}
+            {similarBlogs.length > 0 && <SimilarBlogs blogs={similarBlogs} />}
             <Footer />
         </div>
     );

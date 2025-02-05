@@ -1,5 +1,9 @@
 export default function BlogDetail({ image, description }) {
   const formatDescription = (text) => {
+    if (!text || text.trim() === "") {
+      return `<p class="text-[20px] text-gray-500 italic text-center">No description available.</p>`;
+    }
+
     // Split text into lines
     let lines = text.split("\n");
 
@@ -8,10 +12,10 @@ export default function BlogDetail({ image, description }) {
       .map((line) => {
         if (line.startsWith("### ")) {
           // Convert '###' to <h3> headings
-          return `<h3 class="text-[34px] font-semibold mt-4 mb-0">${line.replace("### ", "")}</h3>`;
+          return `<h3 class="text-[34px] font-semibold mt-6 mb-2">${line.replace("### ", "")}</h3>`;
         } else if (line.trim() !== "") {
           // Wrap non-empty lines in <p> tags
-          return `<p class="text-[20px] text-[#181818CC] leading-[1.8]">${line}</p>`;
+          return `<p class="text-[20px] text-[#181818CC] leading-[1.8] mt-2">${line}</p>`;
         }
         return ""; // Ignore empty lines
       })
@@ -22,15 +26,17 @@ export default function BlogDetail({ image, description }) {
 
   return (
     <div className="mx-12 my-16">
+      {/* Blog Image */}
       <div className="flex justify-center w-full mb-10">
         <img
           src={`${process.env.NEXT_PUBLIC_STRAPI_URL}${image}`}
           alt="Blog Image"
-          className="w-[67rem] h-auto rounded-[16px]"
+          className="w-[67rem] h-auto rounded-[16px] shadow-lg"
         />
       </div>
 
-      <div className="mx-auto max-w-[67rem]">
+      {/* Blog Content */}
+      <div className="mx-auto max-w-[67rem] bg-white p-6 rounded-lg shadow-md">
         <div
           dangerouslySetInnerHTML={{
             __html: formatDescription(description),
