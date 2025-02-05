@@ -5,7 +5,7 @@ export default function AuthorDetail({ authorData }) {
   
     return (
       <div className="flex justify-center my-16">
-        <div className="bg-[#F9F7F7] rounded-[16px] p-6 flex items-center gap-6 w-[40rem]">
+        <div className="bg-[#F9F7F7] rounded-[16px] p-6 flex items-center gap-6 w-[40rem]  transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl">
           {/* Author Image */}
           <img
             src={`${process.env.NEXT_PUBLIC_STRAPI_URL}${author.profile_image.data.attributes.url}`} 

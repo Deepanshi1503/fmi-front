@@ -7,7 +7,6 @@ import AuthorDetail from "../_components/author-detail";
 
 const BlogDetailPage = async ({ params }) => {
     const id = params.slug?.split("-")[0];
-    console.log("id", id);
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/blogs/${id}?populate=*,authors.profile_image,cover_image,industries`, {
         cache: 'no-store',
