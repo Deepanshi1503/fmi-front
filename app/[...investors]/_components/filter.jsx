@@ -19,7 +19,7 @@ const CollapsibleSection = ({ title, isCollapsed, toggleSection, children }) => 
     </div>
 );
 
-const Filter = ({initialSlugData}) => {
+const Filter = ({ initialSlugData }) => {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -29,11 +29,11 @@ const Filter = ({initialSlugData}) => {
     // Parse slug data to extract fundingInterest and region
     const parseSlugData = (slugData) => {
         if (!slugData || !slugData["investors"]) return { fundingInterest: "", region: "" };
-        
+
         const slug = slugData["investors"][0];
         let fundingInterest = "";
         let region = "";
-    
+
         // Helper function to capitalize words properly
         const capitalizeWords = (str) => {
             return str
@@ -41,7 +41,7 @@ const Filter = ({initialSlugData}) => {
                 .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
                 .join(" ");
         };
-    
+
         if (slug.includes("-investors-in-")) {
             const parts = slug.split("-investors-in-");
             fundingInterest = capitalizeWords(parts[0].replace(/-/g, " "));
@@ -51,9 +51,9 @@ const Filter = ({initialSlugData}) => {
         } else if (slug.includes("investors-in-")) {
             region = capitalizeWords(slug.replace(/^investors-in-/, "").replace(/-/g, " "));
         }
-    
+
         return { fundingInterest, region };
-    };    
+    };
 
     // Get initial values from both URL params and slug
     const slugValues = parseSlugData(initialSlugData);
@@ -130,7 +130,7 @@ const Filter = ({initialSlugData}) => {
     };
 
     useEffect(() => {
-        if(isInitialLoad){
+        if (isInitialLoad) {
             setIsInitialLoad(false);
             return;
         }
@@ -296,7 +296,6 @@ const Filter = ({initialSlugData}) => {
                                     />
                                 )}
                             />
-
                         </div>
                     </div>
                 </CollapsibleSection>

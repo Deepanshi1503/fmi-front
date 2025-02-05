@@ -1,4 +1,4 @@
-import InvestorListing from "@/components/investor-listing/listing";
+import InvestorListing from "./_components/listing";
 import { GlobalContextProvider } from '@/context/context';
 
 export default function profile({ params, searchParams }) {
