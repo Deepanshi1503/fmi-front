@@ -6,6 +6,7 @@ import Link from "next/link";
 const BusinessCard = ({ business }) => {
     const {
         company_name,
+        slug,
         headquarters,
         description_about_company,
         business_image,
@@ -134,7 +135,7 @@ const BusinessCard = ({ business }) => {
                     <p>No data available</p>
                 )}
                 {/* Add the button here */}
-                <Link href={`/business-detail/${business.id}`} className="mt-2 ml-4 py-2 w-full bg-[#0A66C2] text-white text-[16px] font-medium rounded-xl flex items-center justify-center gap-x-2">
+                <Link href={`/businesses/${business.id}-${slug}`} className="mt-2 ml-4 py-2 w-full bg-[#0A66C2] text-white text-[16px] font-medium rounded-xl flex items-center justify-center gap-x-2">
                     View Listing
                     <svg
                         xmlns="http://www.w3.org/2000/svg"

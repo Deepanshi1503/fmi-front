@@ -87,7 +87,7 @@ export const syncBusinessData = async (businessData, profileProgress) => {
         data: {
             business_image: businessData.companyLogo?.fileId || null,
             title: businessData.companyName || "",
-            slug: (businessData.companyName ? businessData.companyName.toLowerCase().replace(/\s+/g, '-') : '') + '-title',
+            slug: (businessData.companyName ? businessData.companyName.toLowerCase().replace(/\s+/g, '-') : ''),
             purpose_of_listing_business: businessData.lookingFor || null,
             reason_for_selling_fundraise: businessData.reason || null,
             company_name: businessData.companyName,
