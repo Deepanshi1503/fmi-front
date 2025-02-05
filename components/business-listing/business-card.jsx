@@ -2,6 +2,7 @@ import React from "react";
 import { BarChart, Bar, XAxis, YAxis, Cell, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { MapPin } from "lucide-react";
 import Link from "next/link";
+import slugify from "slugify";
 
 const BusinessCard = ({ business }) => {
     const {
@@ -19,10 +20,10 @@ const BusinessCard = ({ business }) => {
         fundraise_business_details
     } = business.attributes || {};
 
-    const industryName = industry?.data?.attributes?.name; 
+    const industryName = industry?.data?.attributes?.name;
     const funding = fundraise_business_details?.funding_ask;
     const valuation = fundraise_business_details?.valuation;
-    const funding_type= fundraise_business_details?.type_of_funding;
+    const funding_type = fundraise_business_details?.type_of_funding;
 
     const metrics = [
         { key: "Revenue", value: `$ ${overall_revenue} Million` },
@@ -48,6 +49,8 @@ const BusinessCard = ({ business }) => {
                 "#FFB44F", // Q4 color
             ][index],
         })) || [];
+
+    const businessSlug = slugify(company_name, { lower: true, strict: true });
 
     return (
         <div className="flex rounded-[16px] border-[1px] border-[#18181833]">
@@ -135,7 +138,7 @@ const BusinessCard = ({ business }) => {
                     <p>No data available</p>
                 )}
                 {/* Add the button here */}
-                <Link href={`/businesses/${business.id}-${slug}`} className="mt-2 ml-4 py-2 w-full bg-[#0A66C2] text-white text-[16px] font-medium rounded-xl flex items-center justify-center gap-x-2">
+                <Link href={`/businesses/${business.id}-${businessSlug}`} className="mt-2 ml-4 py-2 w-full bg-[#0A66C2] text-white text-[16px] font-medium rounded-xl flex items-center justify-center gap-x-2">
                     View Listing
                     <svg
                         xmlns="http://www.w3.org/2000/svg"

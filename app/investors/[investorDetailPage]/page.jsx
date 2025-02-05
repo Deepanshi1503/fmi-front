@@ -1,4 +1,4 @@
-import NotFound from "./not-found";
+import NotFound from "@/components/not-found";
 import Header2 from "@/components/business-listing/header2";
 import HeadingBox from "./_components/heading-box"
 import Footer from "@/components/footer";

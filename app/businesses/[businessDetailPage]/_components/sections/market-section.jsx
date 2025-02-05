@@ -19,13 +19,7 @@ const OverviewSection = React.forwardRef(({ business }, ref) => {
     const countryData = currentMarketValues.map((market, index) => ({
         name: market.country,
         value: market.share_percentage,
-        color: `hsl(${index * 60}, 70%, 50%)` // Generate dynamic colors based on index
-    }));
-
-    const valuationData = currentMarketValues.map((market, index) => ({
-        name: market.country,
-        value: market.value,
-        color: `hsl(${index * 60}, 70%, 50%)` // Generate dynamic colors based on index
+        color: `hsl(${index * 60}, 70%, 60%)` // Generate dynamic colors based on index
     }));
 
     // Pie chart data format
