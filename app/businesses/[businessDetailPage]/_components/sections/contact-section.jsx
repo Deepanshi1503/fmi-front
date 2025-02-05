@@ -1,5 +1,4 @@
 import React from "react";
-import { MdEmail, MdPhone, MdLocationOn, MdLanguage } from "react-icons/md";
 import Image from "next/image";
 
 const ContactSection = React.forwardRef(({ business }, ref) => {

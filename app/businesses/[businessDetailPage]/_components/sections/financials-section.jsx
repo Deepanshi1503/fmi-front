@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ReferenceLine } from "recharts";
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 
 const OverviewSection = React.forwardRef(({ business }, ref) => {
     const [selectedYear, setSelectedYear] = useState(business?.financial_model_details[0]?.year || 2024);
