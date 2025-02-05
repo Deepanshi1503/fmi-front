@@ -4,16 +4,19 @@ import ContactDetail from "./sections/contact-detail";
 import CompanyDetail from "./sections/company-detail";
 import FounderTeam from "./sections/founder-team-details"
 import Portfolio from "./sections/portfolio"
-// import InvestmentPreferences from "./sections/investment-preference";
+import InvestmentPreferences from "./sections/investment-preference";
 
 export default function ContentSections({ business, sectionsRef }) {
-    console.log("investor business detail", business);
     return (
         <div className="w-3/4 p-4">
             <OverviewSection
                 ref={(el) => (sectionsRef.current["overview"] = el)}
                 title={business.attributes.company_name}
                 description={business.attributes.profile_description}
+            />
+            <InvestmentPreferences
+                ref={(el) => (sectionsRef.current["investmentPreference"] = el)}
+                investment_details={business.attributes.investment_details}
             />
             <Portfolio
                 ref={(el) => (sectionsRef.current["portfolio"] = el)}

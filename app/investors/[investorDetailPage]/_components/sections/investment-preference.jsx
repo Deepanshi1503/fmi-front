@@ -1,130 +1,110 @@
-import React from "react";
-import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend, Text } from "recharts";
+import React, { forwardRef } from "react";
+import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
 
-const InvestmentPreferences = React.forwardRef(({ business }, ref) => {
-    const globalMarketValues = business.global_market_share || [];
-    const currentMarketValues = business.current_market_share || [];
+const InvestmentPreferences = forwardRef(({ investment_details = [] }, ref) => {
+    const generateDynamicColor = (index, total) => {
+        const hue = (index * (360 / total)) % 360; 
+        return `hsl(${hue}, 70%, 60%)`; 
+    };
 
-    // Calculate the total values
-    const totalGlobalMarketValue = globalMarketValues.reduce(
-        (sum, market) => sum + parseFloat(market.amount || 0),
-        0
-    );
-    const totalCurrentMarketValue = currentMarketValues.reduce(
-        (sum, market) => sum + parseFloat(market.value || 0),
-        0
-    );
+    // Function to calculate percentage distribution
+    const calculatePercentages = (key) => {
+        if (investment_details.length === 0) return []; 
 
-    // Dynamic generation of country and market share data
-    const countryData = currentMarketValues.map((market, index) => ({
-        name: market.country,
-        value: market.share_percentage,
-        color: `hsl(${index * 60}, 70%, 50%)` // Generate dynamic colors based on index
-    }));
+        const total = investment_details.length;
+        const counts = investment_details.reduce((acc, item) => {
+            acc[item[key]] = (acc[item[key]] || 0) + 1;
+            return acc;
+        }, {});
 
-    const valuationData = currentMarketValues.map((market, index) => ({
-        name: market.country,
-        value: market.value,
-        color: `hsl(${index * 60}, 70%, 50%)` // Generate dynamic colors based on index
-    }));
+        return Object.entries(counts).map(([name, count], index) => ({
+            name,
+            value: parseFloat(((count / total) * 100).toFixed(2)), 
+            color: generateDynamicColor(index, Object.keys(counts).length)
+        }));
+    };
 
-    // Pie chart data format
-    const pieData = [
-        { name: "Global Market", value: totalGlobalMarketValue, fill: "#F44336" },
-        { name: "Current Market", value: totalCurrentMarketValue, fill: "#9D27B0" }
-    ];
+    const investmentTypeData = calculatePercentages("funding_type");
+    const geographicFocusData = calculatePercentages("country");
 
     return (
-        <section id="market" ref={ref} className="mb-12">
+        <section id="investmentPreference" ref={ref} className="mb-12">
             <div className="mb-8 border border-gray-200 rounded-[16px] bg-white p-4">
-                <p className="text-[28px] font-semibold mb-2">Market & Competition</p>
-                <div className="flex mt-6 justify-between border-b-[1px] border-[#18181833] pb-4">
-                    {/* Market Size Info */}
-                    <div className="w-1/2">
-                        <h3 className="text-[24px] font-semibold mb-3 text-[#181818CC]">Market Size</h3>
-                        <div className="mb-3 flex flex-col">
-                            <span className="text-[#18181899] ml-[1.2rem] mb-1 text-[16px]">Global Market</span>
-                            <strong className="font-medium text-[20px]">
-                                <span className="inline-block w-3 h-3 rounded-full bg-[#F44336] mr-2"></span>
-                                USD {totalGlobalMarketValue.toLocaleString()} Billion
-                            </strong>
+                <h2 className="text-[28px] font-semibold">Investment Preferences</h2>
+
+                {/* Preferred Investment Type */}
+                {investmentTypeData.length > 0 && (
+                    <div className="flex justify-between border-b pb-4">
+                        <div className="w-1/2">
+                            <h3 className="text-[24px] font-semibold mb-2 mt-4 text-[#181818CC]">Preferred Investment Type</h3>
+                            {investmentTypeData.map((item, index) => (
+                                <div key={index} className="mb-4">
+                                    <div className="flex items-center">
+                                        <span className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></span>
+                                        <strong className="ml-2">{item.value}%</strong>
+                                    </div>
+                                    <span className="ml-[1.2rem] text-[16px]" style={{ color: item.color }}>{item.name}</span>
+                                </div>
+                            ))}
                         </div>
-                        <div className="flex flex-col">
-                            <span className="text-[#18181899] ml-[1.2rem] mb-1 text-[16px]">Current Market Share:</span>{" "}
-                            <strong className="font-medium text-[20px]">
-                                <span className="inline-block w-3 h-3 rounded-full bg-[#9D27B0] mr-2"></span>
-                                USD {totalCurrentMarketValue.toLocaleString()} Million
-                            </strong>
+                        <div className="w-1/2 flex justify-center items-center">
+                            <ResponsiveContainer width="100%" height={200}>
+                                <PieChart>
+                                    <Pie
+                                        data={investmentTypeData}
+                                        cx="50%"
+                                        cy="50%"
+                                        outerRadius={90}
+                                        innerRadius={50}
+                                        dataKey="value"
+                                    >
+                                        {investmentTypeData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip />
+                                </PieChart>
+                            </ResponsiveContainer>
                         </div>
                     </div>
+                )}
 
-                    {/* Pie Chart for Market Share */}
-                    <div className="w-1/2 flex justify-center mt-3">
-                        <ResponsiveContainer width="100%" height={160}>
-                            <PieChart>
-                                <Pie
-                                    data={pieData}
-                                    cx="50%"
-                                    cy="50%"
-                                    labelLine={false}
-                                    outerRadius={80}
-                                    innerRadius={50}
-                                    fill="#8884d8"
-                                    dataKey="value"
-                                >
-                                    {pieData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.fill} />
-                                    ))}
-                                </Pie>
-                                <Tooltip />
-                                {/* <Legend /> */}
-                            </PieChart>
-                        </ResponsiveContainer>
+                {/* Geographic Focus */}
+                {geographicFocusData.length > 0 && (
+                    <div className="flex justify-between pt-4 pb-4">
+                        <div className="w-1/2">
+                            <h3 className="text-[24px] font-semibold mb-2 mt-4 text-[#181818CC]">Geographic Focus</h3>
+                            {geographicFocusData.map((item, index) => (
+                                <div key={index} className="mb-4">
+                                    <div key={index} className="flex items-center">
+                                        <span className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></span>
+                                        <strong className="ml-2">{item.value}%</strong>
+                                    </div>
+                                    <span className="ml-[1.2rem] text-[16px]" style={{ color: item.color }}>{item.name}</span>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="w-1/2 flex justify-center items-center">
+                            <ResponsiveContainer width="100%" height={200}>
+                                <PieChart>
+                                    <Pie
+                                        data={geographicFocusData}
+                                        cx="50%"
+                                        cy="50%"
+                                        outerRadius={90}
+                                        innerRadius={50}
+                                        dataKey="value"
+                                    >
+                                        {geographicFocusData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
-                </div>
-
-                {/* Country & Market Share Info */}
-                <h3 className="text-[24px] font-semibold mb-2 mt-4 text-[#181818CC]">Country & Market Share</h3>
-                <div className="flex">
-                    {/* Country List */}
-                    <div className="w-1/2">
-                        {countryData.map((country, index) => (
-                            <div key={index} className="flex items-center mb-2">
-                                <span
-                                    className="inline-block w-3 h-3 rounded-full"
-                                    style={{ backgroundColor: country.color }}
-                                ></span>
-                                <span className="ml-2 text-[16px]">{country.name}</span>
-                                <strong className="ml-2 font-medium text-[16px]">
-                                    {country.value}%
-                                </strong>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Pie Chart for Country Market Share */}
-                    <div className="w-1/2 flex justify-center">
-                        <ResponsiveContainer width="100%" height={160}>
-                            <PieChart>
-                                <Pie
-                                    data={countryData}
-                                    cx="50%"
-                                    cy="50%"
-                                    labelLine={false}
-                                    outerRadius={80}
-                                    innerRadius={50}
-                                    fill="#8884d8"
-                                    dataKey="value"
-                                >
-                                    {countryData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.color} />
-                                    ))}
-                                </Pie>
-                                <Tooltip />
-                            </PieChart>
-                        </ResponsiveContainer>
-                    </div>
-                </div>
+                )}
             </div>
         </section>
     );

@@ -1,5 +1,5 @@
 import React from "react";
-import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend, Text } from "recharts";
+import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
 
 const OverviewSection = React.forwardRef(({ business }, ref) => {
     const globalMarketValues = business.global_market_share || [];
