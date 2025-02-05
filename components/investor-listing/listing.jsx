@@ -50,7 +50,7 @@ export default async function Listing({ searchParamsData, slugData }) {
 
     // Get values from slug
     const slugValues = parseSlugData(slugData);
-    console.log("filter slugValues", slugValues);
+    // console.log("filter slugValues", slugValues);
 
     const filters = {
         search: searchParamsData?.search,
@@ -66,7 +66,7 @@ export default async function Listing({ searchParamsData, slugData }) {
     };
     const sort = searchParamsData?.sort || "";
 
-    console.log("filters abc: ", filters);
+    // console.log("filters abc: ", filters);
 
     const { data: initialBusinesses = [], total = 0 } = await fetchInvestorBusinesses({...filters, slug : slugData}, sort, 1);
 

@@ -169,7 +169,7 @@ export const syncInvestorData = async (investorData, profileProgress) => {
         }
     };
 
-    console.log(payload);
+    // console.log(payload);
 
     if (!isValidEmail(investorData.professionalEmail) && !investorId) {
         console.error("Invalid email format:", investorData.professionalEmail);
@@ -190,7 +190,7 @@ export const syncInvestorData = async (investorData, profileProgress) => {
                 body: JSON.stringify(payload),
             });
             const responseData = await response.json();
-            console.log(responseData);
+            // console.log(responseData);
             if (responseData && responseData.data && responseData.data.id) {
                 console.log("Investor created successfully:", responseData.data.id);
                 localStorage.setItem("investorId", responseData.data.id);

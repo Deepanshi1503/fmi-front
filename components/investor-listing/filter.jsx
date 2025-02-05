@@ -57,7 +57,7 @@ const Filter = ({initialSlugData}) => {
 
     // Get initial values from both URL params and slug
     const slugValues = parseSlugData(initialSlugData);
-    console.log("slugvalue", slugValues);
+    // console.log("slugvalue", slugValues);
 
     const initialFilters = {
         search: searchParams.get("search") || "",
@@ -123,7 +123,7 @@ const Filter = ({initialSlugData}) => {
         }));
     };
 
-    console.log("filters:", filters);
+    // console.log("filters:", filters);
 
     const handleFundingChange = (values) => {
         setFilters((prev) => ({ ...prev, fundingAmount: values }));
