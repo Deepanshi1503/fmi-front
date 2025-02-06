@@ -47,6 +47,7 @@ export default async function Listing({ searchParamsData, slugData }) {
 
     // Get values from slug
     const slugValues = parseSlugData(slugData);
+    console.log("slugValues", slugValues);
 
     const filters = {
         search: searchParamsData?.search,

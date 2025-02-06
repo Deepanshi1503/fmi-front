@@ -28,9 +28,9 @@ const Filter = ({ initialSlugData }) => {
 
     // Parse slug data to extract fundingInterest and region
     const parseSlugData = (slugData) => {
-        if (!slugData || !slugData["investors"]) return { fundingInterest: "", region: "" };
+        if (!slugData || slugData["investors"]) return { fundingInterest: "", region: "" };
 
-        const slug = slugData["investors"][0];
+        const slug = slugData[0];
         let fundingInterest = "";
         let region = "";
 

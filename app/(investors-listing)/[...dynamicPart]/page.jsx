@@ -11,7 +11,6 @@ export default function profile({ params, searchParams }) {
     const isBusiness = slugString.includes("businesses");
 
     console.log("Slug Data:", slugArray);
-    console.log("Slug String", slugString);
     console.log("Detected Type:", isInvestor ? "Investor" : isBusiness ? "Business" : "Unknown");
     
     return (
