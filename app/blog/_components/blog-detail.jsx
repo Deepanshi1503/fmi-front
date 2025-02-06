@@ -36,7 +36,7 @@ export default function BlogDetail({ image, description }) {
       </div>
 
       {/* Blog Content */}
-      <div className="mx-auto max-w-[67rem] bg-white p-6 rounded-lg shadow-md">
+      <div className="mx-auto max-w-[67rem]">
         <div
           dangerouslySetInnerHTML={{
             __html: formatDescription(description),
