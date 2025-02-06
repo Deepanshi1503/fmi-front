@@ -57,7 +57,6 @@ const Filter = ({ initialSlugData }) => {
 
     // Get initial values from both URL params and slug
     const slugValues = parseSlugData(initialSlugData);
-    // console.log("slugvalue", slugValues);
 
     const initialFilters = {
         search: searchParams.get("search") || "",
@@ -152,10 +151,11 @@ const Filter = ({ initialSlugData }) => {
         // Construct the final URL
         const queryString = params.toString();
         const newUrl = `${dynamicRoute}${queryString ? `?${queryString}` : ''}`;
+        console.log("newUrl", newUrl);
 
         // Use push to update the URL and trigger a page refresh
-        router.push(newUrl);
-    }, [filters, router, isInitialLoad]);
+        router.replace(newUrl);
+    }, [filters, router]);
 
 
     const handleClearFilters = () => {

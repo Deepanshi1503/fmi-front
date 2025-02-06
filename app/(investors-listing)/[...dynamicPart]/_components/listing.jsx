@@ -10,11 +10,13 @@ import InfiniteScroll from "./infinite-scroll";
 export const dynamic = 'force-dynamic';
 
 export default async function Listing({ searchParamsData, slugData }) {
+    
     // Parse slug data to extract fundingInterest and region
     const parseSlugData = (slugData) => {
-        if (!slugData || !slugData["investors"]) return { fundingInterest: "", region: "" };
+        if (!slugData || slugData["investors"]) return { fundingInterest: "", region: "" };
         
-        const slug = slugData["investors"][0];
+        const slug = slugData[0];
+        
         let fundingInterest = "";
         let region = "";
     
@@ -34,14 +36,9 @@ export default async function Listing({ searchParamsData, slugData }) {
                 .join(" / ");
             // Capitalize region
             region = capitalizeWords(parts[1].replace(/-/g, " "));
-        } else if (slug.includes("-investors")) {
-            fundingInterest = slug
-                .replace(/-investors$/, "")
-                .split("-")
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(" / ");
+        } else if (slug.includes("-investors")) {             
+            fundingInterest = capitalizeWords(slug.replace(/-investors$/, "").replace(/-/g, " "));
         } else if (slug.includes("investors-in-")) {
-            // Capitalize region
             region = capitalizeWords(slug.replace(/^investors-in-/, "").replace(/-/g, " "));
         }
     
@@ -50,7 +47,6 @@ export default async function Listing({ searchParamsData, slugData }) {
 
     // Get values from slug
     const slugValues = parseSlugData(slugData);
-    // console.log("filter slugValues", slugValues);
 
     const filters = {
         search: searchParamsData?.search,
@@ -66,10 +62,10 @@ export default async function Listing({ searchParamsData, slugData }) {
     };
     const sort = searchParamsData?.sort || "";
 
-    // console.log("filters abc: ", filters);
+    console.log("filters abc: ", filters);
 
     const { data: initialBusinesses = [], total = 0 } = await fetchInvestorBusinesses({...filters, slug : slugData}, sort, 1);
-
+    
     return (
         <>
             <Header2 />

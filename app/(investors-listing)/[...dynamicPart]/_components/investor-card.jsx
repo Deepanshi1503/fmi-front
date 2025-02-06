@@ -3,6 +3,7 @@ import Link from "next/link";
 import slugify from "slugify";
 
 const InvestorCard = ({ business }) => {
+    
     const {
         logo,
         company_name,

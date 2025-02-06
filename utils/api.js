@@ -44,23 +44,21 @@ export const fetchBusinesses = async (filters = {}, sort = "") => {
 };
 
 // investor url generation //
-export function generateInvestorListingURL(category, region = undefined) {
-    const actualRegion = region;
+export function generateInvestorListingURL(category, region = "") {
+    const categorySlug = category ? slugify(category, { lower: true }) : "";
+    const regionSlug = region ? `-investors-in-${slugify(region, { lower: true })}` : "";
 
-    if (category && actualRegion) {
-        return `/${slugify(category || "", {
-            lower: true,
-        })}-investors-in-${slugify(actualRegion || "", {
-            lower: true,
-        })}`;
+    if (category && region) {
+        return `/${categorySlug}${regionSlug}`;
     } else if (category) {
-        return `/${slugify(category || "", { lower: true })}-investors`;
-    } else if (actualRegion) {
-        return `/investors-in-${slugify(actualRegion || "", { lower: true })}`;
+        return `/${categorySlug}-investors`;
+    } else if (region) {
+        return `/investors-in-${slugify(region, { lower: true })}`;
     } else {
         return `/investors`;
     }
 }
+
 
 // for investor listing //
 export const fetchInvestorBusinesses = async (filters = {}, sort = "", page = 1, pageSize = 10) => {
