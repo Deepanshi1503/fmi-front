@@ -7,7 +7,6 @@ import slugify from "slugify";
 const BusinessCard = ({ business }) => {
     const {
         company_name,
-        slug,
         headquarters,
         description_about_company,
         business_image,
@@ -17,13 +16,15 @@ const BusinessCard = ({ business }) => {
         overall_profile_loss,
         industry,
         financial_model_details,
-        fundraise_business_details
+        fundraise_business_details,
+        purpose_of_listing_business
     } = business.attributes || {};
 
     const industryName = industry?.data?.attributes?.name;
     const funding = fundraise_business_details?.funding_ask;
     const valuation = fundraise_business_details?.valuation;
     const funding_type = fundraise_business_details?.type_of_funding;
+    console.log("purpose", purpose_of_listing_business)
 
     const metrics = [
         { key: "Revenue", value: `$ ${overall_revenue} Million` },
@@ -51,6 +52,13 @@ const BusinessCard = ({ business }) => {
         })) || [];
 
     const businessSlug = slugify(company_name, { lower: true, strict: true });
+
+    const listingType =
+        purpose_of_listing_business === "Sell My Business"
+            ? "for-sale"
+            : purpose_of_listing_business === "Raise Funds"
+                ? "looking-for-fundraise"
+                : "";
 
     return (
         <div className="flex rounded-[16px] border-[1px] border-[#18181833]">
@@ -84,7 +92,7 @@ const BusinessCard = ({ business }) => {
                                 </div>
                             </div>
                             <div className="text-end">
-                                <h6 className="text-[#0966C3] text-[16px] font-medium -mt-1">Funding ask</h6>
+                                <h6 className="text-[#0966C3] text-[16px] font-medium -mt-1">{listingType === "for-sale" ? "Asking Price" : "Funding Ask"}</h6>
                                 <h6 className="text-[22px] font-semibold"> {currency || "$"} {funding || "NA"} Million</h6>
                             </div>
                         </div>
@@ -138,7 +146,7 @@ const BusinessCard = ({ business }) => {
                     <p>No data available</p>
                 )}
                 {/* Add the button here */}
-                <Link href={`/businesses/${business.id}-${businessSlug}`} className="mt-2 ml-4 py-2 w-full bg-[#0A66C2] text-white text-[16px] font-medium rounded-xl flex items-center justify-center gap-x-2">
+                <Link href={`/businesses/${business.id}-${businessSlug}-${listingType}`} className="mt-2 ml-4 py-2 w-full bg-[#0A66C2] text-white text-[16px] font-medium rounded-xl flex items-center justify-center gap-x-2">
                     View Listing
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
